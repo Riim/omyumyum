@@ -11,13 +11,6 @@ npm i omnamnam
 ```js
 import om from 'omnamnam';
 
-const isNumberOrString = om.number.or.string;
-
-isNumberOrString(1);
-// => true
-isNumberOrString('1');
-// => true
-
 const isOptionalNumber = om.number.or.undefined;
 
 isOptionalNumber('1');
@@ -100,11 +93,15 @@ interface IType {
 	// => true
 	```
 - ##### om.null: IType;
+	Matches a null.
 - ##### om.undefined: IType;
+	Matches an undefined.
 - ##### om.vacuum: IType;
 	Same as `om.null.or.undefined`.
 - ##### om.boolean: IType;
+	Matches a boolean data type.
 - ##### om.number: INumberType;
+	Matches a number data type except `NaN`, `Infinity` and `-Infinity`.
 	```js
 	interface INumberType extends IType {
 		min(minValue: number): INumberType;
@@ -117,15 +114,16 @@ interface IType {
 		integer: INumberType;
 	}
 	```
-	- ###### om.min(minValue: number): INumberType;
-	- ###### om.max(maxValue: number): INumberType;
-	- ###### om.less(lessThanValue: number): INumberType;
-	- ###### om.greater(greaterThanValue: number): INumberType;
-	- ###### om.between(minValue: number, maxValue: number): INumberType;
-	- ###### om.positive: INumberType;
-	- ###### om.negative: INumberType;
-	- ###### om.integer: INumberType;
+	- ###### om.number.min(minValue: number): INumberType;
+	- ###### om.number.max(maxValue: number): INumberType;
+	- ###### om.number.less(lessThanValue: number): INumberType;
+	- ###### om.number.greater(greaterThanValue: number): INumberType;
+	- ###### om.number.between(minValue: number, maxValue: number): INumberType;
+	- ###### om.number.positive: INumberType;
+	- ###### om.number.negative: INumberType;
+	- ###### om.number.integer: INumberType;
 - ##### om.string: IStringType;
+	Matches a string data type.
 	```js
 	interface IStringType extends IType {
 		nonZero: IStringType;
@@ -136,14 +134,18 @@ interface IType {
 		pattern(re: RegExp): IStringType;
 	}
 	```
-	- ###### om.nonZero: IStringType;
-	- ###### om.nonEmpty: IStringType;
-	- ###### om.len(length: number): IStringType;
-	- ###### om.min(minLength: number): IStringType;
-	- ###### om.max(maxLength: number): IStringType;
-	- ###### om.pattern(re: RegExp): IStringType;
+	- ###### om.string.nonZero: IStringType;
+		Same as `om.string.min(1)`.
+	- ###### om.string.nonEmpty: IStringType;
+		Same as `om.string.pattern(/\S/)`.
+	- ###### om.string.len(length: number): IStringType;
+	- ###### om.string.min(minLength: number): IStringType;
+	- ###### om.string.max(maxLength: number): IStringType;
+	- ###### om.string.pattern(re: RegExp): IStringType;
 - ##### om.symbol: IType;
+	Matches a symbol data type.
 - ##### om.object: IObjectType;
+	Matches an object data type.
 	```js
 	interface IObjectType extends IType {
 		shape(shape: Record<string, TValidator>, partial: boolean = false): IType;
@@ -155,6 +157,7 @@ interface IType {
     - ###### om.object.partialShape(shape: Record<string, TValidator>): IType;
     - ###### om.object.values(validator: TValidator): IType;
 - ##### om.array: IArrayType;
+	Matches an array data type.
 	```js
 	interface IArrayType extends IType {
 		of(validator: TValidator): IType;
@@ -162,9 +165,11 @@ interface IType {
 	```
 	- ###### om.array.of(validator: TValidator): IType;
 - ##### om.function: IType;
+	Matches a function type.
 - ##### om.func: IType;
 	Alias for `om.function`.
 - ##### om.map: IMapType;
+	Matches a `Map` type.
 	```js
 	interface IMapType extends IType {
 		of(validator: TValidator): IType;
@@ -176,6 +181,7 @@ interface IType {
 	- ###### om.map.values(validator: TValidator): IMapType;
 	- ###### om.map.keys(validator: TValidator): IMapType;
 - ##### om.set: ISetType;
+	Matches a `Set` type.
 	```js
 	interface ISetType extends IType {
 		of(validator: TValidator): IType;
@@ -183,20 +189,26 @@ interface IType {
 	```
 	- ###### om.set.of(validator: TValidator): ISetType;
 - ##### om.weakMap: IMapType;
+	Matches a `WeakMap` type.
 	- ###### om.weakMap.of(validator: TValidator): IMapType;
 	- ###### om.weakMap.values(validator: TValidator): IMapType;
 	- ###### om.weakMap.keys(validator: TValidator): IMapType;
 - ##### om.wmap: IMapType;
 	Alias for `om.weakMap`.
 - ##### om.weakSet: ISetType;
+	Matches a `WeakSet` type.
 	- ###### om.weakSet.of(validator: TValidator): ISetType;
 - ##### om.wset: ISetType;
 	Alias for `om.weakSet`.
 - ##### om.date: IDateType;
+	Matches a `Date` type.
 	- ###### om.date.before(beforeDate: Date | string | number): IDateType;
 	- ###### om.date.after(afterDate: Date | string | number): IDateType;
 - ##### om.regExp: IType;
+	Matches a `RegExp` type.
 - ##### om.regex: IType;
 	Alias for `om.regExp`.
 - ##### om.promise: IType;
+	Matches a `Promise` type.
 - ##### om.error: IType;
+	Matches a `Error` type.
