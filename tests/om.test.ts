@@ -11,7 +11,29 @@ describe('om', () => {
 		expect(isNumber(undefined)).to.false;
 	});
 
-	it('использование `или`', () => {
+	it('.custom()', () => {
+		let isOne = om.custom(value => value === 1);
+
+		expect(isOne(1)).to.true;
+		expect(isOne(2)).to.false;
+		expect(isOne('1')).to.false;
+	});
+
+	it('.[type].and', () => {
+		let isNumberAndString = om.number.and.string;
+
+		expect(isNumberAndString(1)).to.false;
+		expect(isNumberAndString('1')).to.false;
+	});
+
+	it('.[type].and (2)', () => {
+		let isNonZeroString = om.string.and.custom(str => str.length > 0);
+
+		expect(isNonZeroString('')).to.false;
+		expect(isNonZeroString('1')).to.true;
+	});
+
+	it('.[type].or', () => {
 		let isNumberOrString = om.number.or.string;
 
 		expect(isNumberOrString(true)).to.false;
@@ -21,7 +43,7 @@ describe('om', () => {
 		expect(isNumberOrString(undefined)).to.false;
 	});
 
-	it('или null', () => {
+	it('.[type].or.null', () => {
 		let isNumberOrNull = om.number.or.null;
 
 		expect(isNumberOrNull(1)).to.true;
@@ -30,7 +52,7 @@ describe('om', () => {
 		expect(isNumberOrNull(undefined)).to.false;
 	});
 
-	it('или null или undefined', () => {
+	it('.[type].or.null.or.undefined', () => {
 		let isOptionalNumber = om.number.or.null.or.undefined;
 
 		expect(isOptionalNumber(1)).to.true;
@@ -39,29 +61,7 @@ describe('om', () => {
 		expect(isOptionalNumber(undefined)).to.true;
 	});
 
-	it('пользовательский тип', () => {
-		let isOne = om.custom(value => value === 1);
-
-		expect(isOne(1)).to.true;
-		expect(isOne(2)).to.false;
-		expect(isOne('1')).to.false;
-	});
-
-	it('использование `и`', () => {
-		let isNumberAndString = om.number.and.string;
-
-		expect(isNumberAndString(1)).to.false;
-		expect(isNumberAndString('1')).to.false;
-	});
-
-	it('использование `и` (2)', () => {
-		let isNonZeroString = om.string.and.custom(str => str.length > 0);
-
-		expect(isNonZeroString('')).to.false;
-		expect(isNonZeroString('1')).to.true;
-	});
-
-	it('om.null', () => {
+	it('.null', () => {
 		let isNull = om.null;
 
 		expect(isNull(true)).to.false;
@@ -70,7 +70,7 @@ describe('om', () => {
 		expect(isNull(undefined)).to.false;
 	});
 
-	it('om.undefined', () => {
+	it('.undefined', () => {
 		let isUndefined = om.undefined;
 
 		expect(isUndefined(true)).to.false;
@@ -79,7 +79,7 @@ describe('om', () => {
 		expect(isUndefined(undefined)).to.true;
 	});
 
-	it('om.vacuum', () => {
+	it('.vacuum', () => {
 		let isVacuum = om.vacuum;
 
 		expect(isVacuum(true)).to.false;
@@ -88,7 +88,7 @@ describe('om', () => {
 		expect(isVacuum(undefined)).to.true;
 	});
 
-	it('om.boolean', () => {
+	it('.boolean', () => {
 		let isBoolean = om.boolean;
 
 		expect(isBoolean(true)).to.true;
@@ -96,7 +96,7 @@ describe('om', () => {
 		expect(isBoolean('1')).to.false;
 	});
 
-	it('om.number', () => {
+	it('.number', () => {
 		let isNumber = om.number;
 
 		expect(isNumber(true)).to.false;
@@ -107,7 +107,7 @@ describe('om', () => {
 		expect(isNumber(-Infinity)).to.false;
 	});
 
-	it('om.number.min()', () => {
+	it('.number.min()', () => {
 		let isNumberMin3 = om.number.min(3);
 
 		expect(isNumberMin3(2)).to.false;
@@ -115,7 +115,7 @@ describe('om', () => {
 		expect(isNumberMin3(4)).to.true;
 	});
 
-	it('om.number.max()', () => {
+	it('.number.max()', () => {
 		let isNumberMax3 = om.number.max(3);
 
 		expect(isNumberMax3(2)).to.true;
@@ -123,7 +123,7 @@ describe('om', () => {
 		expect(isNumberMax3(4)).to.false;
 	});
 
-	it('om.number.less()', () => {
+	it('.number.less()', () => {
 		let isNumberLess3 = om.number.less(3);
 
 		expect(isNumberLess3(2)).to.true;
@@ -131,7 +131,7 @@ describe('om', () => {
 		expect(isNumberLess3(4)).to.false;
 	});
 
-	it('om.number.greater()', () => {
+	it('.number.greater()', () => {
 		let isNumberGreater3 = om.number.greater(3);
 
 		expect(isNumberGreater3(2)).to.false;
@@ -139,7 +139,7 @@ describe('om', () => {
 		expect(isNumberGreater3(4)).to.true;
 	});
 
-	it('om.number.between()', () => {
+	it('.number.between()', () => {
 		let isNumberBetween3to5 = om.number.between(3, 5);
 
 		expect(isNumberBetween3to5(2)).to.false;
@@ -149,7 +149,7 @@ describe('om', () => {
 		expect(isNumberBetween3to5(6)).to.false;
 	});
 
-	it('om.number.positive', () => {
+	it('.number.positive', () => {
 		let isPositiveNumber = om.number.positive;
 
 		expect(isPositiveNumber(-1)).to.false;
@@ -157,7 +157,7 @@ describe('om', () => {
 		expect(isPositiveNumber(1)).to.true;
 	});
 
-	it('om.number.negative', () => {
+	it('.number.negative', () => {
 		let isPositiveNumber = om.number.negative;
 
 		expect(isPositiveNumber(-1)).to.true;
@@ -165,7 +165,7 @@ describe('om', () => {
 		expect(isPositiveNumber(1)).to.false;
 	});
 
-	it('om.number.integer', () => {
+	it('.number.integer', () => {
 		let isIntegerNumber = om.number.integer;
 
 		expect(isIntegerNumber(0)).to.true;
@@ -173,7 +173,7 @@ describe('om', () => {
 		expect(isIntegerNumber(1)).to.true;
 	});
 
-	it('om.string', () => {
+	it('.string', () => {
 		let isString = om.string;
 
 		expect(isString(true)).to.false;
@@ -181,7 +181,7 @@ describe('om', () => {
 		expect(isString('1')).to.true;
 	});
 
-	it('om.string.nonZero', () => {
+	it('.string.nonZero', () => {
 		let isNonZeroString = om.string.nonZero;
 
 		expect(isNonZeroString('')).to.false;
@@ -189,7 +189,7 @@ describe('om', () => {
 		expect(isNonZeroString('1')).to.true;
 	});
 
-	it('om.string.nonEmpty', () => {
+	it('.string.nonEmpty', () => {
 		let isNonEmptyString = om.string.nonEmpty;
 
 		expect(isNonEmptyString('')).to.false;
@@ -198,7 +198,7 @@ describe('om', () => {
 		expect(isNonEmptyString(' 1 ')).to.true;
 	});
 
-	it('om.string.len()', () => {
+	it('.string.len()', () => {
 		let isStringLen3 = om.string.len(3);
 
 		expect(isStringLen3('12')).to.false;
@@ -206,7 +206,7 @@ describe('om', () => {
 		expect(isStringLen3('1234')).to.false;
 	});
 
-	it('om.string.min()', () => {
+	it('.string.min()', () => {
 		let isStringMin3 = om.string.min(3);
 
 		expect(isStringMin3('')).to.false;
@@ -215,7 +215,7 @@ describe('om', () => {
 		expect(isStringMin3('123')).to.true;
 	});
 
-	it('om.string.max()', () => {
+	it('.string.max()', () => {
 		let isStringMax3 = om.string.max(3);
 
 		expect(isStringMax3('')).to.true;
@@ -225,12 +225,12 @@ describe('om', () => {
 		expect(isStringMax3('1234')).to.false;
 	});
 
-	it('om.array', () => {
+	it('.array', () => {
 		let isArray = om.array;
 		expect(isArray([])).to.true;
 	});
 
-	it('om.array.of()', () => {
+	it('.array.of()', () => {
 		let isNumericArray = om.array.of(om.number);
 
 		expect(isNumericArray([])).to.true;
@@ -240,7 +240,7 @@ describe('om', () => {
 		expect(isNumericArray([1, '2'])).to.false;
 	});
 
-	it('om.array.of() (2)', () => {
+	it('.array.of() (2)', () => {
 		let isArrayOfNumberAndString = om.array.of(om.number.or.string);
 
 		expect(isArrayOfNumberAndString([])).to.true;
@@ -252,14 +252,14 @@ describe('om', () => {
 		expect(isArrayOfNumberAndString([true, false])).to.false;
 	});
 
-	it('om.object', () => {
+	it('.object', () => {
 		let isObject = om.object;
 
 		expect(isObject({})).to.true;
 		expect(isObject(() => {})).to.true;
 	});
 
-	it('om.object.shape()', () => {
+	it('.object.shape()', () => {
 		let isUserData = om.object.shape({
 			name: om.string,
 			age: om.number.or.vacuum
@@ -275,7 +275,7 @@ describe('om', () => {
 		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.false;
 	});
 
-	it('om.object.partialShape()', () => {
+	it('.object.partialShape()', () => {
 		let isUserData = om.object.partialShape({
 			name: om.string,
 			age: om.number.or.vacuum
@@ -284,7 +284,7 @@ describe('om', () => {
 		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.true;
 	});
 
-	it('om.object.values()', () => {
+	it('.object.values()', () => {
 		let isObjectWithNumericValues = om.object.values(om.number);
 
 		expect(isObjectWithNumericValues({ a: 1, b: 2, c: 3 })).to.true;
@@ -293,35 +293,35 @@ describe('om', () => {
 		expect(isObjectWithNumericValues({ a: 1, b: 2, c: undefined })).to.false;
 	});
 
-	it('om.function', () => {
+	it('.function', () => {
 		let isFunction = om.function;
 
 		expect(isFunction({})).to.false;
 		expect(isFunction(() => {})).to.true;
 	});
 
-	it('om.map', () => {
+	it('.map', () => {
 		let isMap = om.map;
 
 		expect(isMap({})).to.false;
 		expect(isMap(new Map())).to.true;
 	});
 
-	it('om.set', () => {
+	it('.set', () => {
 		let isSet = om.set;
 
 		expect(isSet({})).to.false;
 		expect(isSet(new Set())).to.true;
 	});
 
-	it('om.date', () => {
+	it('.date', () => {
 		let isDate = om.date;
 
 		expect(isDate({})).to.false;
 		expect(isDate(new Date())).to.true;
 	});
 
-	it('om.date.before()', () => {
+	it('.date.before()', () => {
 		let now = Date.now();
 		let isDateBeforeNow = om.date.before(new Date(now));
 
@@ -330,7 +330,7 @@ describe('om', () => {
 		expect(isDateBeforeNow(new Date(now + 100))).to.false;
 	});
 
-	it('om.date.after()', () => {
+	it('.date.after()', () => {
 		let now = Date.now();
 		let isDateAfterNow = om.date.after(new Date(now));
 
@@ -339,32 +339,49 @@ describe('om', () => {
 		expect(isDateAfterNow(new Date(now + 100))).to.true;
 	});
 
-	it('om.date.after()', () => {
+	it('.date.after()', () => {
 		let isDate = om.date;
 
 		expect(isDate({})).to.false;
 		expect(isDate(new Date())).to.true;
 	});
 
-	it('om.regExp', () => {
+	it('.regExp', () => {
 		let isRegExp = om.regExp;
 
 		expect(isRegExp({})).to.false;
 		expect(isRegExp(/a/)).to.true;
 	});
 
-	it('om.promise', () => {
+	it('.promise', () => {
 		let isPromise = om.promise;
 
 		expect(isPromise({})).to.false;
 		expect(isPromise(Promise.resolve())).to.true;
 	});
 
-	it('om.error', () => {
+	it('.error', () => {
 		let isError = om.error;
 
 		expect(isError({})).to.false;
 		expect(isError(new Error())).to.true;
 		expect(isError(new TypeError())).to.true;
+	});
+
+	it('.allow()', () => {
+		let isNumberAndString1 = om.number.allow('1');
+
+		expect(isNumberAndString1(1)).to.true;
+		expect(isNumberAndString1('1')).to.true;
+		expect(isNumberAndString1('2')).to.false;
+	});
+
+	it('.not.[type]', () => {
+		let isNotNull = om.not.null;
+
+		expect(isNotNull(true)).to.true;
+		expect(isNotNull(false)).to.true;
+		expect(isNotNull(null)).to.false;
+		expect(isNotNull(undefined)).to.true;
 	});
 });

@@ -6,6 +6,7 @@ export type TValidator = (value: any) => boolean;
 
 export interface IState {
 	validators: Array<Array<TValidator>>;
+	notMode: boolean;
 	andMode: boolean;
 }
 
@@ -25,7 +26,12 @@ export const typeProto = {
 	get and(): ITypes {
 		let types: ITypes = {
 			__proto__: typesProto,
-			[KEY_STATE]: { validators: this[KEY_STATE].validators, andMode: true }
+
+			[KEY_STATE]: {
+				validators: this[KEY_STATE].validators,
+				notMode: false,
+				andMode: true
+			}
 		} as any;
 
 		return types;
@@ -41,6 +47,6 @@ export const typeProto = {
 	},
 
 	allow(value: any): IType {
-		return addTypeValidators(this, typeProto, false, [(val: any) => Object.is(val, value)]);
+		return addTypeValidators(this, typeProto, false, (val: any) => Object.is(val, value));
 	}
 };

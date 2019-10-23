@@ -7,7 +7,11 @@ export const typeProto = {
     get and() {
         let types = {
             __proto__: typesProto,
-            [KEY_STATE]: { validators: this[KEY_STATE].validators, andMode: true }
+            [KEY_STATE]: {
+                validators: this[KEY_STATE].validators,
+                notMode: false,
+                andMode: true
+            }
         };
         return types;
     },
@@ -19,6 +23,6 @@ export const typeProto = {
         return types;
     },
     allow(value) {
-        return addTypeValidators(this, typeProto, false, [(val) => Object.is(val, value)]);
+        return addTypeValidators(this, typeProto, false, (val) => Object.is(val, value));
     }
 };

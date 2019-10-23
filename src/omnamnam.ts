@@ -26,6 +26,7 @@ export const om: IOmNamNam = ((validator: TValidator, value: any): true => {
 (om as any).__proto__ = typesProto;
 om[KEY_STATE] = {
 	validators: [],
+	notMode: false,
 	andMode: false
 };
 

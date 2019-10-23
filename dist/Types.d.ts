@@ -9,6 +9,7 @@ import { IStringType } from './types/StringType';
 import { IState, IType } from './types/Type';
 export interface ITypes {
     [KEY_STATE]: IState;
+    not: ITypes;
     custom(validator: (value: any) => boolean): IType;
     null: IType;
     undefined: IType;

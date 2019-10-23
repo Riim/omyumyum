@@ -31,6 +31,7 @@ const isError = (value: any): boolean => value instanceof Error;
 
 export interface ITypes {
 	[KEY_STATE]: IState;
+	not: ITypes;
 	custom(validator: (value: any) => boolean): IType;
 	null: IType;
 	undefined: IType;
@@ -59,8 +60,17 @@ export interface ITypes {
 export const typesProto: Object = {
 	[KEY_STATE]: null,
 
+	get not(this: ITypes): ITypes {
+		let types: ITypes = {
+			__proto__: typesProto,
+			[KEY_STATE]: { ...this[KEY_STATE], notMode: true }
+		} as any;
+
+		return types;
+	},
+
 	custom(this: ITypes, validator: (value: any) => boolean, _typeProto = typeProto): IType {
-		return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, [validator]);
+		return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
 	},
 
 	get null(this: ITypes): IType {

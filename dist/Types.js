@@ -28,8 +28,15 @@ const isPromise = (value) => value instanceof Promise;
 const isError = (value) => value instanceof Error;
 export const typesProto = {
     [KEY_STATE]: null,
+    get not() {
+        let types = {
+            __proto__: typesProto,
+            [KEY_STATE]: Object.assign(Object.assign({}, this[KEY_STATE]), { notMode: true })
+        };
+        return types;
+    },
     custom(validator, _typeProto = typeProto) {
-        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, [validator]);
+        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
     },
     get null() {
         return this.custom(isNull);

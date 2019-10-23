@@ -67,8 +67,8 @@ export const objectTypeProto: Object = {
 	},
 
 	values(validator: TValidator): IObjectType {
-		return addTypeValidators(this, objectTypeProto, true, [
-			(obj: object) => Object.entries(obj).every(cb2, validator)
-		]);
+		return addTypeValidators(this, objectTypeProto, true, (obj: object) =>
+			Object.entries(obj).every(cb2, validator)
+		);
 	}
 };

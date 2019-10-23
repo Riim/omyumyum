@@ -62,12 +62,23 @@ const isEmailOrPhone = om.custom(require('is-email')).or.custom(require('is-phon
 isEmailOrPhone('test@test.test');
 // => true
 
+// Use `and` to specify and combine types:
 const isNonZeroString = om.string.and.custom(minLenght(1));
 
 isNonZeroString('');
 // => false
 isNonZeroString('1');
 // => true
+
+// Use `not` for type negation:
+const isNotVacuum = om.not.null.and.not.undefined; // == `om.not.vacuum`
+
+isNotVacuum(1);
+// => true
+isNotVacuum(null);
+// => false
+isNotVacuum(undefined);
+// => false
 ```
 
 ## API

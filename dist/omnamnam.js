@@ -14,6 +14,7 @@ export const om = ((validator, value) => {
 om.__proto__ = typesProto;
 om[KEY_STATE] = {
     validators: [],
+    notMode: false,
     andMode: false
 };
 export { om as default };

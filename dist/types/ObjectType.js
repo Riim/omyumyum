@@ -42,8 +42,6 @@ export const objectTypeProto = {
         return this.shape(shape, true);
     },
     values(validator) {
-        return addTypeValidators(this, objectTypeProto, true, [
-            (obj) => Object.entries(obj).every(cb2, validator)
-        ]);
+        return addTypeValidators(this, objectTypeProto, true, (obj) => Object.entries(obj).every(cb2, validator));
     }
 };

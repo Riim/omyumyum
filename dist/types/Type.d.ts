@@ -3,6 +3,7 @@ import { ITypes } from '../Types';
 export declare type TValidator = (value: any) => boolean;
 export interface IState {
     validators: Array<Array<TValidator>>;
+    notMode: boolean;
     andMode: boolean;
 }
 export interface IType {

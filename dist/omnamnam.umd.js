@@ -14,20 +14,33 @@
 	    return validator(this);
 	}
 
-	function addTypeValidators(type, newTypeProto, andMode, validators) {
+	function addTypeValidators(type, newTypeProto, andMode, validator) {
+	    if (type[KEY_STATE].notMode) {
+	        validator =
+	            typeof validator == 'function'
+	                ? (validator => (value) => !validator(value))(validator)
+	                : validator.map(validator => (value) => !validator(value));
+	    }
 	    let newType = ((value) => check(newType, value));
 	    newType.__proto__ = newTypeProto;
-	    let validators_ = type[KEY_STATE].validators.slice();
+	    let validators = type[KEY_STATE].validators.slice();
 	    if (andMode) {
-	        validators_[validators_.length - 1] = [
-	            ...validators_[validators_.length - 1],
-	            ...validators
-	        ];
+	        let validators_ = (validators[validators.length - 1] = validators[validators.length - 1].slice());
+	        if (typeof validator == 'function') {
+	            validators_.push(validator);
+	        }
+	        else {
+	            validators_.push(...validator);
+	        }
 	    }
 	    else {
-	        validators_.push(validators);
+	        validators.push(typeof validator == 'function' ? [validator] : validator);
 	    }
-	    newType[KEY_STATE] = { validators: validators_, andMode: false };
+	    newType[KEY_STATE] = {
+	        validators,
+	        notMode: false,
+	        andMode: false
+	    };
 	    return newType;
 	}
 
@@ -42,7 +55,11 @@
 	    get and() {
 	        let types = {
 	            __proto__: typesProto,
-	            [KEY_STATE]: { validators: this[KEY_STATE].validators, andMode: true }
+	            [KEY_STATE]: {
+	                validators: this[KEY_STATE].validators,
+	                notMode: false,
+	                andMode: true
+	            }
 	        };
 	        return types;
 	    },
@@ -54,7 +71,7 @@
 	        return types;
 	    },
 	    allow(value) {
-	        return addTypeValidators(this, typeProto, false, [(val) => Object.is(val, value)]);
+	        return addTypeValidators(this, typeProto, false, (val) => Object.is(val, value));
 	    }
 	};
 
@@ -71,105 +88,88 @@
 	const arrayTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, arrayTypeProto, true, [
-	            (arr) => arr.every(cb, validator)
-	        ]);
+	        return addTypeValidators(this, arrayTypeProto, true, (arr) => arr.every(cb, validator));
 	    }
 	};
 
 	const dateTypeProto = {
 	    __proto__: typeProto,
 	    before(beforeDate) {
-	        return addTypeValidators(this, dateTypeProto, true, [
-	            (date) => date < new Date(beforeDate)
-	        ]);
+	        return addTypeValidators(this, dateTypeProto, true, (date) => date < new Date(beforeDate));
 	    },
 	    after(afterDate) {
-	        return addTypeValidators(this, dateTypeProto, true, [
-	            (date) => date > new Date(afterDate)
-	        ]);
+	        return addTypeValidators(this, dateTypeProto, true, (date) => date > new Date(afterDate));
 	    }
 	};
 
 	const mapTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, [
-	            (map) => {
-	                for (let entry of map) {
-	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath =
-	                        validationState.currentKeypath + `[${entry[0]}]`;
-	                    if (!validator(entry)) {
-	                        if (!validationState.errorKeypatch) {
-	                            validationState.errorKeypatch = validationState.currentKeypath;
-	                        }
-	                        validationState.currentKeypath = prevKeypath;
-	                        return false;
+	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	            for (let entry of map) {
+	                let prevKeypath = validationState.currentKeypath;
+	                validationState.currentKeypath = validationState.currentKeypath + `[${entry[0]}]`;
+	                if (!validator(entry)) {
+	                    if (!validationState.errorKeypatch) {
+	                        validationState.errorKeypatch = validationState.currentKeypath;
 	                    }
 	                    validationState.currentKeypath = prevKeypath;
+	                    return false;
 	                }
-	                return true;
+	                validationState.currentKeypath = prevKeypath;
 	            }
-	        ]);
+	            return true;
+	        });
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, [
-	            (map) => {
-	                for (let [key, value] of map) {
-	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
-	                    if (!validator(value)) {
-	                        if (!validationState.errorKeypatch) {
-	                            validationState.errorKeypatch = validationState.currentKeypath;
-	                        }
-	                        validationState.currentKeypath = prevKeypath;
-	                        return false;
+	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	            for (let [key, value] of map) {
+	                let prevKeypath = validationState.currentKeypath;
+	                validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
+	                if (!validator(value)) {
+	                    if (!validationState.errorKeypatch) {
+	                        validationState.errorKeypatch = validationState.currentKeypath;
 	                    }
 	                    validationState.currentKeypath = prevKeypath;
+	                    return false;
 	                }
-	                return true;
+	                validationState.currentKeypath = prevKeypath;
 	            }
-	        ]);
+	            return true;
+	        });
 	    },
 	    keys(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, [
-	            (map) => {
-	                for (let [key] of map) {
-	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
-	                    if (!validator(key)) {
-	                        if (!validationState.errorKeypatch) {
-	                            validationState.errorKeypatch = validationState.currentKeypath;
-	                        }
-	                        validationState.currentKeypath = prevKeypath;
-	                        return false;
+	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	            for (let [key] of map) {
+	                let prevKeypath = validationState.currentKeypath;
+	                validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
+	                if (!validator(key)) {
+	                    if (!validationState.errorKeypatch) {
+	                        validationState.errorKeypatch = validationState.currentKeypath;
 	                    }
 	                    validationState.currentKeypath = prevKeypath;
+	                    return false;
 	                }
-	                return true;
+	                validationState.currentKeypath = prevKeypath;
 	            }
-	        ]);
+	            return true;
+	        });
 	    }
 	};
 
 	const numberTypeProto = {
 	    __proto__: typeProto,
 	    min(minValue) {
-	        return addTypeValidators(this, numberTypeProto, true, [(num) => num >= minValue]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => num >= minValue);
 	    },
 	    max(maxValue) {
-	        return addTypeValidators(this, numberTypeProto, true, [(num) => num <= maxValue]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => num <= maxValue);
 	    },
 	    less(lessThanValue) {
-	        return addTypeValidators(this, numberTypeProto, true, [
-	            (num) => num < lessThanValue
-	        ]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => num < lessThanValue);
 	    },
 	    greater(greaterThanValue) {
-	        return addTypeValidators(this, numberTypeProto, true, [
-	            (num) => num > greaterThanValue
-	        ]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => num > greaterThanValue);
 	    },
 	    between(minValue, maxValue) {
 	        return this.min(minValue).max(maxValue);
@@ -178,12 +178,10 @@
 	        return this.min(0);
 	    },
 	    get negative() {
-	        return addTypeValidators(this, numberTypeProto, true, [(num) => num < 0]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => num < 0);
 	    },
 	    get integer() {
-	        return addTypeValidators(this, numberTypeProto, true, [
-	            (num) => Number.isInteger(num)
-	        ]);
+	        return addTypeValidators(this, numberTypeProto, true, (num) => Number.isInteger(num));
 	    }
 	};
 
@@ -228,62 +226,51 @@
 	        return this.shape(shape, true);
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, objectTypeProto, true, [
-	            (obj) => Object.entries(obj).every(cb2$1, validator)
-	        ]);
+	        return addTypeValidators(this, objectTypeProto, true, (obj) => Object.entries(obj).every(cb2$1, validator));
 	    }
 	};
 
 	const setTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, setTypeProto, true, [
-	            (set) => {
-	                let index = 0;
-	                for (let item of set) {
-	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath =
-	                        validationState.currentKeypath + `[${index++}]`;
-	                    if (!validator(item)) {
-	                        if (!validationState.errorKeypatch) {
-	                            validationState.errorKeypatch = validationState.currentKeypath;
-	                        }
-	                        validationState.currentKeypath = prevKeypath;
-	                        return false;
+	        return addTypeValidators(this, setTypeProto, true, (set) => {
+	            let index = 0;
+	            for (let item of set) {
+	                let prevKeypath = validationState.currentKeypath;
+	                validationState.currentKeypath = validationState.currentKeypath + `[${index++}]`;
+	                if (!validator(item)) {
+	                    if (!validationState.errorKeypatch) {
+	                        validationState.errorKeypatch = validationState.currentKeypath;
 	                    }
 	                    validationState.currentKeypath = prevKeypath;
+	                    return false;
 	                }
-	                return true;
+	                validationState.currentKeypath = prevKeypath;
 	            }
-	        ]);
+	            return true;
+	        });
 	    }
 	};
 
 	const stringTypeProto = {
 	    __proto__: typeProto,
 	    get nonZero() {
-	        return addTypeValidators(this, stringTypeProto, true, [(str) => str.length > 0]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length > 0);
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, stringTypeProto, true, [(str) => /\S/.test(str)]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => /\S/.test(str));
 	    },
 	    len(length) {
-	        return addTypeValidators(this, stringTypeProto, true, [
-	            (str) => str.length == length
-	        ]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length == length);
 	    },
 	    min(minLength) {
-	        return addTypeValidators(this, stringTypeProto, true, [
-	            (str) => str.length >= minLength
-	        ]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length >= minLength);
 	    },
 	    max(maxVength) {
-	        return addTypeValidators(this, stringTypeProto, true, [
-	            (str) => str.length <= maxVength
-	        ]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length <= maxVength);
 	    },
 	    pattern(re) {
-	        return addTypeValidators(this, stringTypeProto, true, [(str) => re.test(str)]);
+	        return addTypeValidators(this, stringTypeProto, true, (str) => re.test(str));
 	    }
 	};
 
@@ -307,8 +294,15 @@
 	const isError = (value) => value instanceof Error;
 	const typesProto = {
 	    [KEY_STATE]: null,
+	    get not() {
+	        let types = {
+	            __proto__: typesProto,
+	            [KEY_STATE]: Object.assign(Object.assign({}, this[KEY_STATE]), { notMode: true })
+	        };
+	        return types;
+	    },
 	    custom(validator, _typeProto = typeProto) {
-	        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, [validator]);
+	        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
 	    },
 	    get null() {
 	        return this.custom(isNull);
@@ -391,6 +385,7 @@
 	om.__proto__ = typesProto;
 	om[KEY_STATE] = {
 	    validators: [],
+	    notMode: false,
 	    andMode: false
 	};
 
