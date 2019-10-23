@@ -14,6 +14,7 @@ export interface IType {
 	[KEY_STATE]: IState;
 	and: ITypes;
 	or: ITypes;
+	allow(value: any): IType;
 }
 
 export const typeProto = {
@@ -40,6 +41,6 @@ export const typeProto = {
 	},
 
 	allow(value: any): IType {
-		return addTypeValidators(this, typeProto, false, [(val: any) => val === value]);
+		return addTypeValidators(this, typeProto, false, [(val: any) => Object.is(val, value)]);
 	}
 };
