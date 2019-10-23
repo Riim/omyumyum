@@ -164,6 +164,16 @@ describe('om', () => {
 		expect(isNumberMax3(4)).to.false;
 	});
 
+	it('om.number.between()', () => {
+		let isNumberBetween3to5 = om.number.between(3, 5);
+
+		expect(isNumberBetween3to5(2)).to.false;
+		expect(isNumberBetween3to5(3)).to.true;
+		expect(isNumberBetween3to5(4)).to.true;
+		expect(isNumberBetween3to5(5)).to.true;
+		expect(isNumberBetween3to5(6)).to.false;
+	});
+
 	it('om.number.positive', () => {
 		let isPositiveNumber = om.number.positive;
 

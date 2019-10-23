@@ -113,6 +113,7 @@ interface IType {
 	```
 	- ###### om.min(minValue: number): INumberType;
 	- ###### om.max(maxValue: number): INumberType;
+	- ###### om.between(minValue: number, maxValue: number): INumberType;
 - ##### om.string: IStringType;
 	```js
 	interface IStringType extends IType {
