@@ -211,9 +211,9 @@
 	}
 	const objectTypeProto = {
 	    __proto__: typeProto,
-	    shape(shape, partial) {
+	    shape(shape, exact) {
 	        let validators = [];
-	        if (!partial) {
+	        if (exact) {
 	            let shapeKeys = Object.keys(shape);
 	            let hasKey = (key) => shapeKeys.includes(key);
 	            validators.push((obj) => Object.keys(obj).every(hasKey));
@@ -222,7 +222,7 @@
 	        validators.push((obj) => shapeEntries.every(cb1$1, obj));
 	        return addTypeValidators(this, objectTypeProto, true, validators);
 	    },
-	    partialShape(shape) {
+	    exactShape(shape) {
 	        return this.shape(shape, true);
 	    },
 	    values(validator) {
