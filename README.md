@@ -109,11 +109,18 @@ interface IType {
 	interface INumberType extends IType {
 		min(minValue: number): INumberType;
 		max(maxValue: number): INumberType;
+		between(minValue: number, maxValue: number): INumberType;
+		positive: INumberType;
+		negative: INumberType;
+		integer: INumberType;
 	}
 	```
 	- ###### om.min(minValue: number): INumberType;
 	- ###### om.max(maxValue: number): INumberType;
 	- ###### om.between(minValue: number, maxValue: number): INumberType;
+	- ###### positive: INumberType;
+	- ###### negative: INumberType;
+	- ###### integer: INumberType;
 - ##### om.string: IStringType;
 	```js
 	interface IStringType extends IType {
