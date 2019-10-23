@@ -6,7 +6,7 @@ export interface IStringType extends IType {
 	nonEmpty: IStringType;
 	min(minLength: number): IStringType;
 	max(maxVength: number): IStringType;
-	match(re: RegExp): IStringType;
+	pattern(re: RegExp): IStringType;
 }
 
 export const stringTypeProto: Object = {
@@ -32,7 +32,7 @@ export const stringTypeProto: Object = {
 		]);
 	},
 
-	match(re: RegExp): IStringType {
+	pattern(re: RegExp): IStringType {
 		return addTypeValidators(this, stringTypeProto, true, [(str: string) => re.test(str)]);
 	}
 };

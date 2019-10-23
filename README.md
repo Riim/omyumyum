@@ -128,14 +128,14 @@ interface IType {
 		nonEmpty: IStringType;
 		min(minLength: number): IStringType;
 		max(maxVength: number): IStringType;
-		match(re: RegExp): IStringType;
+		pattern(re: RegExp): IStringType;
 	}
 	```
 	- ###### om.nonZero: IStringType;
 	- ###### om.nonEmpty: IStringType;
 	- ###### om.min(minLength: number): IStringType;
 	- ###### om.max(maxLength: number): IStringType;
-	- ###### om.match(re: RegExp): IStringType;
+	- ###### om.pattern(re: RegExp): IStringType;
 - ##### om.symbol: IType;
 - ##### om.object: IObjectType;
 	```js
