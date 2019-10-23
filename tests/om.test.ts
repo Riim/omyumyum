@@ -368,6 +368,38 @@ describe('om', () => {
 		expect(isError(new TypeError())).to.true;
 	});
 
+	it('.[type].and (3)', () => {
+		let isUserData = om.object.partialShape({
+			name: om.string,
+			age: om.number.or.vacuum
+		});
+		const isImprovedUserData = isUserData.and.object.partialShape({
+			friends: om.array.of(isUserData).or.undefined
+		});
+
+		expect(
+			isImprovedUserData({
+				name: 'Иванушка',
+				age: 20,
+				friends: [{ name: 'Алёнушка', age: 18 }]
+			})
+		).to.true;
+		expect(
+			isImprovedUserData({
+				name: 'Иванушка',
+				age: 20,
+				friends: [{ name: 'Марфа' }]
+			})
+		).to.true;
+		expect(
+			isImprovedUserData({
+				name: 'Иванушка',
+				age: 20,
+				friends: [{ age: 18 }]
+			})
+		).to.false;
+	});
+
 	it('.allow()', () => {
 		let isNumberAndString1 = om.number.allow('1');
 

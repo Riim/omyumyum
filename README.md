@@ -38,20 +38,20 @@ om(isNumericArray, [1, 2, '3']);
 // Throws TypeError('Type mismatch at "[2]"')
 // Keypath to incorrect data in error message
 
-const isUserData = om.object.shape({
+const isUserData = om.object.partialShape({
 	name: om.string,
 	age: om.number.or.vacuum // `.or.vacuum` == `.or.null.or.undefined`
 });
 
 isUserData({});
 // => false
-isUserData({ age: 1 })
+isUserData({ age: 20 })
 // => false
 isUserData({ name: 'Иванушка' });
 // => true
 isUserData({ name: 'Иванушка', age: null });
 // => true
-isUserData({ name: 'Иванушка', age: 1 });
+isUserData({ name: 'Иванушка', age: 20 });
 // => true
 
 om(isUserData, { name: 'Иванушка', age: '1' });
@@ -62,12 +62,24 @@ const isEmailOrPhone = om.custom(require('is-email')).or.custom(require('is-phon
 isEmailOrPhone('test@test.test');
 // => true
 
-// Use `and` to specify and combine types:
+// Use `and` to combine and improvement types:
 const isNonZeroString = om.string.and.custom(minLenght(1));
 
 isNonZeroString('');
 // => false
 isNonZeroString('1');
+// => true
+
+// Use previously created validators:
+const isImprovedUserData = isUserData.and.object.partialShape({
+	friends: om.array.of(isUserData).or.undefined
+});
+
+isImprovedUserData({
+	name: 'Иванушка',
+	age: 20,
+	friends: [{ name: 'Алёнушка', age: 18 }]
+});
 // => true
 
 // Use `not` for type negation:
