@@ -3,8 +3,8 @@ import { addTypeValidators } from './addTypeValidators';
 import { IType, TValidator, typeProto } from './Type';
 
 export interface IObjectType extends IType {
-	shape(shape: Record<string, TValidator>, partial?: boolean): IType;
-	partialShape(shape: Record<string, TValidator>): IType;
+	shape(shape: Record<string, TValidator>, exact?: boolean): IType;
+	exactShape(shape: Record<string, TValidator>): IType;
 	values(validator: TValidator): IType;
 }
 
@@ -47,10 +47,10 @@ function cb2(this: TValidator, entry: any): boolean {
 export const objectTypeProto: Object = {
 	__proto__: typeProto,
 
-	shape(shape: Record<string, TValidator>, partial?: boolean): IObjectType {
+	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType {
 		let validators: Array<TValidator> = [];
 
-		if (!partial) {
+		if (exact) {
 			let shapeKeys = Object.keys(shape);
 			let hasKey = (key: string) => shapeKeys.includes(key);
 			validators.push((obj: object) => Object.keys(obj).every(hasKey));
@@ -62,7 +62,7 @@ export const objectTypeProto: Object = {
 		return addTypeValidators(this, objectTypeProto, true, validators);
 	},
 
-	partialShape(shape: Record<string, TValidator>): IObjectType {
+	exactShape(shape: Record<string, TValidator>): IObjectType {
 		return this.shape(shape, true) as IObjectType;
 	},
 

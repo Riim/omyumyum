@@ -272,16 +272,16 @@ describe('om', () => {
 		expect(isUserData({ name: 'Иванушка', age: 1 })).to.true;
 		expect(isUserData({ name: 'Иванушка', age: null })).to.true;
 		expect(isUserData({ name: 'Иванушка', age: '1' })).to.false;
-		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.false;
+		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.true;
 	});
 
-	it('.object.partialShape()', () => {
-		let isUserData = om.object.partialShape({
+	it('.object.exactShape()', () => {
+		let isUserData = om.object.exactShape({
 			name: om.string,
 			age: om.number.or.vacuum
 		});
 
-		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.true;
+		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.false;
 	});
 
 	it('.object.values()', () => {
@@ -369,11 +369,11 @@ describe('om', () => {
 	});
 
 	it('.[type].and (3)', () => {
-		let isUserData = om.object.partialShape({
+		let isUserData = om.object.shape({
 			name: om.string,
 			age: om.number.or.vacuum
 		});
-		const isImprovedUserData = isUserData.and.object.partialShape({
+		const isImprovedUserData = isUserData.and.object.shape({
 			friends: om.array.of(isUserData).or.undefined
 		});
 

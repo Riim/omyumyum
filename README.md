@@ -38,7 +38,7 @@ om(isNumericArray, [1, 2, '3']);
 // Throws TypeError('Type mismatch at "[2]"')
 // Keypath to incorrect data in error message
 
-const isUserData = om.object.partialShape({
+const isUserData = om.object.shape({
 	name: om.string,
 	age: om.number.or.vacuum // `.or.vacuum` == `.or.null.or.undefined`
 });
@@ -71,7 +71,7 @@ isNonZeroString('1');
 // => true
 
 // Use previously created validators:
-const isImprovedUserData = isUserData.and.object.partialShape({
+const isImprovedUserData = isUserData.and.object.shape({
 	friends: om.array.of(isUserData).or.undefined
 });
 
@@ -171,13 +171,13 @@ interface IType {
 	Matches an object data type.
 	```js
 	interface IObjectType extends IType {
-		shape(shape: Record<string, TValidator>, partial: boolean = false): IType;
-		partialShape(shape: Record<string, TValidator>): IType;
+		shape(shape: Record<string, TValidator>, exact = false): IType;
+		exactShape(shape: Record<string, TValidator>): IType;
 		values(validator: TValidator): IType;
 	}
 	```
-	- ###### om.object.shape(shape: Record<string, TValidator>, partial: boolean = false): IType;
-    - ###### om.object.partialShape(shape: Record<string, TValidator>): IType;
+	- ###### om.object.shape(shape: Record<string, TValidator>, exact = false): IType;
+    - ###### om.object.exactShape(shape: Record<string, TValidator>): IType;
     - ###### om.object.values(validator: TValidator): IType;
 - ##### om.array: IArrayType;
 	Matches an array data type.
