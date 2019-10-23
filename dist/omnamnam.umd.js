@@ -54,7 +54,7 @@
 	        return types;
 	    },
 	    allow(value) {
-	        return addTypeValidators(this, typeProto, false, [(val) => val === value]);
+	        return addTypeValidators(this, typeProto, false, [(val) => Object.is(val, value)]);
 	    }
 	};
 
@@ -166,6 +166,11 @@
 	    },
 	    get negative() {
 	        return addTypeValidators(this, numberTypeProto, true, [(num) => num < 0]);
+	    },
+	    get integer() {
+	        return addTypeValidators(this, numberTypeProto, true, [
+	            (num) => Number.isInteger(num)
+	        ]);
 	    }
 	};
 

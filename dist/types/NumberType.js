@@ -13,5 +13,10 @@ export const numberTypeProto = {
     },
     get negative() {
         return addTypeValidators(this, numberTypeProto, true, [(num) => num < 0]);
+    },
+    get integer() {
+        return addTypeValidators(this, numberTypeProto, true, [
+            (num) => Number.isInteger(num)
+        ]);
     }
 };

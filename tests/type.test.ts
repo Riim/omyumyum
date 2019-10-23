@@ -180,6 +180,14 @@ describe('om', () => {
 		expect(isPositiveNumber(1)).to.false;
 	});
 
+	it('om.number.integer', () => {
+		let isIntegerNumber = om.number.integer;
+
+		expect(isIntegerNumber(0)).to.true;
+		expect(isIntegerNumber(0.1)).to.false;
+		expect(isIntegerNumber(1)).to.true;
+	});
+
 	it('om.string', () => {
 		let isString = om.string;
 

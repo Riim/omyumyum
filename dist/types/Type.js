@@ -19,6 +19,6 @@ export const typeProto = {
         return types;
     },
     allow(value) {
-        return addTypeValidators(this, typeProto, false, [(val) => val === value]);
+        return addTypeValidators(this, typeProto, false, [(val) => Object.is(val, value)]);
     }
 };

@@ -4,5 +4,6 @@ export interface INumberType extends IType {
     max(maxValue: number): INumberType;
     positive: INumberType;
     negative: INumberType;
+    integer: INumberType;
 }
 export declare const numberTypeProto: Object;

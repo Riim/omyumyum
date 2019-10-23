@@ -10,6 +10,7 @@ export interface IType {
     [KEY_STATE]: IState;
     and: ITypes;
     or: ITypes;
+    allow(value: any): IType;
 }
 export declare const typeProto: {
     __proto__: Function;

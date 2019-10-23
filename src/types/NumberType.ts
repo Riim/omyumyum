@@ -6,6 +6,7 @@ export interface INumberType extends IType {
 	max(maxValue: number): INumberType;
 	positive: INumberType;
 	negative: INumberType;
+	integer: INumberType;
 }
 
 export const numberTypeProto: Object = {
@@ -25,5 +26,11 @@ export const numberTypeProto: Object = {
 
 	get negative(): INumberType {
 		return addTypeValidators(this, numberTypeProto, true, [(num: number) => num < 0]);
+	},
+
+	get integer(): INumberType {
+		return addTypeValidators(this, numberTypeProto, true, [
+			(num: number) => Number.isInteger(num)
+		]);
 	}
 };
