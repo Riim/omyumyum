@@ -171,9 +171,9 @@ interface IType {
 	Matches an object data type.
 	```js
 	interface IObjectType extends IType {
-		shape(shape: Record<string, TValidator>, exact = false): IType;
-		exactShape(shape: Record<string, TValidator>): IType;
-		values(validator: TValidator): IType;
+		shape(shape: Record<string, TValidator>, exact = false): IObjectType;
+		exactShape(shape: Record<string, TValidator>): IObjectType;
+		values(validator: TValidator): IObjectType;
 	}
 	```
 	- ###### om.object.shape(shape: Record<string, TValidator>, exact = false): IType;
