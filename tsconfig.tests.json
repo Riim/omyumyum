@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"declaration": false,
+		"experimentalDecorators": true,
+		"lib": ["es2017", "dom"],
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"newLine": "lf",
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"preserveConstEnums": true,
+		"strictNullChecks": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"target": "es2017"
+	}
+}

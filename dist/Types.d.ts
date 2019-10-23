@@ -1,0 +1,36 @@
+import { KEY_STATE } from './constants';
+import { IArrayType } from './types/ArrayType';
+import { IDateType } from './types/DateType';
+import { IMapType } from './types/MapType';
+import { INumberType } from './types/NumberType';
+import { IObjectType } from './types/ObjectType';
+import { ISetType } from './types/SetType';
+import { IStringType } from './types/StringType';
+import { IState, IType } from './types/Type';
+export interface ITypes {
+    [KEY_STATE]: IState;
+    custom(validator: (value: any) => boolean): IType;
+    null: IType;
+    undefined: IType;
+    vacuum: IType;
+    boolean: IType;
+    number: INumberType;
+    string: IStringType;
+    symbol: IType;
+    object: IObjectType;
+    array: IArrayType;
+    function: IType;
+    func: IType;
+    map: IMapType;
+    set: ISetType;
+    weakMap: IMapType;
+    wmap: IMapType;
+    weakSet: ISetType;
+    wset: ISetType;
+    date: IDateType;
+    regExp: IType;
+    regex: IType;
+    promise: IType;
+    error: IType;
+}
+export declare const typesProto: Object;
