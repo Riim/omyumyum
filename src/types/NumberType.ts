@@ -4,6 +4,8 @@ import { IType, typeProto } from './Type';
 export interface INumberType extends IType {
 	min(minValue: number): INumberType;
 	max(maxValue: number): INumberType;
+	less(lessThanValue: number): INumberType;
+	greater(greaterThanValue: number): INumberType;
 	between(minValue: number, maxValue: number): INumberType;
 	positive: INumberType;
 	negative: INumberType;
@@ -19,6 +21,18 @@ export const numberTypeProto: Object = {
 
 	max(maxValue: number): INumberType {
 		return addTypeValidators(this, numberTypeProto, true, [(num: number) => num <= maxValue]);
+	},
+
+	less(lessThanValue: number): INumberType {
+		return addTypeValidators(this, numberTypeProto, true, [
+			(num: number) => num < lessThanValue
+		]);
+	},
+
+	greater(greaterThanValue: number): INumberType {
+		return addTypeValidators(this, numberTypeProto, true, [
+			(num: number) => num > greaterThanValue
+		]);
 	},
 
 	between(minValue: number, maxValue: number): INumberType {
