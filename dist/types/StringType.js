@@ -8,6 +8,11 @@ export const stringTypeProto = {
     get nonEmpty() {
         return addTypeValidators(this, stringTypeProto, true, [(str) => /\S/.test(str)]);
     },
+    len(length) {
+        return addTypeValidators(this, stringTypeProto, true, [
+            (str) => str.length == length
+        ]);
+    },
     min(minLength) {
         return addTypeValidators(this, stringTypeProto, true, [
             (str) => str.length >= minLength
@@ -18,7 +23,7 @@ export const stringTypeProto = {
             (str) => str.length <= maxVength
         ]);
     },
-    match(re) {
+    pattern(re) {
         return addTypeValidators(this, stringTypeProto, true, [(str) => re.test(str)]);
     }
 };

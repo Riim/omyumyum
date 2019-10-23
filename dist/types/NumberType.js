@@ -8,6 +8,19 @@ export const numberTypeProto = {
     max(maxValue) {
         return addTypeValidators(this, numberTypeProto, true, [(num) => num <= maxValue]);
     },
+    less(lessThanValue) {
+        return addTypeValidators(this, numberTypeProto, true, [
+            (num) => num < lessThanValue
+        ]);
+    },
+    greater(greaterThanValue) {
+        return addTypeValidators(this, numberTypeProto, true, [
+            (num) => num > greaterThanValue
+        ]);
+    },
+    between(minValue, maxValue) {
+        return this.min(minValue).max(maxValue);
+    },
     get positive() {
         return this.min(0);
     },

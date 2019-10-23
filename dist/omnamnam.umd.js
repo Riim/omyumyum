@@ -161,6 +161,19 @@
 	    max(maxValue) {
 	        return addTypeValidators(this, numberTypeProto, true, [(num) => num <= maxValue]);
 	    },
+	    less(lessThanValue) {
+	        return addTypeValidators(this, numberTypeProto, true, [
+	            (num) => num < lessThanValue
+	        ]);
+	    },
+	    greater(greaterThanValue) {
+	        return addTypeValidators(this, numberTypeProto, true, [
+	            (num) => num > greaterThanValue
+	        ]);
+	    },
+	    between(minValue, maxValue) {
+	        return this.min(minValue).max(maxValue);
+	    },
 	    get positive() {
 	        return this.min(0);
 	    },
@@ -254,6 +267,11 @@
 	    get nonEmpty() {
 	        return addTypeValidators(this, stringTypeProto, true, [(str) => /\S/.test(str)]);
 	    },
+	    len(length) {
+	        return addTypeValidators(this, stringTypeProto, true, [
+	            (str) => str.length == length
+	        ]);
+	    },
 	    min(minLength) {
 	        return addTypeValidators(this, stringTypeProto, true, [
 	            (str) => str.length >= minLength
@@ -264,7 +282,7 @@
 	            (str) => str.length <= maxVength
 	        ]);
 	    },
-	    match(re) {
+	    pattern(re) {
 	        return addTypeValidators(this, stringTypeProto, true, [(str) => re.test(str)]);
 	    }
 	};
