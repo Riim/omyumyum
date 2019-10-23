@@ -126,6 +126,7 @@ interface IType {
 	interface IStringType extends IType {
 		nonZero: IStringType;
 		nonEmpty: IStringType;
+		len(length: number): IStringType;
 		min(minLength: number): IStringType;
 		max(maxVength: number): IStringType;
 		pattern(re: RegExp): IStringType;
@@ -133,6 +134,7 @@ interface IType {
 	```
 	- ###### om.nonZero: IStringType;
 	- ###### om.nonEmpty: IStringType;
+	- ###### om.len(length: number): IStringType;
 	- ###### om.min(minLength: number): IStringType;
 	- ###### om.max(maxLength: number): IStringType;
 	- ###### om.pattern(re: RegExp): IStringType;

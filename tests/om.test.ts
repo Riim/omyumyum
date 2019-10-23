@@ -182,6 +182,14 @@ describe('om', () => {
 		expect(isNonEmptyString(' 1 ')).to.true;
 	});
 
+	it('om.string.len()', () => {
+		let isStringLen3 = om.string.len(3);
+
+		expect(isStringLen3('12')).to.false;
+		expect(isStringLen3('123')).to.true;
+		expect(isStringLen3('1234')).to.false;
+	});
+
 	it('om.string.min()', () => {
 		let isStringMin3 = om.string.min(3);
 
