@@ -6,11 +6,11 @@ import { validationState } from './validationState';
 export { ITypes } from './Types';
 export { IType, TValidator } from './types/Type';
 
-export interface IOmNamNam extends ITypes {
+export interface IOmYumYum extends ITypes {
 	(validator: TValidator, value: any): true;
 }
 
-export const om: IOmNamNam = ((validator: TValidator, value: any): true => {
+export const om: IOmYumYum = ((validator: TValidator, value: any): true => {
 	validationState.errorKeypatch = null;
 
 	if (!validator(value)) {

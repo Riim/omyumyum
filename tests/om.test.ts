@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import om from '../src/omnamnam';
+import om from '../src/omyumyum';
 
 describe('om', () => {
 	it('простая проверка', () => {

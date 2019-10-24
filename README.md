@@ -1,20 +1,20 @@
 # Very small schema validation
 
-[![Build status](https://travis-ci.org/Riim/omnamnam.svg?branch=master)](https://travis-ci.org/Riim/omnamnam)
-[![Coverage status](https://coveralls.io/repos/github/Riim/omnamnam/badge.svg?branch=master)](https://coveralls.io/github/Riim/omnamnam?branch=master)
-[![GZip size](https://badgen.net/bundlephobia/minzip/omnamnam)](https://bundlephobia.com/result?p=omnamnam)
-[![Install size](https://packagephobia.now.sh/badge?p=omnamnam)](https://packagephobia.now.sh/result?p=omnamnam)
+[![Build status](https://travis-ci.org/Riim/omyumyum.svg?branch=master)](https://travis-ci.org/Riim/omyumyum)
+[![Coverage status](https://coveralls.io/repos/github/Riim/omyumyum/badge.svg?branch=master)](https://coveralls.io/github/Riim/omyumyum?branch=master)
+[![GZip size](https://badgen.net/bundlephobia/minzip/omyumyum)](https://bundlephobia.com/result?p=omyumyum)
+[![Install size](https://packagephobia.now.sh/badge?p=omyumyum)](https://packagephobia.now.sh/result?p=omyumyum)
 
 ## Install
 
 ```
-npm i omnamnam
+npm i omyumyum
 ```
 
 ## Examples
 
 ```js
-import om from 'omnamnam';
+import om from 'omyumyum';
 
 const isOptionalNumber = om.number.or.undefined;
 
