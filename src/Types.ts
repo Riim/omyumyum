@@ -70,7 +70,7 @@ export const typesProto: Object = {
 	},
 
 	custom(this: ITypes, validator: (value: any) => boolean, _typeProto = typeProto): IType {
-		return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
+		return addTypeValidators(this, this[KEY_STATE].andMode, validator, _typeProto);
 	},
 
 	get null(this: ITypes): IType {

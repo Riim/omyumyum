@@ -25,8 +25,6 @@ export const arrayTypeProto: Object = {
 	__proto__: typeProto,
 
 	of(validator: TValidator): IArrayType {
-		return addTypeValidators(this, arrayTypeProto, true, (arr: Array<any>) =>
-			arr.every(cb, validator)
-		);
+		return addTypeValidators(this, true, (arr: Array<any>) => arr.every(cb, validator));
 	}
 };

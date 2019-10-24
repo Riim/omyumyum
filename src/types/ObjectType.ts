@@ -62,7 +62,7 @@ export const objectTypeProto: Object = {
 		let shapeEntries = Object.entries(shape);
 		validators.push((obj: object) => shapeEntries.every(cb1, obj));
 
-		return addTypeValidators(this, objectTypeProto, true, validators);
+		return addTypeValidators(this, true, validators);
 	},
 
 	exactShape(shape: Record<string, TValidator>): IObjectType {
@@ -70,13 +70,13 @@ export const objectTypeProto: Object = {
 	},
 
 	values(validator: TValidator): IObjectType {
-		return addTypeValidators(this, objectTypeProto, true, (obj: object) =>
+		return addTypeValidators(this, true, (obj: object) =>
 			Object.entries(obj).every(cb2, validator)
 		);
 	},
 
 	get nonEmpty(): IObjectType {
-		return addTypeValidators(this, objectTypeProto, true, (obj: object) => {
+		return addTypeValidators(this, true, (obj: object) => {
 			for (let key in obj) {
 				if (hasOwn.call(obj, key)) {
 					return true;

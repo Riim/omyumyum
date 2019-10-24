@@ -43,6 +43,6 @@ export const typeProto = {
 	},
 
 	allow(value: any): IType {
-		return addTypeValidators(this, typeProto, false, (val: any) => Object.is(val, value));
+		return addTypeValidators(this, false, (val: any) => Object.is(val, value), typeProto);
 	}
 };

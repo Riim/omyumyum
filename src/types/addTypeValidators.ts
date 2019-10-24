@@ -5,9 +5,9 @@ import { IType, TValidator } from './Type';
 
 export function addTypeValidators<T extends IType>(
 	type: IType | ITypes,
-	typeProto: object,
 	andMode: boolean,
-	validator: TValidator | Array<TValidator>
+	validator: TValidator | Array<TValidator>,
+	typeProto?: object
 ): T {
 	if (type[KEY_STATE].notMode) {
 		validator =
@@ -17,7 +17,7 @@ export function addTypeValidators<T extends IType>(
 	}
 
 	let newType: T = ((value: any): boolean => check(newType, value)) as any;
-	(newType as any).__proto__ = typeProto;
+	(newType as any).__proto__ = typeProto || (type as any).__proto__;
 
 	let validators = type[KEY_STATE].validators.slice();
 

@@ -10,7 +10,7 @@ export const setTypeProto: Object = {
 	__proto__: typeProto,
 
 	of(validator: TValidator): ISetType {
-		return addTypeValidators(this, setTypeProto, true, (set: Set<any>) => {
+		return addTypeValidators(this, true, (set: Set<any>) => {
 			let index = 0;
 
 			for (let item of set) {

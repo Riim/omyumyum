@@ -12,7 +12,7 @@ export const mapTypeProto: Object = {
 	__proto__: typeProto,
 
 	of(validator: TValidator): IMapType {
-		return addTypeValidators(this, mapTypeProto, true, (map: Map<any, any>) => {
+		return addTypeValidators(this, true, (map: Map<any, any>) => {
 			for (let entry of map) {
 				let prevKeypath = validationState.currentKeypath;
 				validationState.currentKeypath = validationState.currentKeypath + `[${entry[0]}]`;
@@ -35,7 +35,7 @@ export const mapTypeProto: Object = {
 	},
 
 	values(validator: TValidator): IMapType {
-		return addTypeValidators(this, mapTypeProto, true, (map: Map<any, any>) => {
+		return addTypeValidators(this, true, (map: Map<any, any>) => {
 			for (let [key, value] of map) {
 				let prevKeypath = validationState.currentKeypath;
 				validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
@@ -58,7 +58,7 @@ export const mapTypeProto: Object = {
 	},
 
 	keys(validator: TValidator): IMapType {
-		return addTypeValidators(this, mapTypeProto, true, (map: Map<any, any>) => {
+		return addTypeValidators(this, true, (map: Map<any, any>) => {
 			for (let [key] of map) {
 				let prevKeypath = validationState.currentKeypath;
 				validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
