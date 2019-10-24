@@ -1,5 +1,10 @@
 # Very small schema validation
 
+[![Build status](https://travis-ci.org/Riim/omnamnam.svg?branch=master)](https://travis-ci.org/Riim/omnamnam)
+[![Coverage status](https://coveralls.io/repos/github/Riim/omnamnam/badge.svg?branch=master)](https://coveralls.io/github/Riim/omnamnam?branch=master)
+[![GZip size](https://badgen.net/bundlephobia/minzip/omnamnam)](https://bundlephobia.com/result?p=omnamnam)
+[![Install size](https://packagephobia.now.sh/badge?p=omnamnam)](https://packagephobia.now.sh/result?p=omnamnam)
+
 ## Install
 
 ```
