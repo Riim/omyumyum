@@ -9,6 +9,8 @@ export interface IStringType extends IType {
 	max(maxVength: number): IStringType;
 	pattern(re: RegExp): IStringType;
 	matches(re: RegExp): IStringType;
+	startsWith(searchString: string, position?: number): IStringType;
+	endsWith(searchString: string, position?: number): IStringType;
 }
 
 export const stringTypeProto: Object = {
@@ -40,5 +42,15 @@ export const stringTypeProto: Object = {
 
 	matches(re: RegExp): IStringType {
 		return this.pattern(re);
+	},
+
+	startsWith(searchString: string, position?: number): IStringType {
+		return addTypeValidators(this, true, (str: string) =>
+			str.startsWith(searchString, position)
+		);
+	},
+
+	endsWith(searchString: string, position?: number): IStringType {
+		return addTypeValidators(this, true, (str: string) => str.endsWith(searchString, position));
 	}
 };

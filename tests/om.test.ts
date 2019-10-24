@@ -225,6 +225,20 @@ describe('om', () => {
 		expect(isStringMax3('1234')).to.false;
 	});
 
+	it('.string.startsWith()', () => {
+		let isStringStartsWithAbc = om.string.startsWith('abc');
+
+		expect(isStringStartsWithAbc('abczz')).to.true;
+		expect(isStringStartsWithAbc('zabcz')).to.false;
+	});
+
+	it('.string.endsWith()', () => {
+		let isStringEndsWithAbc = om.string.endsWith('abc');
+
+		expect(isStringEndsWithAbc('zzabc')).to.true;
+		expect(isStringEndsWithAbc('zabcz')).to.false;
+	});
+
 	it('.array', () => {
 		let isArray = om.array;
 		expect(isArray([])).to.true;

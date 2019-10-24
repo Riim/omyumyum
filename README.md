@@ -162,6 +162,8 @@ interface IType {
 		max(maxVength: number): IStringType;
 		pattern(re: RegExp): IStringType;
 		matches(re: RegExp): IStringType;
+		startsWith(searchString: string, position?: number): IStringType;
+		endsWith(searchString: string, position?: number): IStringType;
 	}
 	```
 	- ###### om.string.nonZero: IStringType;
@@ -174,6 +176,8 @@ interface IType {
 	- ###### om.string.pattern(re: RegExp): IStringType;
 	- ###### om.string.matches(re: RegExp): IStringType;
 		Alias for `om.string.pattern()`.
+	- ###### om.string.startsWith(searchString: string, position?: number): IStringType;
+	- ###### om.string.endsWith(searchString: string, position?: number): IStringType;
 - ##### om.symbol: IType;
 	Matches a symbol data type.
 - ##### om.object: IObjectType;
