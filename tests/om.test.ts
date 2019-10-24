@@ -28,6 +28,23 @@ describe('om', () => {
 		}).to.throws(TypeError, 'Type mismatch at "prop1[1].prop2"');
 	});
 
+	it('бросает ошибку (2)', () => {
+		let isNumber = om.number;
+		let isSomeData = om.object.shape({
+			prop1: om.array.of(om.object.shape({ prop2: om.number }))
+		});
+
+		expect(() => {
+			om(isNumber)(1);
+		}).to.not.throws();
+		expect(() => {
+			om(isNumber)('1');
+		}).to.throws(TypeError);
+		expect(() => {
+			om(isSomeData)({ prop1: [{ prop2: 1 }, { prop2: '2' }] });
+		}).to.throws(TypeError, 'Type mismatch at "prop1[1].prop2"');
+	});
+
 	it('.custom()', () => {
 		let isOne = om.custom(value => value === 1);
 

@@ -117,6 +117,7 @@ interface IType {
 ```
 
 - ##### om(validator: TValidator, value: any): true;
+		om(validator: TValidator): (value: any) => true;
 	Returns true if the value is valid, and throws a TypeError otherwise.
 - ##### om.custom(validator: TValidator): IType;
 	Uses a custom validator. Example:
