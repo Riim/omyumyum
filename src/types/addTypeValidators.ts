@@ -10,10 +10,7 @@ export function addTypeValidators<T extends IType>(
 	typeProto?: object
 ): T {
 	if (type[KEY_STATE].notMode) {
-		validator =
-			typeof validator == 'function'
-				? (validator => (value: any) => !validator(value))(validator)
-				: validator.map(validator => (value: any) => !validator(value));
+		validator = (validator => (value: any) => !validator(value))(validator as TValidator);
 	}
 
 	let newType: T = ((value: any): boolean => check(newType, value)) as any;
