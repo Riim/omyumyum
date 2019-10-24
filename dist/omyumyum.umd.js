@@ -395,7 +395,12 @@
 	    }
 	};
 
-	const om = ((validator, value) => {
+	function OmYumYum(validator, value) {
+	    if (arguments.length == 1) {
+	        return (value) => {
+	            return om(validator, value);
+	        };
+	    }
 	    validationState.errorKeypatch = null;
 	    if (!validator(value)) {
 	        if (validationState.errorKeypatch) {
@@ -404,14 +409,16 @@
 	        throw TypeError('Type mismatch');
 	    }
 	    return true;
-	});
-	om.__proto__ = typesProto;
-	om[KEY_STATE] = {
+	}
+	OmYumYum.__proto__ = typesProto;
+	OmYumYum[KEY_STATE] = {
 	    validators: [],
 	    notMode: false,
 	    andMode: false
 	};
+	const om = OmYumYum;
 
+	exports.OmYumYum = OmYumYum;
 	exports.default = om;
 	exports.om = om;
 

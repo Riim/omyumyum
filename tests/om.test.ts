@@ -67,6 +67,14 @@ describe('om', () => {
 		expect(isNonZeroString('1')).to.true;
 	});
 
+	it('.[type].and (3)', () => {
+		let isUserData = om.object.shape({ name: om.string }).and.object.shape({ age: om.number });
+
+		expect(isUserData({ name: 'Иванушка' })).to.false;
+		expect(isUserData({ age: 20 })).to.false;
+		expect(isUserData({ name: 'Иванушка', age: 20 })).to.true;
+	});
+
 	it('.[type].or', () => {
 		let isNumberOrString = om.number.or.string;
 

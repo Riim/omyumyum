@@ -1,7 +1,12 @@
 import { KEY_STATE } from './constants';
 import { typesProto } from './Types';
 import { validationState } from './validationState';
-export const om = ((validator, value) => {
+export function OmYumYum(validator, value) {
+    if (arguments.length == 1) {
+        return (value) => {
+            return om(validator, value);
+        };
+    }
     validationState.errorKeypatch = null;
     if (!validator(value)) {
         if (validationState.errorKeypatch) {
@@ -10,11 +15,12 @@ export const om = ((validator, value) => {
         throw TypeError('Type mismatch');
     }
     return true;
-});
-om.__proto__ = typesProto;
-om[KEY_STATE] = {
+}
+OmYumYum.__proto__ = typesProto;
+OmYumYum[KEY_STATE] = {
     validators: [],
     notMode: false,
     andMode: false
 };
+export const om = OmYumYum;
 export { om as default };
