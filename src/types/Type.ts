@@ -38,11 +38,7 @@ export const typeProto = {
 	},
 
 	get or(): ITypes {
-		let types: ITypes = {
-			__proto__: typesProto,
-			[KEY_STATE]: this[KEY_STATE]
-		} as any;
-
+		let types: ITypes = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] } as any;
 		return types;
 	},
 
