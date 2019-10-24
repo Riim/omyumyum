@@ -11,6 +11,23 @@ describe('om', () => {
 		expect(isNumber(undefined)).to.false;
 	});
 
+	it('бросает ошибку', () => {
+		let isNumber = om.number;
+		let isSomeData = om.object.shape({
+			prop1: om.array.of(om.object.shape({ prop2: om.number }))
+		});
+
+		expect(() => {
+			om(isNumber, 1);
+		}).to.not.throws();
+		expect(() => {
+			om(isNumber, '1');
+		}).to.throws(TypeError);
+		expect(() => {
+			om(isSomeData, { prop1: [{ prop2: 1 }, { prop2: '2' }] });
+		}).to.throws(TypeError, 'Type mismatch at "prop1[1].prop2"');
+	});
+
 	it('.custom()', () => {
 		let isOne = om.custom(value => value === 1);
 
@@ -225,6 +242,20 @@ describe('om', () => {
 		expect(isStringMax3('1234')).to.false;
 	});
 
+	it('.string.pattern()', () => {
+		let isAbcString = om.string.pattern(/^abc$/);
+
+		expect(isAbcString('abc')).to.true;
+		expect(isAbcString('zabcz')).to.false;
+	});
+
+	it('.string.matches()', () => {
+		let isAbcString = om.string.matches(/^abc$/);
+
+		expect(isAbcString('abc')).to.true;
+		expect(isAbcString('zabcz')).to.false;
+	});
+
 	it('.string.startsWith()', () => {
 		let isStringStartsWithAbc = om.string.startsWith('abc');
 
@@ -237,6 +268,13 @@ describe('om', () => {
 
 		expect(isStringEndsWithAbc('zzabc')).to.true;
 		expect(isStringEndsWithAbc('zabcz')).to.false;
+	});
+
+	it('.symbol', () => {
+		let isSymbol = om.symbol;
+
+		expect(isSymbol(Symbol())).to.true;
+		expect(isSymbol('1')).to.false;
 	});
 
 	it('.array', () => {
@@ -321,6 +359,13 @@ describe('om', () => {
 		expect(isFunction(() => {})).to.true;
 	});
 
+	it('.func', () => {
+		let isFunction = om.func;
+
+		expect(isFunction({})).to.false;
+		expect(isFunction(() => {})).to.true;
+	});
+
 	it('.map', () => {
 		let isMap = om.map;
 
@@ -328,11 +373,71 @@ describe('om', () => {
 		expect(isMap(new Map())).to.true;
 	});
 
+	it('.map.of()', () => {
+		let isNumericMap = om.map.of(om.array.of(om.number));
+
+		expect(isNumericMap(new Map([[1, 1], [2, 2]]))).to.true;
+		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+	});
+
+	it('.map.values()', () => {
+		let isNumericMap = om.map.values(om.number);
+
+		expect(isNumericMap(new Map<any, number>([[1, 1], ['2', 2]]))).to.true;
+		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+	});
+
+	it('.map.keys()', () => {
+		let isMapWithNumericKeys = om.map.keys(om.number);
+
+		expect(isMapWithNumericKeys(new Map<any, number>([[1, 1], ['2', 2]]))).to.false;
+		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
+	});
+
 	it('.set', () => {
 		let isSet = om.set;
 
 		expect(isSet({})).to.false;
 		expect(isSet(new Set())).to.true;
+	});
+
+	it('.set.of()', () => {
+		let isNumericSet = om.set.of(om.number);
+
+		expect(isNumericSet(new Set<number>([1, 1]))).to.true;
+		expect(isNumericSet(new Set<any>([1, '2']))).to.false;
+	});
+
+	it('.weakMap', () => {
+		let isWeakMap = om.weakMap;
+
+		expect(isWeakMap({})).to.false;
+		expect(isWeakMap(new Map())).to.false;
+		expect(isWeakMap(new WeakMap())).to.true;
+	});
+
+	it('.wmap', () => {
+		let isWeakMap = om.wmap;
+
+		expect(isWeakMap({})).to.false;
+		expect(isWeakMap(new Map())).to.false;
+		expect(isWeakMap(new WeakMap())).to.true;
+	});
+
+	it('.weakSet', () => {
+		let isWeakSet = om.weakSet;
+
+		expect(isWeakSet({})).to.false;
+		expect(isWeakSet(new Set())).to.false;
+		expect(isWeakSet(new WeakSet())).to.true;
+	});
+
+	it('.wset', () => {
+		let isWeakSet = om.wset;
+
+		expect(isWeakSet({})).to.false;
+		expect(isWeakSet(new Set())).to.false;
+		expect(isWeakSet(new WeakSet())).to.true;
 	});
 
 	it('.date', () => {
@@ -369,6 +474,13 @@ describe('om', () => {
 
 	it('.regExp', () => {
 		let isRegExp = om.regExp;
+
+		expect(isRegExp({})).to.false;
+		expect(isRegExp(/a/)).to.true;
+	});
+
+	it('.regex', () => {
+		let isRegExp = om.regex;
 
 		expect(isRegExp({})).to.false;
 		expect(isRegExp(/a/)).to.true;
