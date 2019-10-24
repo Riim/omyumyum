@@ -4,6 +4,7 @@ import { IType, TValidator, typeProto } from './Type';
 
 export interface ISetType extends IType {
 	of(validator: TValidator): ISetType;
+	nonEmpty: ISetType;
 }
 
 export const setTypeProto: Object = {
@@ -32,5 +33,9 @@ export const setTypeProto: Object = {
 
 			return true;
 		});
+	},
+
+	get nonEmpty(): ISetType {
+		return addTypeValidators(this, true, (set: Set<any>) => set.size > 0);
 	}
 };

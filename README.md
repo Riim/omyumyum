@@ -203,7 +203,8 @@ interface IType {
 	Matches an array data type.
 	```js
 	interface IArrayType extends IType {
-		of(validator: TValidator): IType;
+		of(validator: TValidator): IArrayType;
+		nonEmpty: IArrayType;
 	}
 	```
 	- ###### om.array.of(validator: TValidator): IType;
@@ -215,9 +216,10 @@ interface IType {
 	Matches a `Map` type.
 	```js
 	interface IMapType extends IType {
-		of(validator: TValidator): IType;
-		values(validator: TValidator): IType;
-		keys(validator: TValidator): IType;
+		of(validator: TValidator): IMapType;
+		values(validator: TValidator): IMapType;
+		keys(validator: TValidator): IMapType;
+		nonEmpty: IMapType;
 	}
 	```
 	- ###### om.map.of(validator: TValidator): IMapType;
@@ -227,7 +229,8 @@ interface IType {
 	Matches a `Set` type.
 	```js
 	interface ISetType extends IType {
-		of(validator: TValidator): IType;
+		of(validator: TValidator): ISetType;
+		nonEmpty: ISetType;
 	}
 	```
 	- ###### om.set.of(validator: TValidator): ISetType;
@@ -245,6 +248,12 @@ interface IType {
 	Alias for `om.weakSet`.
 - ##### om.date: IDateType;
 	Matches a `Date` type.
+	```js
+	interface IDateType extends IType {
+		before(beforeDate: Date | string | number): IDateType;
+		after(afterDate: Date | string | number): IDateType;
+	}
+	```
 	- ###### om.date.before(beforeDate: Date | string | number): IDateType;
 	- ###### om.date.after(afterDate: Date | string | number): IDateType;
 - ##### om.regExp: IType;

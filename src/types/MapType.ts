@@ -6,6 +6,7 @@ export interface IMapType extends IType {
 	of(validator: TValidator): IMapType;
 	values(validator: TValidator): IMapType;
 	keys(validator: TValidator): IMapType;
+	nonEmpty: IMapType;
 }
 
 export const mapTypeProto: Object = {
@@ -78,5 +79,9 @@ export const mapTypeProto: Object = {
 
 			return true;
 		});
+	},
+
+	get nonEmpty(): IMapType {
+		return addTypeValidators(this, true, (map: Map<any, any>) => map.size > 0);
 	}
 };

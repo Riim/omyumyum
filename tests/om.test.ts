@@ -277,33 +277,6 @@ describe('om', () => {
 		expect(isSymbol('1')).to.false;
 	});
 
-	it('.array', () => {
-		let isArray = om.array;
-		expect(isArray([])).to.true;
-	});
-
-	it('.array.of()', () => {
-		let isNumericArray = om.array.of(om.number);
-
-		expect(isNumericArray([])).to.true;
-		expect(isNumericArray([1])).to.true;
-		expect(isNumericArray([1, 2])).to.true;
-		expect(isNumericArray(['1'])).to.false;
-		expect(isNumericArray([1, '2'])).to.false;
-	});
-
-	it('.array.of() (2)', () => {
-		let isArrayOfNumberAndString = om.array.of(om.number.or.string);
-
-		expect(isArrayOfNumberAndString([])).to.true;
-		expect(isArrayOfNumberAndString([1])).to.true;
-		expect(isArrayOfNumberAndString([1, 2])).to.true;
-		expect(isArrayOfNumberAndString(['1'])).to.true;
-		expect(isArrayOfNumberAndString([1, '2'])).to.true;
-		expect(isArrayOfNumberAndString([true])).to.false;
-		expect(isArrayOfNumberAndString([true, false])).to.false;
-	});
-
 	it('.object', () => {
 		let isObject = om.object;
 
@@ -352,6 +325,40 @@ describe('om', () => {
 		expect(isNonEmptyObject({ a: 1 })).to.true;
 	});
 
+	it('.array', () => {
+		let isArray = om.array;
+		expect(isArray([])).to.true;
+	});
+
+	it('.array.of()', () => {
+		let isNumericArray = om.array.of(om.number);
+
+		expect(isNumericArray([])).to.true;
+		expect(isNumericArray([1])).to.true;
+		expect(isNumericArray([1, 2])).to.true;
+		expect(isNumericArray(['1'])).to.false;
+		expect(isNumericArray([1, '2'])).to.false;
+	});
+
+	it('.array.of() (2)', () => {
+		let isArrayOfNumberAndString = om.array.of(om.number.or.string);
+
+		expect(isArrayOfNumberAndString([])).to.true;
+		expect(isArrayOfNumberAndString([1])).to.true;
+		expect(isArrayOfNumberAndString([1, 2])).to.true;
+		expect(isArrayOfNumberAndString(['1'])).to.true;
+		expect(isArrayOfNumberAndString([1, '2'])).to.true;
+		expect(isArrayOfNumberAndString([true])).to.false;
+		expect(isArrayOfNumberAndString([true, false])).to.false;
+	});
+
+	it('.array.nonEmpty', () => {
+		let isNonEmptyArray = om.array.nonEmpty;
+
+		expect(isNonEmptyArray([])).to.false;
+		expect(isNonEmptyArray([1])).to.true;
+	});
+
 	it('.function', () => {
 		let isFunction = om.function;
 
@@ -394,6 +401,13 @@ describe('om', () => {
 		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
 	});
 
+	it('.map.nonEmpty', () => {
+		let isNonEmptyMap = om.map.nonEmpty;
+
+		expect(isNonEmptyMap(new Map())).to.false;
+		expect(isNonEmptyMap(new Map([[1, 1]]))).to.true;
+	});
+
 	it('.set', () => {
 		let isSet = om.set;
 
@@ -406,6 +420,13 @@ describe('om', () => {
 
 		expect(isNumericSet(new Set<number>([1, 1]))).to.true;
 		expect(isNumericSet(new Set<any>([1, '2']))).to.false;
+	});
+
+	it('.set.nonEmpty', () => {
+		let isNonEmptySet = om.set.nonEmpty;
+
+		expect(isNonEmptySet(new Set())).to.false;
+		expect(isNonEmptySet(new Set([1]))).to.true;
 	});
 
 	it('.weakMap', () => {

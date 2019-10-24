@@ -4,6 +4,7 @@ import { IType, TValidator, typeProto } from './Type';
 
 export interface IArrayType extends IType {
 	of(validator: TValidator): IArrayType;
+	nonEmpty: IArrayType;
 }
 
 function cb(this: TValidator, item: any, index: number): boolean {
@@ -26,5 +27,9 @@ export const arrayTypeProto: Object = {
 
 	of(validator: TValidator): IArrayType {
 		return addTypeValidators(this, true, (arr: Array<any>) => arr.every(cb, validator));
+	},
+
+	get nonEmpty(): IArrayType {
+		return addTypeValidators(this, true, (arr: Array<any>) => arr.length > 0);
 	}
 };
