@@ -2,10 +2,13 @@ import { validationState } from '../validationState';
 import { addTypeValidators } from './addTypeValidators';
 import { IType, TValidator, typeProto } from './Type';
 
+const hasOwn = Object.prototype.hasOwnProperty;
+
 export interface IObjectType extends IType {
 	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType;
 	exactShape(shape: Record<string, TValidator>): IObjectType;
 	values(validator: TValidator): IObjectType;
+	nonEmpty: IObjectType;
 }
 
 function cb1(this: Record<string, any>, entry: [string, TValidator]): boolean {
@@ -70,5 +73,17 @@ export const objectTypeProto: Object = {
 		return addTypeValidators(this, objectTypeProto, true, (obj: object) =>
 			Object.entries(obj).every(cb2, validator)
 		);
+	},
+
+	get nonEmpty(): IObjectType {
+		return addTypeValidators(this, objectTypeProto, true, (obj: object) => {
+			for (let key in obj) {
+				if (hasOwn.call(obj, key)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
 	}
 };

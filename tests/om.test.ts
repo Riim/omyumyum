@@ -293,6 +293,13 @@ describe('om', () => {
 		expect(isObjectWithNumericValues({ a: 1, b: 2, c: undefined })).to.false;
 	});
 
+	it('.object.nonEmpty', () => {
+		let isNonEmptyObject = om.object.nonEmpty;
+
+		expect(isNonEmptyObject({})).to.false;
+		expect(isNonEmptyObject({ a: 1 })).to.true;
+	});
+
 	it('.function', () => {
 		let isFunction = om.function;
 

@@ -61,16 +61,20 @@ const isEmailOrPhone = om.custom(require('is-email')).or.custom(require('is-phon
 
 isEmailOrPhone('test@test.test');
 // => true
+```
 
-// Use `and` to combine and improvement types:
+Use `and` to combine and improvement types:
+```js
 const isNonZeroString = om.string.and.custom(minLenght(1));
 
 isNonZeroString('');
 // => false
 isNonZeroString('1');
 // => true
+```
 
-// Use previously created validators:
+Use previously created validators:
+```js
 const isImprovedUserData = isUserData.and.object.shape({
 	friends: om.array.of(isUserData).or.undefined
 });
@@ -81,8 +85,10 @@ isImprovedUserData({
 	friends: [{ name: 'Алёнушка', age: 18 }]
 });
 // => true
+```
 
-// Use `not` for type negation:
+Use `not` for type negation:
+```js
 const isNotVacuum = om.not.null.and.not.undefined; // == `om.not.vacuum`
 
 isNotVacuum(1);
@@ -174,11 +180,13 @@ interface IType {
 		shape(shape: Record<string, TValidator>, exact = false): IObjectType;
 		exactShape(shape: Record<string, TValidator>): IObjectType;
 		values(validator: TValidator): IObjectType;
+		nonEmpty: IObjectType;
 	}
 	```
 	- ###### om.object.shape(shape: Record<string, TValidator>, exact = false): IType;
     - ###### om.object.exactShape(shape: Record<string, TValidator>): IType;
     - ###### om.object.values(validator: TValidator): IType;
+    - ###### om.object.nonEmpty: IType;
 - ##### om.array: IArrayType;
 	Matches an array data type.
 	```js
