@@ -14,6 +14,9 @@ function cb(item, index) {
 export const arrayTypeProto = {
     __proto__: typeProto,
     of(validator) {
-        return addTypeValidators(this, arrayTypeProto, true, (arr) => arr.every(cb, validator));
+        return addTypeValidators(this, true, (arr) => arr.every(cb, validator));
+    },
+    get nonEmpty() {
+        return addTypeValidators(this, true, (arr) => arr.length > 0);
     }
 };

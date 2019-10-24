@@ -14,15 +14,12 @@
 	    return validator(this);
 	}
 
-	function addTypeValidators(type, newTypeProto, andMode, validator) {
+	function addTypeValidators(type, andMode, validator, typeProto) {
 	    if (type[KEY_STATE].notMode) {
-	        validator =
-	            typeof validator == 'function'
-	                ? (validator => (value) => !validator(value))(validator)
-	                : validator.map(validator => (value) => !validator(value));
+	        validator = (validator => (value) => !validator(value))(validator);
 	    }
 	    let newType = ((value) => check(newType, value));
-	    newType.__proto__ = newTypeProto;
+	    newType.__proto__ = typeProto || type.__proto__;
 	    let validators = type[KEY_STATE].validators.slice();
 	    if (andMode) {
 	        let validators_ = (validators[validators.length - 1] = validators[validators.length - 1].slice());
@@ -64,14 +61,11 @@
 	        return types;
 	    },
 	    get or() {
-	        let types = {
-	            __proto__: typesProto,
-	            [KEY_STATE]: this[KEY_STATE]
-	        };
+	        let types = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
 	        return types;
 	    },
 	    allow(value) {
-	        return addTypeValidators(this, typeProto, false, (val) => Object.is(val, value));
+	        return addTypeValidators(this, false, (val) => Object.is(val, value), typeProto);
 	    }
 	};
 
@@ -88,24 +82,27 @@
 	const arrayTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, arrayTypeProto, true, (arr) => arr.every(cb, validator));
+	        return addTypeValidators(this, true, (arr) => arr.every(cb, validator));
+	    },
+	    get nonEmpty() {
+	        return addTypeValidators(this, true, (arr) => arr.length > 0);
 	    }
 	};
 
 	const dateTypeProto = {
 	    __proto__: typeProto,
 	    before(beforeDate) {
-	        return addTypeValidators(this, dateTypeProto, true, (date) => date < new Date(beforeDate));
+	        return addTypeValidators(this, true, (date) => date < new Date(beforeDate));
 	    },
 	    after(afterDate) {
-	        return addTypeValidators(this, dateTypeProto, true, (date) => date > new Date(afterDate));
+	        return addTypeValidators(this, true, (date) => date > new Date(afterDate));
 	    }
 	};
 
 	const mapTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	        return addTypeValidators(this, true, (map) => {
 	            for (let entry of map) {
 	                let prevKeypath = validationState.currentKeypath;
 	                validationState.currentKeypath = validationState.currentKeypath + `[${entry[0]}]`;
@@ -122,7 +119,7 @@
 	        });
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	        return addTypeValidators(this, true, (map) => {
 	            for (let [key, value] of map) {
 	                let prevKeypath = validationState.currentKeypath;
 	                validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
@@ -139,7 +136,7 @@
 	        });
 	    },
 	    keys(validator) {
-	        return addTypeValidators(this, mapTypeProto, true, (map) => {
+	        return addTypeValidators(this, true, (map) => {
 	            for (let [key] of map) {
 	                let prevKeypath = validationState.currentKeypath;
 	                validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
@@ -154,22 +151,25 @@
 	            }
 	            return true;
 	        });
+	    },
+	    get nonEmpty() {
+	        return addTypeValidators(this, true, (map) => map.size > 0);
 	    }
 	};
 
 	const numberTypeProto = {
 	    __proto__: typeProto,
 	    min(minValue) {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => num >= minValue);
+	        return addTypeValidators(this, true, (num) => num >= minValue);
 	    },
 	    max(maxValue) {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => num <= maxValue);
+	        return addTypeValidators(this, true, (num) => num <= maxValue);
 	    },
 	    less(lessThanValue) {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => num < lessThanValue);
+	        return addTypeValidators(this, true, (num) => num < lessThanValue);
 	    },
 	    greater(greaterThanValue) {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => num > greaterThanValue);
+	        return addTypeValidators(this, true, (num) => num > greaterThanValue);
 	    },
 	    between(minValue, maxValue) {
 	        return this.min(minValue).max(maxValue);
@@ -178,13 +178,14 @@
 	        return this.min(0);
 	    },
 	    get negative() {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => num < 0);
+	        return addTypeValidators(this, true, (num) => num < 0);
 	    },
 	    get integer() {
-	        return addTypeValidators(this, numberTypeProto, true, (num) => Number.isInteger(num));
+	        return addTypeValidators(this, true, (num) => Number.isInteger(num));
 	    }
 	};
 
+	const hasOwn = Object.prototype.hasOwnProperty;
 	function cb1$1(entry) {
 	    let [key, validator] = entry;
 	    let prevKeypath = validationState.currentKeypath;
@@ -220,20 +221,30 @@
 	        }
 	        let shapeEntries = Object.entries(shape);
 	        validators.push((obj) => shapeEntries.every(cb1$1, obj));
-	        return addTypeValidators(this, objectTypeProto, true, validators);
+	        return addTypeValidators(this, true, validators);
 	    },
 	    exactShape(shape) {
 	        return this.shape(shape, true);
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, objectTypeProto, true, (obj) => Object.entries(obj).every(cb2$1, validator));
+	        return addTypeValidators(this, true, (obj) => Object.entries(obj).every(cb2$1, validator));
+	    },
+	    get nonEmpty() {
+	        return addTypeValidators(this, true, (obj) => {
+	            for (let key in obj) {
+	                if (hasOwn.call(obj, key)) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        });
 	    }
 	};
 
 	const setTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, setTypeProto, true, (set) => {
+	        return addTypeValidators(this, true, (set) => {
 	            let index = 0;
 	            for (let item of set) {
 	                let prevKeypath = validationState.currentKeypath;
@@ -249,28 +260,40 @@
 	            }
 	            return true;
 	        });
+	    },
+	    get nonEmpty() {
+	        return addTypeValidators(this, true, (set) => set.size > 0);
 	    }
 	};
 
 	const stringTypeProto = {
 	    __proto__: typeProto,
 	    get nonZero() {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length > 0);
+	        return addTypeValidators(this, true, (str) => str.length > 0);
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => /\S/.test(str));
+	        return addTypeValidators(this, true, (str) => /\S/.test(str));
 	    },
 	    len(length) {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length == length);
+	        return addTypeValidators(this, true, (str) => str.length == length);
 	    },
 	    min(minLength) {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length >= minLength);
+	        return addTypeValidators(this, true, (str) => str.length >= minLength);
 	    },
 	    max(maxVength) {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => str.length <= maxVength);
+	        return addTypeValidators(this, true, (str) => str.length <= maxVength);
 	    },
 	    pattern(re) {
-	        return addTypeValidators(this, stringTypeProto, true, (str) => re.test(str));
+	        return addTypeValidators(this, true, (str) => re.test(str));
+	    },
+	    matches(re) {
+	        return this.pattern(re);
+	    },
+	    startsWith(searchString, position) {
+	        return addTypeValidators(this, true, (str) => str.startsWith(searchString, position));
+	    },
+	    endsWith(searchString, position) {
+	        return addTypeValidators(this, true, (str) => str.endsWith(searchString, position));
 	    }
 	};
 
@@ -302,7 +325,7 @@
 	        return types;
 	    },
 	    custom(validator, _typeProto = typeProto) {
-	        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
+	        return addTypeValidators(this, this[KEY_STATE].andMode, validator, _typeProto);
 	    },
 	    get null() {
 	        return this.custom(isNull);

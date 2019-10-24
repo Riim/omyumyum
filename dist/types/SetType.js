@@ -4,7 +4,7 @@ import { typeProto } from './Type';
 export const setTypeProto = {
     __proto__: typeProto,
     of(validator) {
-        return addTypeValidators(this, setTypeProto, true, (set) => {
+        return addTypeValidators(this, true, (set) => {
             let index = 0;
             for (let item of set) {
                 let prevKeypath = validationState.currentKeypath;
@@ -20,5 +20,8 @@ export const setTypeProto = {
             }
             return true;
         });
+    },
+    get nonEmpty() {
+        return addTypeValidators(this, true, (set) => set.size > 0);
     }
 };

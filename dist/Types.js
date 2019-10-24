@@ -36,7 +36,7 @@ export const typesProto = {
         return types;
     },
     custom(validator, _typeProto = typeProto) {
-        return addTypeValidators(this, _typeProto, this[KEY_STATE].andMode, validator);
+        return addTypeValidators(this, this[KEY_STATE].andMode, validator, _typeProto);
     },
     get null() {
         return this.custom(isNull);

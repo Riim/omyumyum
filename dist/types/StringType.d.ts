@@ -6,5 +6,8 @@ export interface IStringType extends IType {
     min(minLength: number): IStringType;
     max(maxVength: number): IStringType;
     pattern(re: RegExp): IStringType;
+    matches(re: RegExp): IStringType;
+    startsWith(searchString: string, position?: number): IStringType;
+    endsWith(searchString: string, position?: number): IStringType;
 }
 export declare const stringTypeProto: Object;

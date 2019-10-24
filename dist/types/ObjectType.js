@@ -1,6 +1,7 @@
 import { validationState } from '../validationState';
 import { addTypeValidators } from './addTypeValidators';
 import { typeProto } from './Type';
+const hasOwn = Object.prototype.hasOwnProperty;
 function cb1(entry) {
     let [key, validator] = entry;
     let prevKeypath = validationState.currentKeypath;
@@ -36,12 +37,22 @@ export const objectTypeProto = {
         }
         let shapeEntries = Object.entries(shape);
         validators.push((obj) => shapeEntries.every(cb1, obj));
-        return addTypeValidators(this, objectTypeProto, true, validators);
+        return addTypeValidators(this, true, validators);
     },
     exactShape(shape) {
         return this.shape(shape, true);
     },
     values(validator) {
-        return addTypeValidators(this, objectTypeProto, true, (obj) => Object.entries(obj).every(cb2, validator));
+        return addTypeValidators(this, true, (obj) => Object.entries(obj).every(cb2, validator));
+    },
+    get nonEmpty() {
+        return addTypeValidators(this, true, (obj) => {
+            for (let key in obj) {
+                if (hasOwn.call(obj, key)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 };

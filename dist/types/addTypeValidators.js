@@ -1,14 +1,11 @@
 import { check } from '../check';
 import { KEY_STATE } from '../constants';
-export function addTypeValidators(type, newTypeProto, andMode, validator) {
+export function addTypeValidators(type, andMode, validator, typeProto) {
     if (type[KEY_STATE].notMode) {
-        validator =
-            typeof validator == 'function'
-                ? (validator => (value) => !validator(value))(validator)
-                : validator.map(validator => (value) => !validator(value));
+        validator = (validator => (value) => !validator(value))(validator);
     }
     let newType = ((value) => check(newType, value));
-    newType.__proto__ = newTypeProto;
+    newType.__proto__ = typeProto || type.__proto__;
     let validators = type[KEY_STATE].validators.slice();
     if (andMode) {
         let validators_ = (validators[validators.length - 1] = validators[validators.length - 1].slice());

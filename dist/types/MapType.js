@@ -4,7 +4,7 @@ import { typeProto } from './Type';
 export const mapTypeProto = {
     __proto__: typeProto,
     of(validator) {
-        return addTypeValidators(this, mapTypeProto, true, (map) => {
+        return addTypeValidators(this, true, (map) => {
             for (let entry of map) {
                 let prevKeypath = validationState.currentKeypath;
                 validationState.currentKeypath = validationState.currentKeypath + `[${entry[0]}]`;
@@ -21,7 +21,7 @@ export const mapTypeProto = {
         });
     },
     values(validator) {
-        return addTypeValidators(this, mapTypeProto, true, (map) => {
+        return addTypeValidators(this, true, (map) => {
             for (let [key, value] of map) {
                 let prevKeypath = validationState.currentKeypath;
                 validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
@@ -38,7 +38,7 @@ export const mapTypeProto = {
         });
     },
     keys(validator) {
-        return addTypeValidators(this, mapTypeProto, true, (map) => {
+        return addTypeValidators(this, true, (map) => {
             for (let [key] of map) {
                 let prevKeypath = validationState.currentKeypath;
                 validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
@@ -53,5 +53,8 @@ export const mapTypeProto = {
             }
             return true;
         });
+    },
+    get nonEmpty() {
+        return addTypeValidators(this, true, (map) => map.size > 0);
     }
 };

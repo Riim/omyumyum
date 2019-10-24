@@ -16,13 +16,10 @@ export const typeProto = {
         return types;
     },
     get or() {
-        let types = {
-            __proto__: typesProto,
-            [KEY_STATE]: this[KEY_STATE]
-        };
+        let types = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
         return types;
     },
     allow(value) {
-        return addTypeValidators(this, typeProto, false, (val) => Object.is(val, value));
+        return addTypeValidators(this, false, (val) => Object.is(val, value), typeProto);
     }
 };
