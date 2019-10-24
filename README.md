@@ -161,6 +161,7 @@ interface IType {
 		min(minLength: number): IStringType;
 		max(maxVength: number): IStringType;
 		pattern(re: RegExp): IStringType;
+		matches(re: RegExp): IStringType;
 	}
 	```
 	- ###### om.string.nonZero: IStringType;
@@ -171,6 +172,8 @@ interface IType {
 	- ###### om.string.min(minLength: number): IStringType;
 	- ###### om.string.max(maxLength: number): IStringType;
 	- ###### om.string.pattern(re: RegExp): IStringType;
+	- ###### om.string.matches(re: RegExp): IStringType;
+		Alias for `om.string.pattern()`.
 - ##### om.symbol: IType;
 	Matches a symbol data type.
 - ##### om.object: IObjectType;
