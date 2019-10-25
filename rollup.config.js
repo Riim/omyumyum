@@ -3,10 +3,10 @@ import tslint from 'rollup-plugin-tslint';
 import typescript from 'rollup-plugin-typescript2';
 
 export default {
-	input: './src/omyumyum.ts',
+	input: './src/OmYumYum.ts',
 
 	output: {
-		file: './dist/omyumyum.umd.js',
+		file: './dist/OmYumYum.umd.js',
 		format: 'umd',
 		name: 'omyumyum'
 	},

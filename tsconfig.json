@@ -15,6 +15,6 @@
 		"target": "es2017"
 	},
 	"files": [
-		"src/omyumyum.ts"
+		"src/OmYumYum.ts"
 	]
 }

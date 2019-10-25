@@ -3,8 +3,8 @@
   "version": "0.3.1",
   "description": "",
   "type": "module",
-  "main": "dist/omyumyum.umd.js",
-  "typings": "dist/omyumyum.d.ts",
+  "main": "dist/OmYumYum.umd.js",
+  "typings": "dist/OmYumYum.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc && rollup -c",
     "test": "rm -rf coverage && nyc ts-mocha -p tsconfig.tests.json -r esm tests/**/*.test.ts",
