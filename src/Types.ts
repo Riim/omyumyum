@@ -1,5 +1,5 @@
+import { addTypeValidators } from './addTypeValidators';
 import { KEY_STATE } from './constants';
-import { addTypeValidators } from './types/addTypeValidators';
 import { arrayTypeProto, IArrayType } from './types/ArrayType';
 import { dateTypeProto, IDateType } from './types/DateType';
 import { IMapType, mapTypeProto } from './types/MapType';

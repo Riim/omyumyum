@@ -1,5 +1,5 @@
+import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { addTypeValidators } from './addTypeValidators';
 import { IType, TValidator, typeProto } from './Type';
 
 const hasOwn = Object.prototype.hasOwnProperty;

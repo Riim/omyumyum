@@ -1,7 +1,7 @@
-import { check } from '../check';
-import { KEY_STATE } from '../constants';
-import { ITypes } from '../Types';
-import { IType, TValidator } from './Type';
+import { check } from './check';
+import { KEY_STATE } from './constants';
+import { ITypes } from './Types';
+import { IType, TValidator } from './types/Type';
 
 export function addTypeValidators<T extends IType>(
 	type: IType | ITypes,

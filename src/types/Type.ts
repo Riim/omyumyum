@@ -1,6 +1,6 @@
+import { addTypeValidators } from '../addTypeValidators';
 import { KEY_STATE } from '../constants';
 import { ITypes, typesProto } from '../Types';
-import { addTypeValidators } from './addTypeValidators';
 
 export type TValidator = (value: any) => boolean;
 

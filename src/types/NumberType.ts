@@ -1,4 +1,4 @@
-import { addTypeValidators } from './addTypeValidators';
+import { addTypeValidators } from '../addTypeValidators';
 import { IType, typeProto } from './Type';
 
 export interface INumberType extends IType {
