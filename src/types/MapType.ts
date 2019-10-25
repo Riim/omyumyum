@@ -1,18 +1,18 @@
 import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { IType, TSimpleValidator, typeProto } from './Type';
+import { IType, TValidator, typeProto } from './Type';
 
 export interface IMapType extends IType {
-	of(validator: TSimpleValidator): IMapType;
-	values(validator: TSimpleValidator): IMapType;
-	keys(validator: TSimpleValidator): IMapType;
+	of(validator: TValidator): IMapType;
+	values(validator: TValidator): IMapType;
+	keys(validator: TValidator): IMapType;
 	nonEmpty: IMapType;
 }
 
 export const mapTypeProto: Object = {
 	__proto__: typeProto,
 
-	of(validator: TSimpleValidator): IMapType {
+	of(validator: TValidator): IMapType {
 		return addTypeValidators(this, true, {
 			validator: (map: Map<any, any>) => {
 				for (let entry of map) {
@@ -38,7 +38,7 @@ export const mapTypeProto: Object = {
 		});
 	},
 
-	values(validator: TSimpleValidator): IMapType {
+	values(validator: TValidator): IMapType {
 		return addTypeValidators(this, true, {
 			validator: (map: Map<any, any>) => {
 				for (let [key, value] of map) {
@@ -63,7 +63,7 @@ export const mapTypeProto: Object = {
 		});
 	},
 
-	keys(validator: TSimpleValidator): IMapType {
+	keys(validator: TValidator): IMapType {
 		return addTypeValidators(this, true, {
 			validator: (map: Map<any, any>) => {
 				for (let [key] of map) {

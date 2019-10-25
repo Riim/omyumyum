@@ -1,19 +1,19 @@
 import { KEY_STATE } from './constants';
 import { ITypes, typesProto } from './Types';
-import { TSimpleValidator } from './types/Type';
+import { TValidator } from './types/Type';
 import { validationState } from './validationState';
 
-export { TSimpleValidator, I$Validator, TValidator, IType } from './types/Type';
+export { TValidator, I$Validator, IType } from './types/Type';
 export { ITypes } from './Types';
 
 export interface IOmYumYum extends ITypes {
-	(validator: TSimpleValidator): (value: any) => true;
-	(validator: TSimpleValidator, value: any): true;
+	(validator: TValidator): (value: any) => true;
+	(validator: TValidator, value: any): true;
 }
 
-export function OmYumYum(validator: TSimpleValidator): (value: any) => true;
-export function OmYumYum(validator: TSimpleValidator, value: any): true;
-export function OmYumYum(validator: TSimpleValidator, value?: any): any {
+export function OmYumYum(validator: TValidator): (value: any) => true;
+export function OmYumYum(validator: TValidator, value: any): true;
+export function OmYumYum(validator: TValidator, value?: any): any {
 	if (arguments.length == 1) {
 		return (value: any): true => {
 			return om(validator, value);

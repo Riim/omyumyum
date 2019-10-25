@@ -60,7 +60,7 @@ isUserData({ name: 'Иванушка', age: 20 });
 // => true
 
 om(isUserData, { name: 'Иванушка', age: '1' });
-// Throws TypeError('Type mismatch at "age"')
+// Throws TypeError('Expected type "number" (at "age")')
 
 const isEmailOrPhone = om.custom(require('is-email')).or.custom(require('is-phone'));
 
@@ -119,7 +119,7 @@ interface IType {
 - ##### om(validator: TValidator, value: any): true;
 		om(validator: TValidator): (value: any) => true;
 	Returns true if the value is valid, and throws a TypeError otherwise.
-- ##### om.custom(validator: TValidator): IType;
+- ##### om.custom(validator: ((value: any) => boolean | string) | { validator: TValidator, message?: string, type?: string }): IType;
 	Uses a custom validator. Example:
 	```js
 	const isUserOrNull = om.custom(value => value instanceof User).or.null;

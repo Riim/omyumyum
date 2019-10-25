@@ -11,7 +11,6 @@ import {
 	I$Validator,
 	IState,
 	IType,
-	TValidator,
 	typeProto
 	} from './types/Type';
 
@@ -38,7 +37,7 @@ const isError = (value: any): boolean => value instanceof Error;
 export interface ITypes {
 	[KEY_STATE]: IState;
 	not: ITypes;
-	custom(validator: TValidator): IType;
+	custom(validator: ((value: any) => boolean | string) | I$Validator): IType;
 	null: IType;
 	undefined: IType;
 	vacuum: IType;
@@ -75,7 +74,11 @@ export const typesProto: Object = {
 		return types;
 	},
 
-	custom(this: ITypes, validator: TValidator, _typeProto = typeProto): IType {
+	custom(
+		this: ITypes,
+		validator: ((value: any) => boolean | string) | I$Validator,
+		_typeProto = typeProto
+	): IType {
 		return addTypeValidators(
 			this,
 			this[KEY_STATE].andMode,

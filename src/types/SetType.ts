@@ -1,16 +1,16 @@
 import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { IType, TSimpleValidator, typeProto } from './Type';
+import { IType, TValidator, typeProto } from './Type';
 
 export interface ISetType extends IType {
-	of(validator: TSimpleValidator): ISetType;
+	of(validator: TValidator): ISetType;
 	nonEmpty: ISetType;
 }
 
 export const setTypeProto: Object = {
 	__proto__: typeProto,
 
-	of(validator: TSimpleValidator): ISetType {
+	of(validator: TValidator): ISetType {
 		return addTypeValidators(this, true, {
 			validator: (set: Set<any>) => {
 				let index = 0;

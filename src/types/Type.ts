@@ -2,13 +2,12 @@ import { addTypeValidators } from '../addTypeValidators';
 import { KEY_STATE } from '../constants';
 import { ITypes, typesProto } from '../Types';
 
-export type TSimpleValidator = (value: any) => boolean;
+export type TValidator = (value: any) => boolean;
 export interface I$Validator {
-	validator: TSimpleValidator;
+	validator: TValidator;
 	message?: string;
 	type?: string;
 }
-export type TValidator = ((value: any) => boolean | string) | I$Validator;
 
 export interface IState {
 	validators: Array<Array<I$Validator>>;

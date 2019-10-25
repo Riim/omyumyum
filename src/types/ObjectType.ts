@@ -3,20 +3,20 @@ import { validationState } from '../validationState';
 import {
 	I$Validator,
 	IType,
-	TSimpleValidator,
+	TValidator,
 	typeProto
 	} from './Type';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 
 export interface IObjectType extends IType {
-	shape(shape: Record<string, TSimpleValidator>, exact?: boolean): IObjectType;
-	exactShape(shape: Record<string, TSimpleValidator>): IObjectType;
-	values(validator: TSimpleValidator): IObjectType;
+	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType;
+	exactShape(shape: Record<string, TValidator>): IObjectType;
+	values(validator: TValidator): IObjectType;
 	nonEmpty: IObjectType;
 }
 
-function cb1(this: Record<string, any>, entry: [string, TSimpleValidator]): boolean {
+function cb1(this: Record<string, any>, entry: [string, TValidator]): boolean {
 	let [key, validator] = entry;
 
 	let prevKeypath = validationState.currentKeypath;
@@ -34,7 +34,7 @@ function cb1(this: Record<string, any>, entry: [string, TSimpleValidator]): bool
 	return result;
 }
 
-function cb2(this: TSimpleValidator, entry: any): boolean {
+function cb2(this: TValidator, entry: any): boolean {
 	let [key, value] = entry;
 
 	let prevKeypath = validationState.currentKeypath;
@@ -55,7 +55,7 @@ function cb2(this: TSimpleValidator, entry: any): boolean {
 export const objectTypeProto: Object = {
 	__proto__: typeProto,
 
-	shape(shape: Record<string, TSimpleValidator>, exact?: boolean): IObjectType {
+	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType {
 		let validators: Array<I$Validator> = [];
 
 		if (exact) {
@@ -70,11 +70,11 @@ export const objectTypeProto: Object = {
 		return addTypeValidators(this, true, validators);
 	},
 
-	exactShape(shape: Record<string, TSimpleValidator>): IObjectType {
+	exactShape(shape: Record<string, TValidator>): IObjectType {
 		return this.shape(shape, true) as IObjectType;
 	},
 
-	values(validator: TSimpleValidator): IObjectType {
+	values(validator: TValidator): IObjectType {
 		return addTypeValidators(this, true, {
 			validator: (obj: object) => Object.entries(obj).every(cb2, validator)
 		});
