@@ -39,13 +39,13 @@ export const typesProto = {
         return addTypeValidators(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
     },
     get null() {
-        return this.custom(isNull);
+        return this.custom({ validator: isNull, type: 'null' });
     },
     get undefined() {
-        return this.custom(isUndefined);
+        return this.custom({ validator: isUndefined, type: 'undefined' });
     },
     get vacuum() {
-        return this.custom(isVacuum);
+        return this.custom({ validator: isVacuum, type: 'vacuum' });
     },
     get boolean() {
         return this.custom({ validator: isBoolean, type: 'boolean' });

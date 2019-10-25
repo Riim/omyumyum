@@ -1,12 +1,11 @@
 import { KEY_STATE } from '../constants';
 import { ITypes } from '../Types';
-export declare type TSimpleValidator = (value: any) => boolean;
+export declare type TValidator = (value: any) => boolean;
 export interface I$Validator {
-    validator: TSimpleValidator;
+    validator: TValidator;
     message?: string;
     type?: string;
 }
-export declare type TValidator = ((value: any) => boolean | string) | I$Validator;
 export interface IState {
     validators: Array<Array<I$Validator>>;
     notMode: boolean;

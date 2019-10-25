@@ -6,11 +6,11 @@ import { INumberType } from './types/NumberType';
 import { IObjectType } from './types/ObjectType';
 import { ISetType } from './types/SetType';
 import { IStringType } from './types/StringType';
-import { IState, IType, TValidator } from './types/Type';
+import { I$Validator, IState, IType } from './types/Type';
 export interface ITypes {
     [KEY_STATE]: IState;
     not: ITypes;
-    custom(validator: TValidator): IType;
+    custom(validator: ((value: any) => boolean | string) | I$Validator): IType;
     null: IType;
     undefined: IType;
     vacuum: IType;

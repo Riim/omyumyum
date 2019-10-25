@@ -1,8 +1,8 @@
-import { IType, TSimpleValidator } from './Type';
+import { IType, TValidator } from './Type';
 export interface IMapType extends IType {
-    of(validator: TSimpleValidator): IMapType;
-    values(validator: TSimpleValidator): IMapType;
-    keys(validator: TSimpleValidator): IMapType;
+    of(validator: TValidator): IMapType;
+    values(validator: TValidator): IMapType;
+    keys(validator: TValidator): IMapType;
     nonEmpty: IMapType;
 }
 export declare const mapTypeProto: Object;

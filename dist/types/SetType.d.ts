@@ -1,6 +1,6 @@
-import { IType, TSimpleValidator } from './Type';
+import { IType, TValidator } from './Type';
 export interface ISetType extends IType {
-    of(validator: TSimpleValidator): ISetType;
+    of(validator: TValidator): ISetType;
     nonEmpty: ISetType;
 }
 export declare const setTypeProto: Object;
