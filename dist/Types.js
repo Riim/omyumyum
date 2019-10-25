@@ -1,5 +1,5 @@
+import { addTypeValidators } from './addTypeValidators';
 import { KEY_STATE } from './constants';
-import { addTypeValidators } from './types/addTypeValidators';
 import { arrayTypeProto } from './types/ArrayType';
 import { dateTypeProto } from './types/DateType';
 import { mapTypeProto } from './types/MapType';
@@ -36,7 +36,7 @@ export const typesProto = {
         return types;
     },
     custom(validator, _typeProto = typeProto) {
-        return addTypeValidators(this, this[KEY_STATE].andMode, validator, _typeProto);
+        return addTypeValidators(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
     },
     get null() {
         return this.custom(isNull);
@@ -48,60 +48,60 @@ export const typesProto = {
         return this.custom(isVacuum);
     },
     get boolean() {
-        return this.custom(isBoolean);
+        return this.custom({ validator: isBoolean, type: 'boolean' });
     },
     get number() {
-        return this.custom(isNumber, numberTypeProto);
+        return this.custom({ validator: isNumber, type: 'number' }, numberTypeProto);
     },
     get string() {
-        return this.custom(isString, stringTypeProto);
+        return this.custom({ validator: isString, type: 'string' }, stringTypeProto);
     },
     get symbol() {
-        return this.custom(isSymbol);
+        return this.custom({ validator: isSymbol, type: 'symbol' });
     },
     get object() {
-        return this.custom(isObject, objectTypeProto);
+        return this.custom({ validator: isObject, type: 'Object' }, objectTypeProto);
     },
     get array() {
-        return this.custom(isArray, arrayTypeProto);
+        return this.custom({ validator: isArray, type: 'Array' }, arrayTypeProto);
     },
     get function() {
-        return this.custom(isFunction);
+        return this.custom({ validator: isFunction, type: 'Function' });
     },
     get func() {
         return this.function;
     },
     get map() {
-        return this.custom(isMap, mapTypeProto);
+        return this.custom({ validator: isMap, type: 'Map' }, mapTypeProto);
     },
     get set() {
-        return this.custom(isSet, setTypeProto);
+        return this.custom({ validator: isSet, type: 'Set' }, setTypeProto);
     },
     get weakMap() {
-        return this.custom(isWeakMap, mapTypeProto);
+        return this.custom({ validator: isWeakMap, type: 'WeakMap' }, mapTypeProto);
     },
     get wmap() {
         return this.weakMap;
     },
     get weakSet() {
-        return this.custom(isWeakSet, setTypeProto);
+        return this.custom({ validator: isWeakSet, type: 'WeakSet' }, setTypeProto);
     },
     get wset() {
         return this.weakSet;
     },
     get date() {
-        return this.custom(isDate, dateTypeProto);
+        return this.custom({ validator: isDate, type: 'Date' }, dateTypeProto);
     },
     get regExp() {
-        return this.custom(isRegExp);
+        return this.custom({ validator: isRegExp, type: 'RegExp' });
     },
     get regex() {
         return this.regExp;
     },
     get promise() {
-        return this.custom(isPromise);
+        return this.custom({ validator: isPromise, type: 'Promise' });
     },
     get error() {
-        return this.custom(isError);
+        return this.custom({ validator: isError, type: 'Error' });
     }
 };

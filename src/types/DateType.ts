@@ -10,10 +10,14 @@ export const dateTypeProto: Object = {
 	__proto__: typeProto,
 
 	before(beforeDate: Date | string | number): IDateType {
-		return addTypeValidators(this, true, (date: Date) => date < new Date(beforeDate));
+		return addTypeValidators(this, true, {
+			validator: (date: Date) => date < new Date(beforeDate)
+		});
 	},
 
 	after(afterDate: Date | string | number): IDateType {
-		return addTypeValidators(this, true, (date: Date) => date > new Date(afterDate));
+		return addTypeValidators(this, true, {
+			validator: (date: Date) => date > new Date(afterDate)
+		});
 	}
 };

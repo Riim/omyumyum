@@ -16,19 +16,21 @@ export const numberTypeProto: Object = {
 	__proto__: typeProto,
 
 	min(minValue: number): INumberType {
-		return addTypeValidators(this, true, (num: number) => num >= minValue);
+		return addTypeValidators(this, true, { validator: (num: number) => num >= minValue });
 	},
 
 	max(maxValue: number): INumberType {
-		return addTypeValidators(this, true, (num: number) => num <= maxValue);
+		return addTypeValidators(this, true, { validator: (num: number) => num <= maxValue });
 	},
 
 	less(lessThanValue: number): INumberType {
-		return addTypeValidators(this, true, (num: number) => num < lessThanValue);
+		return addTypeValidators(this, true, { validator: (num: number) => num < lessThanValue });
 	},
 
 	greater(greaterThanValue: number): INumberType {
-		return addTypeValidators(this, true, (num: number) => num > greaterThanValue);
+		return addTypeValidators(this, true, {
+			validator: (num: number) => num > greaterThanValue
+		});
 	},
 
 	between(minValue: number, maxValue: number): INumberType {
@@ -40,10 +42,10 @@ export const numberTypeProto: Object = {
 	},
 
 	get negative(): INumberType {
-		return addTypeValidators(this, true, (num: number) => num < 0);
+		return addTypeValidators(this, true, { validator: (num: number) => num < 0 });
 	},
 
 	get integer(): INumberType {
-		return addTypeValidators(this, true, (num: number) => Number.isInteger(num));
+		return addTypeValidators(this, true, { validator: (num: number) => Number.isInteger(num) });
 	}
 };

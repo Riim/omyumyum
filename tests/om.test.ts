@@ -14,7 +14,7 @@ describe('om', () => {
 	it('бросает ошибку', () => {
 		let isNumber = om.number;
 		let isSomeData = om.object.shape({
-			prop1: om.array.of(om.object.shape({ prop2: om.number }))
+			prop1: om.array.of(om.object.shape({ prop2: om.boolean.or.number }))
 		});
 
 		expect(() => {
@@ -25,24 +25,29 @@ describe('om', () => {
 		}).to.throws(TypeError);
 		expect(() => {
 			om(isSomeData, { prop1: [{ prop2: 1 }, { prop2: '2' }] });
-		}).to.throws(TypeError, 'Type mismatch at "prop1[1].prop2"');
+		}).to.throws(TypeError, 'Expected type "boolean" or "number" (at "prop1[1].prop2")');
+		expect(() => {
+			om(om.object, 1);
+		}).to.throws(TypeError, 'Expected type "Object"');
 	});
 
 	it('бросает ошибку (2)', () => {
-		let isNumber = om.number;
-		let isSomeData = om.object.shape({
-			prop1: om.array.of(om.object.shape({ prop2: om.number }))
+		let message = 'Вы ещё слишком маленький/ая';
+		let isLegalAge = om.number.and.custom((age: number) => age >= 18 || message);
+		let isUserData = om.object.shape({
+			name: om.string,
+			age: isLegalAge
 		});
 
 		expect(() => {
-			om(isNumber)(1);
+			om(isLegalAge)(18);
 		}).to.not.throws();
 		expect(() => {
-			om(isNumber)('1');
-		}).to.throws(TypeError);
+			om(isLegalAge)(17);
+		}).to.throws(TypeError, message);
 		expect(() => {
-			om(isSomeData)({ prop1: [{ prop2: 1 }, { prop2: '2' }] });
-		}).to.throws(TypeError, 'Type mismatch at "prop1[1].prop2"');
+			om(isUserData)({ name: 'Марфа', age: 17 });
+		}).to.throws(TypeError, message + ' (at "age")');
 	});
 
 	it('.custom()', () => {

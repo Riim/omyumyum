@@ -1,6 +1,6 @@
+import { addTypeValidators } from '../addTypeValidators';
 import { KEY_STATE } from '../constants';
 import { typesProto } from '../Types';
-import { addTypeValidators } from './addTypeValidators';
 export const typeProto = {
     __proto__: Function.prototype,
     [KEY_STATE]: null,
@@ -20,6 +20,6 @@ export const typeProto = {
         return types;
     },
     allow(value) {
-        return addTypeValidators(this, false, (val) => Object.is(val, value), typeProto);
+        return addTypeValidators(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
     }
 };

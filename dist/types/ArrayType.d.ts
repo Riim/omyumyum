@@ -1,6 +1,6 @@
-import { IType, TValidator } from './Type';
+import { IType, TSimpleValidator } from './Type';
 export interface IArrayType extends IType {
-    of(validator: TValidator): IArrayType;
+    of(validator: TSimpleValidator): IArrayType;
     nonEmpty: IArrayType;
 }
 export declare const arrayTypeProto: Object;

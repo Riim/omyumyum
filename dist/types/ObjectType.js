@@ -1,5 +1,5 @@
+import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { addTypeValidators } from './addTypeValidators';
 import { typeProto } from './Type';
 const hasOwn = Object.prototype.hasOwnProperty;
 function cb1(entry) {
@@ -33,26 +33,30 @@ export const objectTypeProto = {
         if (exact) {
             let shapeKeys = Object.keys(shape);
             let hasKey = (key) => shapeKeys.includes(key);
-            validators.push((obj) => Object.keys(obj).every(hasKey));
+            validators.push({ validator: (obj) => Object.keys(obj).every(hasKey) });
         }
         let shapeEntries = Object.entries(shape);
-        validators.push((obj) => shapeEntries.every(cb1, obj));
+        validators.push({ validator: (obj) => shapeEntries.every(cb1, obj) });
         return addTypeValidators(this, true, validators);
     },
     exactShape(shape) {
         return this.shape(shape, true);
     },
     values(validator) {
-        return addTypeValidators(this, true, (obj) => Object.entries(obj).every(cb2, validator));
+        return addTypeValidators(this, true, {
+            validator: (obj) => Object.entries(obj).every(cb2, validator)
+        });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, (obj) => {
-            for (let key in obj) {
-                if (hasOwn.call(obj, key)) {
-                    return true;
+        return addTypeValidators(this, true, {
+            validator: (obj) => {
+                for (let key in obj) {
+                    if (hasOwn.call(obj, key)) {
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         });
     }
 };

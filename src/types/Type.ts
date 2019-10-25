@@ -2,10 +2,16 @@ import { addTypeValidators } from '../addTypeValidators';
 import { KEY_STATE } from '../constants';
 import { ITypes, typesProto } from '../Types';
 
-export type TValidator = (value: any) => boolean;
+export type TSimpleValidator = (value: any) => boolean;
+export interface I$Validator {
+	validator: TSimpleValidator;
+	message?: string;
+	type?: string;
+}
+export type TValidator = ((value: any) => boolean | string) | I$Validator;
 
 export interface IState {
-	validators: Array<Array<TValidator>>;
+	validators: Array<Array<I$Validator>>;
 	notMode: boolean;
 	andMode: boolean;
 }
@@ -43,6 +49,11 @@ export const typeProto = {
 	},
 
 	allow(value: any): IType {
-		return addTypeValidators(this, false, (val: any) => Object.is(val, value), typeProto);
+		return addTypeValidators(
+			this,
+			false,
+			{ validator: (val: any) => Object.is(val, value) },
+			typeProto
+		);
 	}
 };

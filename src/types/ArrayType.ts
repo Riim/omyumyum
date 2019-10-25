@@ -1,13 +1,13 @@
 import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { IType, TValidator, typeProto } from './Type';
+import { IType, TSimpleValidator, typeProto } from './Type';
 
 export interface IArrayType extends IType {
-	of(validator: TValidator): IArrayType;
+	of(validator: TSimpleValidator): IArrayType;
 	nonEmpty: IArrayType;
 }
 
-function cb(this: TValidator, item: any, index: number): boolean {
+function cb(this: TSimpleValidator, item: any, index: number): boolean {
 	let prevKeypath = validationState.currentKeypath;
 	validationState.currentKeypath = validationState.currentKeypath + `[${index}]`;
 
@@ -25,11 +25,13 @@ function cb(this: TValidator, item: any, index: number): boolean {
 export const arrayTypeProto: Object = {
 	__proto__: typeProto,
 
-	of(validator: TValidator): IArrayType {
-		return addTypeValidators(this, true, (arr: Array<any>) => arr.every(cb, validator));
+	of(validator: TSimpleValidator): IArrayType {
+		return addTypeValidators(this, true, {
+			validator: (arr: Array<any>) => arr.every(cb, validator)
+		});
 	},
 
 	get nonEmpty(): IArrayType {
-		return addTypeValidators(this, true, (arr: Array<any>) => arr.length > 0);
+		return addTypeValidators(this, true, { validator: (arr: Array<any>) => arr.length > 0 });
 	}
 };

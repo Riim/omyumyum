@@ -17,27 +17,31 @@ export const stringTypeProto: Object = {
 	__proto__: typeProto,
 
 	get nonZero(): IStringType {
-		return addTypeValidators(this, true, (str: string) => str.length > 0);
+		return addTypeValidators(this, true, { validator: (str: string) => str.length > 0 });
 	},
 
 	get nonEmpty(): IStringType {
-		return addTypeValidators(this, true, (str: string) => /\S/.test(str));
+		return addTypeValidators(this, true, { validator: (str: string) => /\S/.test(str) });
 	},
 
 	len(length: number): IStringType {
-		return addTypeValidators(this, true, (str: string) => str.length == length);
+		return addTypeValidators(this, true, { validator: (str: string) => str.length == length });
 	},
 
 	min(minLength: number): IStringType {
-		return addTypeValidators(this, true, (str: string) => str.length >= minLength);
+		return addTypeValidators(this, true, {
+			validator: (str: string) => str.length >= minLength
+		});
 	},
 
 	max(maxVength: number): IStringType {
-		return addTypeValidators(this, true, (str: string) => str.length <= maxVength);
+		return addTypeValidators(this, true, {
+			validator: (str: string) => str.length <= maxVength
+		});
 	},
 
 	pattern(re: RegExp): IStringType {
-		return addTypeValidators(this, true, (str: string) => re.test(str));
+		return addTypeValidators(this, true, { validator: (str: string) => re.test(str) });
 	},
 
 	matches(re: RegExp): IStringType {
@@ -45,12 +49,14 @@ export const stringTypeProto: Object = {
 	},
 
 	startsWith(searchString: string, position?: number): IStringType {
-		return addTypeValidators(this, true, (str: string) =>
-			str.startsWith(searchString, position)
-		);
+		return addTypeValidators(this, true, {
+			validator: (str: string) => str.startsWith(searchString, position)
+		});
 	},
 
 	endsWith(searchString: string, position?: number): IStringType {
-		return addTypeValidators(this, true, (str: string) => str.endsWith(searchString, position));
+		return addTypeValidators(this, true, {
+			validator: (str: string) => str.endsWith(searchString, position)
+		});
 	}
 };

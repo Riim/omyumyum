@@ -1,5 +1,5 @@
+import { addTypeValidators } from '../addTypeValidators';
 import { validationState } from '../validationState';
-import { addTypeValidators } from './addTypeValidators';
 import { typeProto } from './Type';
 function cb(item, index) {
     let prevKeypath = validationState.currentKeypath;
@@ -14,9 +14,11 @@ function cb(item, index) {
 export const arrayTypeProto = {
     __proto__: typeProto,
     of(validator) {
-        return addTypeValidators(this, true, (arr) => arr.every(cb, validator));
+        return addTypeValidators(this, true, {
+            validator: (arr) => arr.every(cb, validator)
+        });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, (arr) => arr.length > 0);
+        return addTypeValidators(this, true, { validator: (arr) => arr.length > 0 });
     }
 };

@@ -1,4 +1,6 @@
 export declare const validationState: {
-    currentKeypath: string;
+    errorMessage: string | null;
+    errorTypes: Array<string>;
     errorKeypatch: string | null;
+    currentKeypath: string;
 };

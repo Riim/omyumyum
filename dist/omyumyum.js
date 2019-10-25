@@ -7,12 +7,21 @@ export function OmYumYum(validator, value) {
             return om(validator, value);
         };
     }
+    validationState.errorMessage = null;
+    validationState.errorTypes.length = 0;
     validationState.errorKeypatch = null;
     if (!validator(value)) {
         if (validationState.errorKeypatch) {
-            throw TypeError(`Type mismatch at "${validationState.errorKeypatch}"`);
+            throw TypeError(validationState.errorMessage
+                ? validationState.errorMessage + ` (at "${validationState.errorKeypatch}")`
+                : validationState.errorTypes
+                    ? `Expected type "${validationState.errorTypes.join('" or "')}" (at "${validationState.errorKeypatch}")`
+                    : `Type mismatch at "${validationState.errorKeypatch}"`);
         }
-        throw TypeError('Type mismatch');
+        throw TypeError(validationState.errorMessage ||
+            (validationState.errorTypes
+                ? `Expected type "${validationState.errorTypes.join('" or "')}"`
+                : 'Type mismatch'));
     }
     return true;
 }
