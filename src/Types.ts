@@ -85,13 +85,13 @@ export const typesProto: Object = {
 	},
 
 	get null(this: ITypes): IType {
-		return this.custom(isNull);
+		return this.custom({ validator: isNull, type: 'null' });
 	},
 	get undefined(this: ITypes): IType {
-		return this.custom(isUndefined);
+		return this.custom({ validator: isUndefined, type: 'undefined' });
 	},
 	get vacuum(this: ITypes): IType {
-		return this.custom(isVacuum);
+		return this.custom({ validator: isVacuum, type: 'vacuum' });
 	},
 	get boolean(this: ITypes): IType {
 		return this.custom({ validator: isBoolean, type: 'boolean' });
