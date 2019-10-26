@@ -32,7 +32,7 @@ describe('om', () => {
 	});
 
 	it('бросает ошибку (2)', () => {
-		let message = 'Вы ещё слишком маленький/ая';
+		let message = 'Ты ещё слишком маленький/ая';
 		let isLegalAge = om.number.and.custom((age: number) => age >= 18 || message);
 		let isUserData = om.object.shape({
 			name: om.string,
@@ -50,12 +50,35 @@ describe('om', () => {
 		}).to.throws(TypeError, message + ' (at "age")');
 	});
 
+	it('бросает ошибку (3)', () => {
+		let message = 'Ты ещё слишком маленький/ая';
+		let isLegalAge = om.number.and.custom({
+			validator: (age: number) => age >= 18,
+			message
+		});
+
+		expect(() => {
+			om(isLegalAge)(18);
+		}).to.not.throws();
+		expect(() => {
+			om(isLegalAge)(17);
+		}).to.throws(TypeError, message);
+	});
+
 	it('.custom()', () => {
 		let isOne = om.custom(value => value === 1);
 
 		expect(isOne(1)).to.true;
 		expect(isOne(2)).to.false;
 		expect(isOne('1')).to.false;
+	});
+
+	it('.custom() (2)', () => {
+		let isZero = om.number.and.custom(num => num);
+
+		expect(() => {
+			om(isZero)(1);
+		}).to.not.throws();
 	});
 
 	it('.[type].and', () => {
@@ -328,6 +351,11 @@ describe('om', () => {
 		expect(isUserData({ name: 'Иванушка', age: null })).to.true;
 		expect(isUserData({ name: 'Иванушка', age: '1' })).to.false;
 		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.true;
+
+		expect(() => {
+			let isNumericObject = om.object.values(om.number);
+			om(isNumericObject, { prop1: 1, prop2: '2' });
+		}).to.throws(TypeError, 'Expected type "number" at "prop2"');
 	});
 
 	it('.object.exactShape()', () => {
@@ -368,6 +396,10 @@ describe('om', () => {
 		expect(isNumericArray([1, 2])).to.true;
 		expect(isNumericArray(['1'])).to.false;
 		expect(isNumericArray([1, '2'])).to.false;
+
+		expect(() => {
+			om(isNumericArray, [1, '2']);
+		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.array.of() (2)', () => {
@@ -379,7 +411,7 @@ describe('om', () => {
 		expect(isArrayOfNumberAndString(['1'])).to.true;
 		expect(isArrayOfNumberAndString([1, '2'])).to.true;
 		expect(isArrayOfNumberAndString([true])).to.false;
-		expect(isArrayOfNumberAndString([true, false])).to.false;
+		expect(isArrayOfNumberAndString([1, false])).to.false;
 	});
 
 	it('.array.nonEmpty', () => {
@@ -415,6 +447,13 @@ describe('om', () => {
 
 		expect(isNumericMap(new Map([[1, 1], [2, 2]]))).to.true;
 		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+
+		expect(() => {
+			om(isNumericMap, new Map<number, any>([[1, '1']]));
+		}).to.throws(TypeError, 'Expected type "number" at "[1][1]"');
+		expect(() => {
+			om(om.map.of(om.number), new Map<number, any>([[1, '1']]));
+		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.map.values()', () => {
@@ -422,6 +461,10 @@ describe('om', () => {
 
 		expect(isNumericMap(new Map<any, number>([[1, 1], ['2', 2]]))).to.true;
 		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+
+		expect(() => {
+			om(isNumericMap, new Map<number, any>([[1, '1']]));
+		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.map.keys()', () => {
@@ -429,6 +472,10 @@ describe('om', () => {
 
 		expect(isMapWithNumericKeys(new Map<any, number>([[1, 1], ['2', 2]]))).to.false;
 		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
+
+		expect(() => {
+			om(isMapWithNumericKeys, new Map<any, number>([['1', 1]]));
+		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.map.nonEmpty', () => {
@@ -450,6 +497,10 @@ describe('om', () => {
 
 		expect(isNumericSet(new Set<number>([1, 1]))).to.true;
 		expect(isNumericSet(new Set<any>([1, '2']))).to.false;
+
+		expect(() => {
+			om(isNumericSet, new Set<any>([1, '2']));
+		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.set.nonEmpty', () => {
