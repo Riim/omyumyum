@@ -32,10 +32,10 @@
 	        validationState.errorTypes.length = 0;
 	    }
 	    else if (!validationState.errorMessage) {
-	        if (hasOwn.call(validator, 'message')) {
+	        if (validator.message && hasOwn.call(validator, 'message')) {
 	            validationState.errorMessage = validator.message;
 	        }
-	        if (hasOwn.call(validator, 'type')) {
+	        if (validator.type && hasOwn.call(validator, 'type')) {
 	            validationState.errorTypes.push(validator.type);
 	        }
 	    }
@@ -462,17 +462,15 @@
 	    validationState.errorTypes.length = 0;
 	    validationState.errorKeypatch = null;
 	    if (!validator(value)) {
-	        if (validationState.errorKeypatch) {
-	            throw TypeError(validationState.errorMessage
-	                ? validationState.errorMessage + ` (at "${validationState.errorKeypatch}")`
-	                : validationState.errorTypes
-	                    ? `Expected type "${validationState.errorTypes.join('" or "')}" at "${validationState.errorKeypatch}"`
-	                    : `Type mismatch at "${validationState.errorKeypatch}"`);
-	        }
-	        throw TypeError(validationState.errorMessage ||
-	            (validationState.errorTypes
+	        throw TypeError((validationState.errorMessage ||
+	            (validationState.errorTypes.length
 	                ? `Expected type "${validationState.errorTypes.join('" or "')}"`
-	                : 'Type mismatch'));
+	                : 'Type mismatch')) +
+	            (validationState.errorKeypatch
+	                ? validationState.errorMessage
+	                    ? ` (at "${validationState.errorKeypatch}")`
+	                    : ` at "${validationState.errorKeypatch}"`
+	                : ''));
 	    }
 	    return true;
 	}

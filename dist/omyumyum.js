@@ -11,17 +11,15 @@ export function OmYumYum(validator, value) {
     validationState.errorTypes.length = 0;
     validationState.errorKeypatch = null;
     if (!validator(value)) {
-        if (validationState.errorKeypatch) {
-            throw TypeError(validationState.errorMessage
-                ? validationState.errorMessage + ` (at "${validationState.errorKeypatch}")`
-                : validationState.errorTypes
-                    ? `Expected type "${validationState.errorTypes.join('" or "')}" at "${validationState.errorKeypatch}"`
-                    : `Type mismatch at "${validationState.errorKeypatch}"`);
-        }
-        throw TypeError(validationState.errorMessage ||
-            (validationState.errorTypes
+        throw TypeError((validationState.errorMessage ||
+            (validationState.errorTypes.length
                 ? `Expected type "${validationState.errorTypes.join('" or "')}"`
-                : 'Type mismatch'));
+                : 'Type mismatch')) +
+            (validationState.errorKeypatch
+                ? validationState.errorMessage
+                    ? ` (at "${validationState.errorKeypatch}")`
+                    : ` at "${validationState.errorKeypatch}"`
+                : ''));
     }
     return true;
 }

@@ -19,10 +19,10 @@ function cb2(validator) {
         validationState.errorTypes.length = 0;
     }
     else if (!validationState.errorMessage) {
-        if (hasOwn.call(validator, 'message')) {
+        if (validator.message && hasOwn.call(validator, 'message')) {
             validationState.errorMessage = validator.message;
         }
-        if (hasOwn.call(validator, 'type')) {
+        if (validator.type && hasOwn.call(validator, 'type')) {
             validationState.errorTypes.push(validator.type);
         }
     }
