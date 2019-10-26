@@ -30,9 +30,9 @@ export function OmYumYum(validator: TValidator, value?: any): any {
 				validationState.errorMessage
 					? validationState.errorMessage + ` (at "${validationState.errorKeypatch}")`
 					: validationState.errorTypes
-					? `Expected type "${validationState.errorTypes.join('" or "')}" (at "${
+					? `Expected type "${validationState.errorTypes.join('" or "')}" at "${
 							validationState.errorKeypatch
-					  }")`
+					  }"`
 					: `Type mismatch at "${validationState.errorKeypatch}"`
 			);
 		}
