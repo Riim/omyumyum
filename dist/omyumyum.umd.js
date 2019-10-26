@@ -466,7 +466,7 @@
 	            throw TypeError(validationState.errorMessage
 	                ? validationState.errorMessage + ` (at "${validationState.errorKeypatch}")`
 	                : validationState.errorTypes
-	                    ? `Expected type "${validationState.errorTypes.join('" or "')}" (at "${validationState.errorKeypatch}")`
+	                    ? `Expected type "${validationState.errorTypes.join('" or "')}" at "${validationState.errorKeypatch}"`
 	                    : `Type mismatch at "${validationState.errorKeypatch}"`);
 	        }
 	        throw TypeError(validationState.errorMessage ||
