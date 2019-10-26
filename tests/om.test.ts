@@ -25,7 +25,7 @@ describe('om', () => {
 		}).to.throws(TypeError);
 		expect(() => {
 			om(isSomeData, { prop1: [{ prop2: 1 }, { prop2: '2' }] });
-		}).to.throws(TypeError, 'Expected type "boolean" or "number" (at "prop1[1].prop2")');
+		}).to.throws(TypeError, 'Expected type "boolean" or "number" at "prop1[1].prop2"');
 		expect(() => {
 			om(om.object, 1);
 		}).to.throws(TypeError, 'Expected type "Object"');
