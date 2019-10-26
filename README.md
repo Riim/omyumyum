@@ -28,7 +28,7 @@ isOptionalNumber(1);
 // => true
 
 om(isOptionalNumber, '1');
-// Throws TypeError
+// throws TypeError('Expected type "number"')
 om(isOptionalNumber, 1);
 // Ok
 
@@ -40,8 +40,8 @@ isNumericArray([1]);
 // => true
 
 om(isNumericArray, [1, 2, '3']);
-// Throws TypeError('Type mismatch at "[2]"')
-// Keypath to incorrect data in error message
+// Throws TypeError('Expected type "number" at "[2]"').
+// Keypath to incorrect data in error message.
 
 const isUserData = om.object.shape({
 	name: om.string,
@@ -60,7 +60,7 @@ isUserData({ name: 'Иванушка', age: 20 });
 // => true
 
 om(isUserData, { name: 'Иванушка', age: '1' });
-// Throws TypeError('Expected type "number" (at "age")')
+// throws TypeError('Expected type "number" at "age"')
 
 const isEmailOrPhone = om.custom(require('is-email')).or.custom(require('is-phone'));
 
@@ -118,7 +118,18 @@ interface IType {
 
 - ##### om(validator: TValidator, value: any): true;
 		om(validator: TValidator): (value: any) => true;
-	Returns true if the value is valid, and throws a TypeError otherwise.
+	Returns true if the value is valid, and throws a TypeError otherwise. Example:
+	```js
+	const isNumber = om.number;
+
+	om(isNumber, '1');
+	// throws TypeError('Expected type "number"')
+
+	let isNumberOrThrow = om(isNumber);
+
+	isNumberOrThrow('1');
+	// throws TypeError('Expected type "number"')
+	```
 - ##### om.custom(validator: ((value: any) => boolean | string) | { validator: TValidator, message?: string, type?: string }): IType;
 	Uses a custom validator. Example:
 	```js
@@ -126,6 +137,36 @@ interface IType {
 
 	isUserOrNull(new User(data));
 	// => true
+	```
+	Return the string as an error message:
+	```js
+	const isLegalAge = om.number.and.custom(age => age >= 18 || 'You are still too small');
+
+	om(isLegalAge, 17);
+	// throws TypeError('You are still too small')
+	```
+	Use the object with the `message` property as an error message:
+	```js
+	const isLegalAge = om.number.and.custom({
+		validator: gte(18),
+		message: 'You are still too small'
+	});
+
+	om(isLegalAge, 17);
+	// throws TypeError('You are still too small')
+	```
+	Use the object with the `type` property as the type in an error message:
+	```js
+	const isType1OrType2 = om.custom({
+		validator: type1Validator,
+		type: 'type1'
+	}).or.custom({
+		validator: type2Validator,
+		type: 'type2'
+	});
+
+	om(isType1OrType2, type3Value);
+	// throws TypeError('Expected type "type1" or "type2"')
 	```
 - ##### om.null: IType;
 	Matches a null.
