@@ -27,11 +27,11 @@ function cb2(this: any, validator: I$Validator): boolean {
 	if (result) {
 		validationState.errorTypes.length = 0;
 	} else if (!validationState.errorMessage) {
-		if (hasOwn.call(validator, 'message')) {
-			validationState.errorMessage = validator.message!;
+		if (validator.message && hasOwn.call(validator, 'message')) {
+			validationState.errorMessage = validator.message;
 		}
-		if (hasOwn.call(validator, 'type')) {
-			validationState.errorTypes.push(validator.type!);
+		if (validator.type && hasOwn.call(validator, 'type')) {
+			validationState.errorTypes.push(validator.type);
 		}
 	}
 
