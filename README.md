@@ -117,7 +117,7 @@ interface IType {
 ```
 
 - ##### om(validator: TValidator, value: any): true;
-		om(validator: TValidator): (value: any) => true;
+	Alternative signature: `om(validator: TValidator): (value: any) => true;`
 	Returns true if the value is valid, and throws a TypeError otherwise. Example:
 	```js
 	const isNumber = om.number;
@@ -195,52 +195,62 @@ interface IType {
 	}
 	```
 	- ###### om.number.lt(value: number): INumberType;
-		Less than value.
+		Number must be less than the specified value.
 	- ###### om.number.less(value: number): INumberType;
 		Alias for `om.number.lt()`.
 	- ###### om.number.lte(value: number): INumberType;
-		Less than or equal value.
+		Number must be less than or equal to the specified value.
 	- ###### om.number.max(value: number): INumberType;
 		Alias for `om.number.lte()`.
 	- ###### om.number.gt(value: number): INumberType;
-		Greater than value.
+		Number must be greater than the specified value.
 	- ###### om.number.greater(value: number): INumberType;
 		Alias for `om.number.gt()`.
 	- ###### om.number.gte(value: number): INumberType;
-		Greater than or equal value.
+		Number must be greater than or equal to the specified value.
 	- ###### om.number.min(value: number): INumberType;
 		Alias for `om.number.gte()`.
 	- ###### om.number.between(minValue: number, maxValue: number): INumberType;
+		Number must be in the specified range.
 	- ###### om.number.positive: INumberType;
+		Number must be positive.
 	- ###### om.number.negative: INumberType;
+		Number must be negative.
 	- ###### om.number.integer: INumberType;
+		Number must be an integer.
 - ##### om.string: IStringType;
 	Matches a string data type.
 	```js
 	interface IStringType extends IType {
-		nonZero: IStringType;
-		nonEmpty: IStringType;
-		len(length: number): IStringType;
-		min(length: number): IStringType;
-		max(length: number): IStringType;
+		len(value: number): IStringType;
+		min(value: number): IStringType;
+		max(value: number): IStringType;
 		pattern(re: RegExp): IStringType;
 		matches(re: RegExp): IStringType;
 		startsWith(searchString: string, position?: number): IStringType;
 		endsWith(searchString: string, position?: number): IStringType;
+		nonZero: IStringType;
+		nonEmpty: IStringType;
 	}
 	```
+	- ###### om.string.len(value: number): IStringType;
+		Length of string must be equal to the specified value.
+	- ###### om.string.min(value: number): IStringType;
+		Length of string must be greater than or equal to the specified value.
+	- ###### om.string.max(value: number): IStringType;
+		Length of string must be less than or equal to the specified value.
+	- ###### om.string.pattern(re: RegExp): IStringType;
+		String must match the specified regular expression.
+	- ###### om.string.matches(re: RegExp): IStringType;
+		Alias for `om.string.pattern()`.
+	- ###### om.string.startsWith(searchString: string, position?: number): IStringType;
+		String must begin with the specified substring.
+	- ###### om.string.endsWith(searchString: string, position?: number): IStringType;
+		String must end with the specified substring.
 	- ###### om.string.nonZero: IStringType;
 		Same as `om.string.min(1)`.
 	- ###### om.string.nonEmpty: IStringType;
 		Same as `om.string.pattern(/\S/)`.
-	- ###### om.string.len(length: number): IStringType;
-	- ###### om.string.min(length: number): IStringType;
-	- ###### om.string.max(length: number): IStringType;
-	- ###### om.string.pattern(re: RegExp): IStringType;
-	- ###### om.string.matches(re: RegExp): IStringType;
-		Alias for `om.string.pattern()`.
-	- ###### om.string.startsWith(searchString: string, position?: number): IStringType;
-	- ###### om.string.endsWith(searchString: string, position?: number): IStringType;
 - ##### om.symbol: IType;
 	Matches a symbol data type.
 - ##### om.object: IObjectType;
@@ -254,9 +264,13 @@ interface IType {
 	}
 	```
 	- ###### om.object.shape(shape: Record<string, TValidator>, exact = false): IType;
+		Object must match the specified shape.
     - ###### om.object.exactShape(shape: Record<string, TValidator>): IType;
+		Object must exactly match the specified shape.
     - ###### om.object.values(validator: TValidator): IType;
+		// TODO
     - ###### om.object.nonEmpty: IType;
+		// TODO
 - ##### om.array: IArrayType;
 	Matches an array data type.
 	```js
@@ -266,6 +280,7 @@ interface IType {
 	}
 	```
 	- ###### om.array.of(validator: TValidator): IType;
+		// TODO
 - ##### om.function: IType;
 	Matches a function type.
 - ##### om.func: IType;
@@ -281,8 +296,11 @@ interface IType {
 	}
 	```
 	- ###### om.map.of(validator: TValidator): IMapType;
+		// TODO
 	- ###### om.map.values(validator: TValidator): IMapType;
+		// TODO
 	- ###### om.map.keys(validator: TValidator): IMapType;
+		// TODO
 - ##### om.set: ISetType;
 	Matches a `Set` type.
 	```js
@@ -292,16 +310,21 @@ interface IType {
 	}
 	```
 	- ###### om.set.of(validator: TValidator): ISetType;
+		// TODO
 - ##### om.weakMap: IMapType;
 	Matches a `WeakMap` type.
 	- ###### om.weakMap.of(validator: TValidator): IMapType;
+		// TODO
 	- ###### om.weakMap.values(validator: TValidator): IMapType;
+		// TODO
 	- ###### om.weakMap.keys(validator: TValidator): IMapType;
+		// TODO
 - ##### om.wmap: IMapType;
 	Alias for `om.weakMap`.
 - ##### om.weakSet: ISetType;
 	Matches a `WeakSet` type.
 	- ###### om.weakSet.of(validator: TValidator): ISetType;
+		// TODO
 - ##### om.wset: ISetType;
 	Alias for `om.weakSet`.
 - ##### om.date: IDateType;
@@ -313,7 +336,9 @@ interface IType {
 	}
 	```
 	- ###### om.date.before(beforeDate: Date | string | number): IDateType;
+		// TODO
 	- ###### om.date.after(afterDate: Date | string | number): IDateType;
+		// TODO
 - ##### om.regExp: IType;
 	Matches a `RegExp` type.
 - ##### om.regex: IType;
