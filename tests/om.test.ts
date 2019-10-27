@@ -636,11 +636,38 @@ describe('om', () => {
 	});
 
 	it('.allow()', () => {
-		let isNumberAndString1 = om.number.allow('1');
+		let isNumberOrString1OrNaN = om.number.allow('1').allow(NaN);
 
-		expect(isNumberAndString1(1)).to.true;
-		expect(isNumberAndString1('1')).to.true;
-		expect(isNumberAndString1('2')).to.false;
+		expect(isNumberOrString1OrNaN(1)).to.true;
+		expect(isNumberOrString1OrNaN('1')).to.true;
+		expect(isNumberOrString1OrNaN('2')).to.false;
+		expect(isNumberOrString1OrNaN(NaN)).to.true;
+	});
+
+	it('.notAllow()', () => {
+		let isNumberNot2 = om.number.notAllow(2);
+
+		expect(isNumberNot2(1)).to.true;
+		expect(isNumberNot2(2)).to.false;
+		expect(isNumberNot2(3)).to.true;
+	});
+
+	it('.oneOf()', () => {
+		let isNumberOrString1OrNaN = om.number.oneOf(['1', NaN]);
+
+		expect(isNumberOrString1OrNaN(1)).to.true;
+		expect(isNumberOrString1OrNaN('1')).to.true;
+		expect(isNumberOrString1OrNaN('2')).to.false;
+		expect(isNumberOrString1OrNaN(NaN)).to.true;
+	});
+
+	it('.notOneOf()', () => {
+		let isNumberNot2AndNot3 = om.number.notOneOf([2, 3]);
+
+		expect(isNumberNot2AndNot3(1)).to.true;
+		expect(isNumberNot2AndNot3(2)).to.false;
+		expect(isNumberNot2AndNot3(3)).to.false;
+		expect(isNumberNot2AndNot3(4)).to.true;
 	});
 
 	it('.not.[type]', () => {

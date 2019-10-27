@@ -110,15 +110,18 @@ isNotVacuum(undefined);
 type TValidator = (value: any) => boolean;
 interface IType {
 	(value: any): boolean;
-	or: ITypes;
 	and: ITypes;
+	or: ITypes;
 	allow(value: any): IType;
+	notAllow(value: any): IType;
+	oneOf(values: Array<any>): IType;
+	notOneOf(values: Array<any>): IType;
 }
 ```
 
 - ##### om(validator: TValidator, value: any): true;
 	Alternative signature: `om(validator: TValidator): (value: any) => true;`
-	Returns true if the value is valid, and throws a TypeError otherwise. Example:
+	Returns true if the value is valid and throws a TypeError otherwise. Example:
 	```js
 	const isNumber = om.number;
 

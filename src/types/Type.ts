@@ -21,6 +21,9 @@ export interface IType {
 	and: ITypes;
 	or: ITypes;
 	allow(value: any): IType;
+	notAllow(value: any): IType;
+	oneOf(values: Array<any>): IType;
+	notOneOf(values: Array<any>): IType;
 }
 
 export const typeProto = {
@@ -52,6 +55,33 @@ export const typeProto = {
 			this,
 			false,
 			{ validator: (val: any) => Object.is(val, value) },
+			typeProto
+		);
+	},
+
+	notAllow(value: any): IType {
+		return addTypeValidators(
+			this,
+			true,
+			{ validator: (val: any) => !Object.is(val, value) },
+			typeProto
+		);
+	},
+
+	oneOf(values: Array<any>): IType {
+		return addTypeValidators(
+			this,
+			false,
+			{ validator: (val: any) => values.includes(val) },
+			typeProto
+		);
+	},
+
+	notOneOf(values: Array<any>): IType {
+		return addTypeValidators(
+			this,
+			true,
+			{ validator: (val: any) => !values.includes(val) },
 			typeProto
 		);
 	}
