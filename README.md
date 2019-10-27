@@ -319,6 +319,8 @@ interface IType {
 	```
 	- ###### om.set.of(validator: TValidator): ISetType;
 		Set values must match the specified validator.
+	- ###### om.set.nonEmpty: ISetType;
+		Set must not be empty.
 - ##### om.weakMap: IMapType;
 	Matches a `WeakMap` type.
 	- ###### om.weakMap.keys(validator: TValidator): IMapType;
@@ -333,6 +335,8 @@ interface IType {
 	Matches a `WeakSet` type.
 	- ###### om.weakSet.of(validator: TValidator): ISetType;
 		WeakSet values must match the specified validator.
+	- ###### om.weakSet.nonEmpty: ISetType;
+		WeakSet must not be empty.
 - ##### om.wset: ISetType;
 	Alias for `om.weakSet`.
 - ##### om.date: IDateType;
@@ -350,9 +354,9 @@ interface IType {
 	- ###### om.date.later(afterDate: Date | string | number): IDateType;
 		Date is later than the specified date.
 	- ###### om.date.before(beforeDate: Date | string | number): IDateType;
-		Alias for `om.date.earlier`.
+		Alias for `om.date.earlier()`.
 	- ###### om.date.after(afterDate: Date | string | number): IDateType;
-		Alias for `om.date.later`.
+		Alias for `om.date.later()`.
 - ##### om.regExp: IType;
 	Matches a `RegExp` type.
 - ##### om.regex: IType;
