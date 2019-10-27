@@ -262,6 +262,7 @@ interface IType {
 	interface IObjectType extends IType {
 		shape(shape: Record<string, TValidator>, exact = false): IObjectType;
 		exactShape(shape: Record<string, TValidator>): IObjectType;
+		keys(re: RegExp): IObjectType;
 		values(validator: TValidator): IObjectType;
 		nonEmpty: IObjectType;
 	}
@@ -270,6 +271,8 @@ interface IType {
 		Object must match the specified shape.
     - ###### om.object.exactShape(shape: Record<string, TValidator>): IType;
 		Object must exactly match the specified shape.
+    - ###### om.object.keys(re: RegExp): IObjectType;
+		// TODO
     - ###### om.object.values(validator: TValidator): IType;
 		// TODO
     - ###### om.object.nonEmpty: IType;

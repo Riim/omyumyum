@@ -12,6 +12,7 @@ const hasOwn = Object.prototype.hasOwnProperty;
 export interface IObjectType extends IType {
 	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType;
 	exactShape(shape: Record<string, TValidator>): IObjectType;
+	keys(re: RegExp): IObjectType;
 	values(validator: TValidator): IObjectType;
 	nonEmpty: IObjectType;
 }
@@ -52,6 +53,10 @@ function cb2(this: TValidator, entry: any): boolean {
 	return result;
 }
 
+function cb3(this: RegExp, key: string) {
+	return this.test(key);
+}
+
 export const objectTypeProto: Object = {
 	__proto__: typeProto,
 
@@ -72,6 +77,12 @@ export const objectTypeProto: Object = {
 
 	exactShape(shape: Record<string, TValidator>): IObjectType {
 		return this.shape(shape, true) as IObjectType;
+	},
+
+	keys(re: RegExp): IObjectType {
+		return addTypeValidators(this, true, {
+			validator: (obj: object) => Object.keys(obj).every(cb3, re)
+		});
 	},
 
 	values(validator: TValidator): IObjectType {

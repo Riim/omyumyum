@@ -367,6 +367,13 @@ describe('om', () => {
 		expect(isUserData({ name: 'Иванушка', age: 1, friends: [] })).to.false;
 	});
 
+	it('.object.keys()', () => {
+		let isObjectWithAlphaKeys = om.object.keys(/^[a-zA-Z]+$/);
+
+		expect(isObjectWithAlphaKeys({ a: 1, b: 2, c: 3 })).to.true;
+		expect(isObjectWithAlphaKeys({ a: 1, b: 2, _c: 3 })).to.false;
+	});
+
 	it('.object.values()', () => {
 		let isObjectWithNumericValues = om.object.values(om.number);
 
