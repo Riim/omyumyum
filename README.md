@@ -191,6 +191,7 @@ interface IType {
 		greater(value: number): INumberType;
 		gte(value: number): INumberType;
 		min(value: number): INumberType;
+		inRange(minValue: number, maxValue: number): INumberType;
 		between(minValue: number, maxValue: number): INumberType;
 		positive: INumberType;
 		negative: INumberType;
@@ -213,8 +214,10 @@ interface IType {
 		Number must be greater than or equal to the specified value.
 	- ###### om.number.min(value: number): INumberType;
 		Alias for `om.number.gte()`.
-	- ###### om.number.between(minValue: number, maxValue: number): INumberType;
+	- ###### om.number.inRange(minValue: number, maxValue: number): INumberType;
 		Number must be in the specified range.
+	- ###### om.number.between(minValue: number, maxValue: number): INumberType;
+		Alias for `om.number.inRange()`.
 	- ###### om.number.positive: INumberType;
 		Number must be positive.
 	- ###### om.number.negative: INumberType;

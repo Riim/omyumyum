@@ -10,6 +10,7 @@ export interface INumberType extends IType {
 	greater(value: number): INumberType;
 	gte(value: number): INumberType;
 	min(value: number): INumberType;
+	inRange(minValue: number, maxValue: number): INumberType;
 	between(minValue: number, maxValue: number): INumberType;
 	positive: INumberType;
 	negative: INumberType;
@@ -51,8 +52,12 @@ export const numberTypeProto: Object = {
 		return this.gte(value);
 	},
 
-	between(minValue: number, maxValue: number): INumberType {
+	inRange(minValue: number, maxValue: number): INumberType {
 		return this.gte(minValue).lte(maxValue);
+	},
+
+	between(minValue: number, maxValue: number): INumberType {
+		return this.inRange(minValue, maxValue);
 	},
 
 	get positive(): INumberType {
