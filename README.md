@@ -339,14 +339,20 @@ interface IType {
 	Matches a `Date` type.
 	```js
 	interface IDateType extends IType {
+		earlier(earlierThanDate: Date | string | number): IDateType;
+		later(laterThanDate: Date | string | number): IDateType;
 		before(beforeDate: Date | string | number): IDateType;
 		after(afterDate: Date | string | number): IDateType;
 	}
 	```
+	- ###### om.date.earlier(beforeDate: Date | string | number): IDateType;
+		Date is earlier than the specified date.
+	- ###### om.date.later(afterDate: Date | string | number): IDateType;
+		Date is later than the specified date.
 	- ###### om.date.before(beforeDate: Date | string | number): IDateType;
-		// TODO
+		Alias for `om.date.earlier`.
 	- ###### om.date.after(afterDate: Date | string | number): IDateType;
-		// TODO
+		Alias for `om.date.later`.
 - ##### om.regExp: IType;
 	Matches a `RegExp` type.
 - ##### om.regex: IType;
