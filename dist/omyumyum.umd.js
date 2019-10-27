@@ -93,6 +93,15 @@
 	    },
 	    allow(value) {
 	        return addTypeValidators(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
+	    },
+	    notAllow(value) {
+	        return addTypeValidators(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
+	    },
+	    oneOf(values) {
+	        return addTypeValidators(this, false, { validator: (val) => values.includes(val) }, typeProto);
+	    },
+	    notOneOf(values) {
+	        return addTypeValidators(this, true, { validator: (val) => !values.includes(val) }, typeProto);
 	    }
 	};
 
@@ -262,6 +271,9 @@
 	    validationState.currentKeypath = prevKeypath;
 	    return result;
 	}
+	function cb3(key) {
+	    return this.test(key);
+	}
 	const objectTypeProto = {
 	    __proto__: typeProto,
 	    shape(shape, exact) {
@@ -277,6 +289,11 @@
 	    },
 	    exactShape(shape) {
 	        return this.shape(shape, true);
+	    },
+	    keys(re) {
+	        return addTypeValidators(this, true, {
+	            validator: (obj) => Object.keys(obj).every(cb3, re)
+	        });
 	    },
 	    values(validator) {
 	        return addTypeValidators(this, true, {

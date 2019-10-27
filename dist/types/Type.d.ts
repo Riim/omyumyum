@@ -17,6 +17,9 @@ export interface IType {
     and: ITypes;
     or: ITypes;
     allow(value: any): IType;
+    notAllow(value: any): IType;
+    oneOf(values: Array<any>): IType;
+    notOneOf(values: Array<any>): IType;
 }
 export declare const typeProto: {
     __proto__: Function;
@@ -24,4 +27,7 @@ export declare const typeProto: {
     readonly and: ITypes;
     readonly or: ITypes;
     allow(value: any): IType;
+    notAllow(value: any): IType;
+    oneOf(values: any[]): IType;
+    notOneOf(values: any[]): IType;
 };

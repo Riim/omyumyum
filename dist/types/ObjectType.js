@@ -26,6 +26,9 @@ function cb2(entry) {
     validationState.currentKeypath = prevKeypath;
     return result;
 }
+function cb3(key) {
+    return this.test(key);
+}
 export const objectTypeProto = {
     __proto__: typeProto,
     shape(shape, exact) {
@@ -41,6 +44,11 @@ export const objectTypeProto = {
     },
     exactShape(shape) {
         return this.shape(shape, true);
+    },
+    keys(re) {
+        return addTypeValidators(this, true, {
+            validator: (obj) => Object.keys(obj).every(cb3, re)
+        });
     },
     values(validator) {
         return addTypeValidators(this, true, {
