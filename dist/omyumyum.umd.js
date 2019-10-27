@@ -199,22 +199,32 @@
 
 	const numberTypeProto = {
 	    __proto__: typeProto,
-	    min(minValue) {
-	        return addTypeValidators(this, true, { validator: (num) => num >= minValue });
+	    lt(value) {
+	        return addTypeValidators(this, true, { validator: (num) => num < value });
 	    },
-	    max(maxValue) {
-	        return addTypeValidators(this, true, { validator: (num) => num <= maxValue });
+	    less(value) {
+	        return this.lt(value);
 	    },
-	    less(lessThanValue) {
-	        return addTypeValidators(this, true, { validator: (num) => num < lessThanValue });
+	    lte(value) {
+	        return addTypeValidators(this, true, { validator: (num) => num <= value });
 	    },
-	    greater(greaterThanValue) {
-	        return addTypeValidators(this, true, {
-	            validator: (num) => num > greaterThanValue
-	        });
+	    max(value) {
+	        return this.lte(value);
+	    },
+	    gt(value) {
+	        return addTypeValidators(this, true, { validator: (num) => num > value });
+	    },
+	    greater(value) {
+	        return this.gt(value);
+	    },
+	    gte(value) {
+	        return addTypeValidators(this, true, { validator: (num) => num >= value });
+	    },
+	    min(value) {
+	        return this.gte(value);
 	    },
 	    between(minValue, maxValue) {
-	        return this.min(minValue).max(maxValue);
+	        return this.gte(minValue).lte(maxValue);
 	    },
 	    get positive() {
 	        return this.min(0);
@@ -317,23 +327,17 @@
 
 	const stringTypeProto = {
 	    __proto__: typeProto,
-	    get nonZero() {
-	        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+	    len(value) {
+	        return addTypeValidators(this, true, { validator: (str) => str.length == value });
 	    },
-	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
-	    },
-	    len(length) {
-	        return addTypeValidators(this, true, { validator: (str) => str.length == length });
-	    },
-	    min(minLength) {
+	    minLen(value) {
 	        return addTypeValidators(this, true, {
-	            validator: (str) => str.length >= minLength
+	            validator: (str) => str.length >= value
 	        });
 	    },
-	    max(maxVength) {
+	    maxLen(value) {
 	        return addTypeValidators(this, true, {
-	            validator: (str) => str.length <= maxVength
+	            validator: (str) => str.length <= value
 	        });
 	    },
 	    pattern(re) {
@@ -351,6 +355,12 @@
 	        return addTypeValidators(this, true, {
 	            validator: (str) => str.endsWith(searchString, position)
 	        });
+	    },
+	    get nonZero() {
+	        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+	    },
+	    get nonEmpty() {
+	        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
 	    }
 	};
 

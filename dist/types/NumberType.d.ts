@@ -1,9 +1,13 @@
 import { IType } from './Type';
 export interface INumberType extends IType {
-    min(minValue: number): INumberType;
-    max(maxValue: number): INumberType;
-    less(lessThanValue: number): INumberType;
-    greater(greaterThanValue: number): INumberType;
+    lt(value: number): INumberType;
+    less(value: number): INumberType;
+    lte(value: number): INumberType;
+    max(value: number): INumberType;
+    gt(value: number): INumberType;
+    greater(value: number): INumberType;
+    gte(value: number): INumberType;
+    min(value: number): INumberType;
     between(minValue: number, maxValue: number): INumberType;
     positive: INumberType;
     negative: INumberType;

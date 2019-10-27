@@ -2,23 +2,17 @@ import { addTypeValidators } from '../addTypeValidators';
 import { typeProto } from './Type';
 export const stringTypeProto = {
     __proto__: typeProto,
-    get nonZero() {
-        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+    len(value) {
+        return addTypeValidators(this, true, { validator: (str) => str.length == value });
     },
-    get nonEmpty() {
-        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
-    },
-    len(length) {
-        return addTypeValidators(this, true, { validator: (str) => str.length == length });
-    },
-    min(minLength) {
+    minLen(value) {
         return addTypeValidators(this, true, {
-            validator: (str) => str.length >= minLength
+            validator: (str) => str.length >= value
         });
     },
-    max(maxVength) {
+    maxLen(value) {
         return addTypeValidators(this, true, {
-            validator: (str) => str.length <= maxVength
+            validator: (str) => str.length <= value
         });
     },
     pattern(re) {
@@ -36,5 +30,11 @@ export const stringTypeProto = {
         return addTypeValidators(this, true, {
             validator: (str) => str.endsWith(searchString, position)
         });
+    },
+    get nonZero() {
+        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+    },
+    get nonEmpty() {
+        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
     }
 };

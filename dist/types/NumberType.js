@@ -2,22 +2,32 @@ import { addTypeValidators } from '../addTypeValidators';
 import { typeProto } from './Type';
 export const numberTypeProto = {
     __proto__: typeProto,
-    min(minValue) {
-        return addTypeValidators(this, true, { validator: (num) => num >= minValue });
+    lt(value) {
+        return addTypeValidators(this, true, { validator: (num) => num < value });
     },
-    max(maxValue) {
-        return addTypeValidators(this, true, { validator: (num) => num <= maxValue });
+    less(value) {
+        return this.lt(value);
     },
-    less(lessThanValue) {
-        return addTypeValidators(this, true, { validator: (num) => num < lessThanValue });
+    lte(value) {
+        return addTypeValidators(this, true, { validator: (num) => num <= value });
     },
-    greater(greaterThanValue) {
-        return addTypeValidators(this, true, {
-            validator: (num) => num > greaterThanValue
-        });
+    max(value) {
+        return this.lte(value);
+    },
+    gt(value) {
+        return addTypeValidators(this, true, { validator: (num) => num > value });
+    },
+    greater(value) {
+        return this.gt(value);
+    },
+    gte(value) {
+        return addTypeValidators(this, true, { validator: (num) => num >= value });
+    },
+    min(value) {
+        return this.gte(value);
     },
     between(minValue, maxValue) {
-        return this.min(minValue).max(maxValue);
+        return this.gte(minValue).lte(maxValue);
     },
     get positive() {
         return this.min(0);
