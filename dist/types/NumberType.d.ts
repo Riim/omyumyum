@@ -8,6 +8,7 @@ export interface INumberType extends IType {
     greater(value: number): INumberType;
     gte(value: number): INumberType;
     min(value: number): INumberType;
+    inRange(minValue: number, maxValue: number): INumberType;
     between(minValue: number, maxValue: number): INumberType;
     positive: INumberType;
     negative: INumberType;

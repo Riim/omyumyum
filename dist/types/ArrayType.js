@@ -1,4 +1,5 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroLength } from '../lib/utils';
 import { validationState } from '../validationState';
 import { typeProto } from './Type';
 function cb(item, index) {
@@ -19,6 +20,6 @@ export const arrayTypeProto = {
         });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, { validator: (arr) => arr.length > 0 });
+        return addTypeValidators(this, true, { validator: isNonZeroLength });
     }
 };

@@ -1,5 +1,7 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroLength } from '../lib/utils';
 import { typeProto } from './Type';
+const isNonEmpty = (str) => /\S/.test(str);
 export const stringTypeProto = {
     __proto__: typeProto,
     len(value) {
@@ -32,9 +34,9 @@ export const stringTypeProto = {
         });
     },
     get nonZero() {
-        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+        return addTypeValidators(this, true, { validator: isNonZeroLength });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
+        return addTypeValidators(this, true, { validator: isNonEmpty });
     }
 };

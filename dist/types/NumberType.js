@@ -1,5 +1,6 @@
 import { addTypeValidators } from '../addTypeValidators';
 import { typeProto } from './Type';
+const isInteger = (num) => Number.isInteger(num);
 export const numberTypeProto = {
     __proto__: typeProto,
     lt(value) {
@@ -26,16 +27,19 @@ export const numberTypeProto = {
     min(value) {
         return this.gte(value);
     },
-    between(minValue, maxValue) {
+    inRange(minValue, maxValue) {
         return this.gte(minValue).lte(maxValue);
     },
+    between(minValue, maxValue) {
+        return this.inRange(minValue, maxValue);
+    },
     get positive() {
-        return this.min(0);
+        return this.gte(0);
     },
     get negative() {
-        return addTypeValidators(this, true, { validator: (num) => num < 0 });
+        return this.lt(0);
     },
     get integer() {
-        return addTypeValidators(this, true, { validator: (num) => Number.isInteger(num) });
+        return addTypeValidators(this, true, { validator: isInteger });
     }
 };

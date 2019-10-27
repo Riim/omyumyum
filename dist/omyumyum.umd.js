@@ -73,6 +73,9 @@
 	    return newType;
 	}
 
+	const isNonZeroLength = (obj) => obj.length > 0;
+	const isNonZeroSize = (obj) => obj.size > 0;
+
 	const typeProto = {
 	    __proto__: Function.prototype,
 	    [KEY_STATE]: null,
@@ -123,7 +126,7 @@
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: (arr) => arr.length > 0 });
+	        return addTypeValidators(this, true, { validator: isNonZeroLength });
 	    }
 	};
 
@@ -143,14 +146,13 @@
 
 	const mapTypeProto = {
 	    __proto__: typeProto,
-	    of(validator) {
+	    keys(validator) {
 	        return addTypeValidators(this, true, {
 	            validator: (map) => {
-	                for (let entry of map) {
+	                for (let [key] of map) {
 	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath =
-	                        validationState.currentKeypath + `[${entry[0]}]`;
-	                    if (!validator(entry)) {
+	                    validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
+	                    if (!validator(key)) {
 	                        if (!validationState.errorKeypatch) {
 	                            validationState.errorKeypatch = validationState.currentKeypath;
 	                        }
@@ -182,30 +184,12 @@
 	            }
 	        });
 	    },
-	    keys(validator) {
-	        return addTypeValidators(this, true, {
-	            validator: (map) => {
-	                for (let [key] of map) {
-	                    let prevKeypath = validationState.currentKeypath;
-	                    validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
-	                    if (!validator(key)) {
-	                        if (!validationState.errorKeypatch) {
-	                            validationState.errorKeypatch = validationState.currentKeypath;
-	                        }
-	                        validationState.currentKeypath = prevKeypath;
-	                        return false;
-	                    }
-	                    validationState.currentKeypath = prevKeypath;
-	                }
-	                return true;
-	            }
-	        });
-	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: (map) => map.size > 0 });
+	        return addTypeValidators(this, true, { validator: isNonZeroSize });
 	    }
 	};
 
+	const isInteger = (num) => Number.isInteger(num);
 	const numberTypeProto = {
 	    __proto__: typeProto,
 	    lt(value) {
@@ -232,17 +216,20 @@
 	    min(value) {
 	        return this.gte(value);
 	    },
-	    between(minValue, maxValue) {
+	    inRange(minValue, maxValue) {
 	        return this.gte(minValue).lte(maxValue);
 	    },
+	    between(minValue, maxValue) {
+	        return this.inRange(minValue, maxValue);
+	    },
 	    get positive() {
-	        return this.min(0);
+	        return this.gte(0);
 	    },
 	    get negative() {
-	        return addTypeValidators(this, true, { validator: (num) => num < 0 });
+	        return this.lt(0);
 	    },
 	    get integer() {
-	        return addTypeValidators(this, true, { validator: (num) => Number.isInteger(num) });
+	        return addTypeValidators(this, true, { validator: isInteger });
 	    }
 	};
 
@@ -338,10 +325,11 @@
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: (set) => set.size > 0 });
+	        return addTypeValidators(this, true, { validator: isNonZeroSize });
 	    }
 	};
 
+	const isNonEmpty = (str) => /\S/.test(str);
 	const stringTypeProto = {
 	    __proto__: typeProto,
 	    len(value) {
@@ -374,10 +362,10 @@
 	        });
 	    },
 	    get nonZero() {
-	        return addTypeValidators(this, true, { validator: (str) => str.length > 0 });
+	        return addTypeValidators(this, true, { validator: isNonZeroLength });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: (str) => /\S/.test(str) });
+	        return addTypeValidators(this, true, { validator: isNonEmpty });
 	    }
 	};
 
