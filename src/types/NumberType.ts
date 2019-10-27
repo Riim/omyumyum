@@ -2,10 +2,14 @@ import { addTypeValidators } from '../addTypeValidators';
 import { IType, typeProto } from './Type';
 
 export interface INumberType extends IType {
-	min(minValue: number): INumberType;
-	max(maxValue: number): INumberType;
-	less(lessThanValue: number): INumberType;
-	greater(greaterThanValue: number): INumberType;
+	lt(value: number): INumberType;
+	less(value: number): INumberType;
+	lte(value: number): INumberType;
+	max(value: number): INumberType;
+	gt(value: number): INumberType;
+	greater(value: number): INumberType;
+	gte(value: number): INumberType;
+	min(value: number): INumberType;
 	between(minValue: number, maxValue: number): INumberType;
 	positive: INumberType;
 	negative: INumberType;
@@ -15,26 +19,40 @@ export interface INumberType extends IType {
 export const numberTypeProto: Object = {
 	__proto__: typeProto,
 
-	min(minValue: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num >= minValue });
+	lt(value: number): INumberType {
+		return addTypeValidators(this, true, { validator: (num: number) => num < value });
 	},
 
-	max(maxValue: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num <= maxValue });
+	less(value: number): INumberType {
+		return this.lt(value);
 	},
 
-	less(lessThanValue: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num < lessThanValue });
+	lte(value: number): INumberType {
+		return addTypeValidators(this, true, { validator: (num: number) => num <= value });
 	},
 
-	greater(greaterThanValue: number): INumberType {
-		return addTypeValidators(this, true, {
-			validator: (num: number) => num > greaterThanValue
-		});
+	max(value: number): INumberType {
+		return this.lte(value);
+	},
+
+	gt(value: number): INumberType {
+		return addTypeValidators(this, true, { validator: (num: number) => num > value });
+	},
+
+	greater(value: number): INumberType {
+		return this.gt(value);
+	},
+
+	gte(value: number): INumberType {
+		return addTypeValidators(this, true, { validator: (num: number) => num >= value });
+	},
+
+	min(value: number): INumberType {
+		return this.gte(value);
 	},
 
 	between(minValue: number, maxValue: number): INumberType {
-		return this.min(minValue).max(maxValue);
+		return this.gte(minValue).lte(maxValue);
 	},
 
 	get positive(): INumberType {

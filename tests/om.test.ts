@@ -177,12 +177,12 @@ describe('om', () => {
 		expect(isNumber(-Infinity)).to.false;
 	});
 
-	it('.number.min()', () => {
-		let isNumberMin3 = om.number.min(3);
+	it('.number.less()', () => {
+		let isNumberLess3 = om.number.less(3);
 
-		expect(isNumberMin3(2)).to.false;
-		expect(isNumberMin3(3)).to.true;
-		expect(isNumberMin3(4)).to.true;
+		expect(isNumberLess3(2)).to.true;
+		expect(isNumberLess3(3)).to.false;
+		expect(isNumberLess3(4)).to.false;
 	});
 
 	it('.number.max()', () => {
@@ -193,20 +193,20 @@ describe('om', () => {
 		expect(isNumberMax3(4)).to.false;
 	});
 
-	it('.number.less()', () => {
-		let isNumberLess3 = om.number.less(3);
-
-		expect(isNumberLess3(2)).to.true;
-		expect(isNumberLess3(3)).to.false;
-		expect(isNumberLess3(4)).to.false;
-	});
-
 	it('.number.greater()', () => {
 		let isNumberGreater3 = om.number.greater(3);
 
 		expect(isNumberGreater3(2)).to.false;
 		expect(isNumberGreater3(3)).to.false;
 		expect(isNumberGreater3(4)).to.true;
+	});
+
+	it('.number.min()', () => {
+		let isNumberMin3 = om.number.min(3);
+
+		expect(isNumberMin3(2)).to.false;
+		expect(isNumberMin3(3)).to.true;
+		expect(isNumberMin3(4)).to.true;
 	});
 
 	it('.number.between()', () => {

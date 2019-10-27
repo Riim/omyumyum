@@ -2,41 +2,33 @@ import { addTypeValidators } from '../addTypeValidators';
 import { IType, typeProto } from './Type';
 
 export interface IStringType extends IType {
-	nonZero: IStringType;
-	nonEmpty: IStringType;
-	len(length: number): IStringType;
-	min(minLength: number): IStringType;
-	max(maxVength: number): IStringType;
+	len(value: number): IStringType;
+	min(value: number): IStringType;
+	max(value: number): IStringType;
 	pattern(re: RegExp): IStringType;
 	matches(re: RegExp): IStringType;
 	startsWith(searchString: string, position?: number): IStringType;
 	endsWith(searchString: string, position?: number): IStringType;
+	nonZero: IStringType;
+	nonEmpty: IStringType;
 }
 
 export const stringTypeProto: Object = {
 	__proto__: typeProto,
 
-	get nonZero(): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => str.length > 0 });
+	len(value: number): IStringType {
+		return addTypeValidators(this, true, { validator: (str: string) => str.length == value });
 	},
 
-	get nonEmpty(): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => /\S/.test(str) });
-	},
-
-	len(length: number): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => str.length == length });
-	},
-
-	min(minLength: number): IStringType {
+	min(value: number): IStringType {
 		return addTypeValidators(this, true, {
-			validator: (str: string) => str.length >= minLength
+			validator: (str: string) => str.length >= value
 		});
 	},
 
-	max(maxVength: number): IStringType {
+	max(value: number): IStringType {
 		return addTypeValidators(this, true, {
-			validator: (str: string) => str.length <= maxVength
+			validator: (str: string) => str.length <= value
 		});
 	},
 
@@ -58,5 +50,13 @@ export const stringTypeProto: Object = {
 		return addTypeValidators(this, true, {
 			validator: (str: string) => str.endsWith(searchString, position)
 		});
+	},
+
+	get nonZero(): IStringType {
+		return addTypeValidators(this, true, { validator: (str: string) => str.length > 0 });
+	},
+
+	get nonEmpty(): IStringType {
+		return addTypeValidators(this, true, { validator: (str: string) => /\S/.test(str) });
 	}
 };

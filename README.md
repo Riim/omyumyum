@@ -180,20 +180,36 @@ interface IType {
 	Matches a number data type except `NaN`, `Infinity` and `-Infinity`.
 	```js
 	interface INumberType extends IType {
-		min(minValue: number): INumberType;
-		max(maxValue: number): INumberType;
-		less(lessThanValue: number): INumberType;
-		greater(greaterThanValue: number): INumberType;
+		lt(value: number): INumberType;
+		less(value: number): INumberType;
+		lte(value: number): INumberType;
+		max(value: number): INumberType;
+		gt(value: number): INumberType;
+		greater(value: number): INumberType;
+		gte(value: number): INumberType;
+		min(value: number): INumberType;
 		between(minValue: number, maxValue: number): INumberType;
 		positive: INumberType;
 		negative: INumberType;
 		integer: INumberType;
 	}
 	```
-	- ###### om.number.min(minValue: number): INumberType;
-	- ###### om.number.max(maxValue: number): INumberType;
-	- ###### om.number.less(lessThanValue: number): INumberType;
-	- ###### om.number.greater(greaterThanValue: number): INumberType;
+	- ###### om.number.lt(value: number): INumberType;
+		Less than value.
+	- ###### om.number.less(value: number): INumberType;
+		Alias for `om.number.lt()`.
+	- ###### om.number.lte(value: number): INumberType;
+		Less than or equal value.
+	- ###### om.number.max(value: number): INumberType;
+		Alias for `om.number.lte()`.
+	- ###### om.number.gt(value: number): INumberType;
+		Greater than value.
+	- ###### om.number.greater(value: number): INumberType;
+		Alias for `om.number.gt()`.
+	- ###### om.number.gte(value: number): INumberType;
+		Greater than or equal value.
+	- ###### om.number.min(value: number): INumberType;
+		Alias for `om.number.gte()`.
 	- ###### om.number.between(minValue: number, maxValue: number): INumberType;
 	- ###### om.number.positive: INumberType;
 	- ###### om.number.negative: INumberType;
@@ -205,8 +221,8 @@ interface IType {
 		nonZero: IStringType;
 		nonEmpty: IStringType;
 		len(length: number): IStringType;
-		min(minLength: number): IStringType;
-		max(maxVength: number): IStringType;
+		min(length: number): IStringType;
+		max(length: number): IStringType;
 		pattern(re: RegExp): IStringType;
 		matches(re: RegExp): IStringType;
 		startsWith(searchString: string, position?: number): IStringType;
@@ -218,8 +234,8 @@ interface IType {
 	- ###### om.string.nonEmpty: IStringType;
 		Same as `om.string.pattern(/\S/)`.
 	- ###### om.string.len(length: number): IStringType;
-	- ###### om.string.min(minLength: number): IStringType;
-	- ###### om.string.max(maxLength: number): IStringType;
+	- ###### om.string.min(length: number): IStringType;
+	- ###### om.string.max(length: number): IStringType;
 	- ###### om.string.pattern(re: RegExp): IStringType;
 	- ###### om.string.matches(re: RegExp): IStringType;
 		Alias for `om.string.pattern()`.
