@@ -1,4 +1,5 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroSize } from '../lib/utils';
 import { validationState } from '../validationState';
 import { IType, TValidator, typeProto } from './Type';
 
@@ -39,6 +40,6 @@ export const setTypeProto: Object = {
 	},
 
 	get nonEmpty(): ISetType {
-		return addTypeValidators(this, true, { validator: (set: Set<any>) => set.size > 0 });
+		return addTypeValidators(this, true, { validator: isNonZeroSize });
 	}
 };

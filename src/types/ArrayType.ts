@@ -1,4 +1,5 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroLength } from '../lib/utils';
 import { validationState } from '../validationState';
 import { IType, TValidator, typeProto } from './Type';
 
@@ -32,6 +33,6 @@ export const arrayTypeProto: Object = {
 	},
 
 	get nonEmpty(): IArrayType {
-		return addTypeValidators(this, true, { validator: (arr: Array<any>) => arr.length > 0 });
+		return addTypeValidators(this, true, { validator: isNonZeroLength });
 	}
 };

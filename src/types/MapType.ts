@@ -1,4 +1,5 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroSize } from '../lib/utils';
 import { validationState } from '../validationState';
 import { IType, TValidator, typeProto } from './Type';
 
@@ -62,6 +63,6 @@ export const mapTypeProto: Object = {
 	},
 
 	get nonEmpty(): IMapType {
-		return addTypeValidators(this, true, { validator: (map: Map<any, any>) => map.size > 0 });
+		return addTypeValidators(this, true, { validator: isNonZeroSize });
 	}
 };

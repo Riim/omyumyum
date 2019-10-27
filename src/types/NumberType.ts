@@ -17,6 +17,8 @@ export interface INumberType extends IType {
 	integer: INumberType;
 }
 
+const isInteger = (num: number): boolean => Number.isInteger(num);
+
 export const numberTypeProto: Object = {
 	__proto__: typeProto,
 
@@ -61,14 +63,14 @@ export const numberTypeProto: Object = {
 	},
 
 	get positive(): INumberType {
-		return this.min(0);
+		return this.gte(0);
 	},
 
 	get negative(): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num < 0 });
+		return this.lt(0);
 	},
 
 	get integer(): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => Number.isInteger(num) });
+		return addTypeValidators(this, true, { validator: isInteger });
 	}
 };

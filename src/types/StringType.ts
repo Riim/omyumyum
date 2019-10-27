@@ -1,4 +1,5 @@
 import { addTypeValidators } from '../addTypeValidators';
+import { isNonZeroLength } from '../lib/utils';
 import { IType, typeProto } from './Type';
 
 export interface IStringType extends IType {
@@ -12,6 +13,8 @@ export interface IStringType extends IType {
 	nonZero: IStringType;
 	nonEmpty: IStringType;
 }
+
+const isNonEmpty = (str: string): boolean => /\S/.test(str);
 
 export const stringTypeProto: Object = {
 	__proto__: typeProto,
@@ -53,10 +56,10 @@ export const stringTypeProto: Object = {
 	},
 
 	get nonZero(): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => str.length > 0 });
+		return addTypeValidators(this, true, { validator: isNonZeroLength });
 	},
 
 	get nonEmpty(): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => /\S/.test(str) });
+		return addTypeValidators(this, true, { validator: isNonEmpty });
 	}
 };
