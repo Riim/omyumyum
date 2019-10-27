@@ -275,11 +275,11 @@ interface IType {
     - ###### om.object.exactShape(shape: Record<string, TValidator>): IType;
 		Object must exactly match the specified shape.
     - ###### om.object.keys(re: RegExp): IObjectType;
-		// TODO
+		Object keys must match the specified regular expression.
     - ###### om.object.values(validator: TValidator): IType;
-		// TODO
+		Object values must match the specified validator.
     - ###### om.object.nonEmpty: IType;
-		// TODO
+		Object must have at least one property of its own.
 - ##### om.array: IArrayType;
 	Matches an array data type.
 	```js
@@ -289,7 +289,7 @@ interface IType {
 	}
 	```
 	- ###### om.array.of(validator: TValidator): IType;
-		// TODO
+		Array values must match the specified validator.
 - ##### om.function: IType;
 	Matches a function type.
 - ##### om.func: IType;
@@ -298,18 +298,17 @@ interface IType {
 	Matches a `Map` type.
 	```js
 	interface IMapType extends IType {
-		of(validator: TValidator): IMapType;
-		values(validator: TValidator): IMapType;
 		keys(validator: TValidator): IMapType;
+		values(validator: TValidator): IMapType;
 		nonEmpty: IMapType;
 	}
 	```
-	- ###### om.map.of(validator: TValidator): IMapType;
-		// TODO
-	- ###### om.map.values(validator: TValidator): IMapType;
-		// TODO
 	- ###### om.map.keys(validator: TValidator): IMapType;
-		// TODO
+		Map keys must match the specified validator.
+	- ###### om.map.values(validator: TValidator): IMapType;
+		Map values must match the specified validator.
+	- ###### om.map.nonEmpty: IMapType;
+		Map must not be empty.
 - ##### om.set: ISetType;
 	Matches a `Set` type.
 	```js
@@ -319,21 +318,21 @@ interface IType {
 	}
 	```
 	- ###### om.set.of(validator: TValidator): ISetType;
-		// TODO
+		Set values must match the specified validator.
 - ##### om.weakMap: IMapType;
 	Matches a `WeakMap` type.
-	- ###### om.weakMap.of(validator: TValidator): IMapType;
-		// TODO
-	- ###### om.weakMap.values(validator: TValidator): IMapType;
-		// TODO
 	- ###### om.weakMap.keys(validator: TValidator): IMapType;
-		// TODO
+		WeakMap keys must match the specified validator.
+	- ###### om.weakMap.values(validator: TValidator): IMapType;
+		WeakMap values must match the specified validator.
+	- ###### om.weakMap.nonEmpty: IMapType;
+		WeakMap must not be empty.
 - ##### om.wmap: IMapType;
 	Alias for `om.weakMap`.
 - ##### om.weakSet: ISetType;
 	Matches a `WeakSet` type.
 	- ###### om.weakSet.of(validator: TValidator): ISetType;
-		// TODO
+		WeakSet values must match the specified validator.
 - ##### om.wset: ISetType;
 	Alias for `om.weakSet`.
 - ##### om.date: IDateType;

@@ -3,24 +3,22 @@ import { validationState } from '../validationState';
 import { IType, TValidator, typeProto } from './Type';
 
 export interface IMapType extends IType {
-	of(validator: TValidator): IMapType;
-	values(validator: TValidator): IMapType;
 	keys(validator: TValidator): IMapType;
+	values(validator: TValidator): IMapType;
 	nonEmpty: IMapType;
 }
 
 export const mapTypeProto: Object = {
 	__proto__: typeProto,
 
-	of(validator: TValidator): IMapType {
+	keys(validator: TValidator): IMapType {
 		return addTypeValidators(this, true, {
 			validator: (map: Map<any, any>) => {
-				for (let entry of map) {
+				for (let [key] of map) {
 					let prevKeypath = validationState.currentKeypath;
-					validationState.currentKeypath =
-						validationState.currentKeypath + `[${entry[0]}]`;
+					validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
 
-					if (!validator(entry)) {
+					if (!validator(key)) {
 						if (!validationState.errorKeypatch) {
 							validationState.errorKeypatch = validationState.currentKeypath;
 						}
@@ -46,31 +44,6 @@ export const mapTypeProto: Object = {
 					validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
 
 					if (!validator(value)) {
-						if (!validationState.errorKeypatch) {
-							validationState.errorKeypatch = validationState.currentKeypath;
-						}
-
-						validationState.currentKeypath = prevKeypath;
-
-						return false;
-					}
-
-					validationState.currentKeypath = prevKeypath;
-				}
-
-				return true;
-			}
-		});
-	},
-
-	keys(validator: TValidator): IMapType {
-		return addTypeValidators(this, true, {
-			validator: (map: Map<any, any>) => {
-				for (let [key] of map) {
-					let prevKeypath = validationState.currentKeypath;
-					validationState.currentKeypath = validationState.currentKeypath + `[${key}]`;
-
-					if (!validator(key)) {
 						if (!validationState.errorKeypatch) {
 							validationState.errorKeypatch = validationState.currentKeypath;
 						}

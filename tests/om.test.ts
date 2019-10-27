@@ -449,17 +449,14 @@ describe('om', () => {
 		expect(isMap(new Map())).to.true;
 	});
 
-	it('.map.of()', () => {
-		let isNumericMap = om.map.of(om.array.of(om.number));
+	it('.map.keys()', () => {
+		let isMapWithNumericKeys = om.map.keys(om.number);
 
-		expect(isNumericMap(new Map([[1, 1], [2, 2]]))).to.true;
-		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+		expect(isMapWithNumericKeys(new Map<any, number>([[1, 1], ['2', 2]]))).to.false;
+		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
 
 		expect(() => {
-			om(isNumericMap, new Map<number, any>([[1, '1']]));
-		}).to.throws(TypeError, 'Expected type "number" at "[1][1]"');
-		expect(() => {
-			om(om.map.of(om.number), new Map<number, any>([[1, '1']]));
+			om(isMapWithNumericKeys, new Map<any, number>([['1', 1]]));
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
@@ -471,17 +468,6 @@ describe('om', () => {
 
 		expect(() => {
 			om(isNumericMap, new Map<number, any>([[1, '1']]));
-		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
-	});
-
-	it('.map.keys()', () => {
-		let isMapWithNumericKeys = om.map.keys(om.number);
-
-		expect(isMapWithNumericKeys(new Map<any, number>([[1, 1], ['2', 2]]))).to.false;
-		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
-
-		expect(() => {
-			om(isMapWithNumericKeys, new Map<any, number>([['1', 1]]));
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
