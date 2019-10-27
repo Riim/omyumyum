@@ -235,9 +235,9 @@ interface IType {
 	```
 	- ###### om.string.len(value: number): IStringType;
 		Length of string must be equal to the specified value.
-	- ###### om.string.min(value: number): IStringType;
+	- ###### om.string.minLen(value: number): IStringType;
 		Length of string must be greater than or equal to the specified value.
-	- ###### om.string.max(value: number): IStringType;
+	- ###### om.string.maxLen(value: number): IStringType;
 		Length of string must be less than or equal to the specified value.
 	- ###### om.string.pattern(re: RegExp): IStringType;
 		String must match the specified regular expression.

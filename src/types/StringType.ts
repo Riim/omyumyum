@@ -3,8 +3,8 @@ import { IType, typeProto } from './Type';
 
 export interface IStringType extends IType {
 	len(value: number): IStringType;
-	min(value: number): IStringType;
-	max(value: number): IStringType;
+	minLen(value: number): IStringType;
+	maxLen(value: number): IStringType;
 	pattern(re: RegExp): IStringType;
 	matches(re: RegExp): IStringType;
 	startsWith(searchString: string, position?: number): IStringType;
@@ -20,13 +20,13 @@ export const stringTypeProto: Object = {
 		return addTypeValidators(this, true, { validator: (str: string) => str.length == value });
 	},
 
-	min(value: number): IStringType {
+	minLen(value: number): IStringType {
 		return addTypeValidators(this, true, {
 			validator: (str: string) => str.length >= value
 		});
 	},
 
-	max(value: number): IStringType {
+	maxLen(value: number): IStringType {
 		return addTypeValidators(this, true, {
 			validator: (str: string) => str.length <= value
 		});

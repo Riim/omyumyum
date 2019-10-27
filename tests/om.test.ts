@@ -277,7 +277,7 @@ describe('om', () => {
 	});
 
 	it('.string.min()', () => {
-		let isStringMin3 = om.string.min(3);
+		let isStringMin3 = om.string.minLen(3);
 
 		expect(isStringMin3('')).to.false;
 		expect(isStringMin3('1')).to.false;
@@ -286,7 +286,7 @@ describe('om', () => {
 	});
 
 	it('.string.max()', () => {
-		let isStringMax3 = om.string.max(3);
+		let isStringMax3 = om.string.maxLen(3);
 
 		expect(isStringMax3('')).to.true;
 		expect(isStringMax3('1')).to.true;
