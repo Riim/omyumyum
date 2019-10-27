@@ -2,14 +2,20 @@ import { addTypeValidators } from '../addTypeValidators';
 import { typeProto } from './Type';
 export const dateTypeProto = {
     __proto__: typeProto,
-    before(beforeDate) {
+    earlier(earlierThanDate) {
         return addTypeValidators(this, true, {
-            validator: (date) => date < new Date(beforeDate)
+            validator: (date) => date < new Date(earlierThanDate)
         });
     },
-    after(afterDate) {
+    later(laterThanDate) {
         return addTypeValidators(this, true, {
-            validator: (date) => date > new Date(afterDate)
+            validator: (date) => date > new Date(laterThanDate)
         });
+    },
+    before(beforeDate) {
+        return this.earlier(beforeDate);
+    },
+    after(afterDate) {
+        return this.later(afterDate);
     }
 };
