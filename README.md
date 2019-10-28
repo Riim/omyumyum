@@ -1,9 +1,11 @@
-# Very small schema validation
+# OmYumYum
 
 [![Build status](https://travis-ci.org/Riim/omyumyum.svg?branch=master)](https://travis-ci.org/Riim/omyumyum)
 [![Coverage status](https://coveralls.io/repos/github/Riim/omyumyum/badge.svg?branch=master)](https://coveralls.io/github/Riim/omyumyum?branch=master)
 [![GZip size](https://badgen.net/bundlephobia/minzip/omyumyum)](https://bundlephobia.com/result?p=omyumyum)
 [![Install size](https://packagephobia.now.sh/badge?p=omyumyum)](https://packagephobia.now.sh/result?p=omyumyum)
+
+OmYumYum is a small data validation library.
 
 ## Install
 
