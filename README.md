@@ -256,7 +256,7 @@ interface IType {
 	- ###### om.string.endsWith(searchString: string, position?: number): IStringType;
 		String must end with the specified substring.
 	- ###### om.string.nonZero: IStringType;
-		Same as `om.string.min(1)`.
+		Same as `om.string.minLen(1)`.
 	- ###### om.string.nonEmpty: IStringType;
 		Same as `om.string.pattern(/\S/)`.
 - ##### om.symbol: IType;
