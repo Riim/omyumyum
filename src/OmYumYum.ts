@@ -45,7 +45,7 @@ OmYumYum[KEY_STATE] = {
 	validators: [],
 	notMode: false,
 	andMode: false
-};
+} as any;
 
 export const om: IOmYumYum = OmYumYum as any;
 export { om as default };
