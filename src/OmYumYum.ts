@@ -7,12 +7,12 @@ export { TValidator, I$Validator, IType } from './types/Type';
 export { ITypes } from './Types';
 
 export interface IOmYumYum extends ITypes {
-	(validator: TValidator): (value: any) => true;
-	(validator: TValidator, value: any): true;
+	(validator: TValidator): <T = any>(value: T) => T;
+	<T = any>(validator: TValidator, value: T): T;
 }
 
-export function OmYumYum(validator: TValidator): (value: any) => true;
-export function OmYumYum(validator: TValidator, value: any): true;
+export function OmYumYum(validator: TValidator): (value: any) => any;
+export function OmYumYum(validator: TValidator, value: any): any;
 export function OmYumYum(validator: TValidator, value?: any): any {
 	if (arguments.length == 1) {
 		return (value: any): true => {
@@ -38,7 +38,7 @@ export function OmYumYum(validator: TValidator, value?: any): any {
 		);
 	}
 
-	return true;
+	return value;
 }
 (OmYumYum as any).__proto__ = typesProto;
 OmYumYum[KEY_STATE] = {

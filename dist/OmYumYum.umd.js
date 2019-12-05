@@ -493,7 +493,7 @@
 	                    : ` at "${validationState.errorKeypatch}"`
 	                : ''));
 	    }
-	    return true;
+	    return value;
 	}
 	OmYumYum.__proto__ = typesProto;
 	OmYumYum[KEY_STATE] = {
