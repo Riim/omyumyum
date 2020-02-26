@@ -287,11 +287,22 @@ interface IType {
 	```js
 	interface IArrayType extends IType {
 		of(validator: TValidator): IArrayType;
+		len(value: number): IArrayType;
+		minLen(value: number): IArrayType;
+		maxLen(value: number): IArrayType;
 		nonEmpty: IArrayType;
 	}
 	```
 	- ###### om.array.of(validator: TValidator): IType;
 		Array values must match the specified validator.
+	- ###### om.array.len(value: number): IArrayType;
+		Length of array must be equal to the specified value.
+	- ###### om.array.minLen(value: number): IArrayType;
+		Length of array must be greater than or equal to the specified value.
+	- ###### om.array.maxLen(value: number): IArrayType;
+		Length of array must be less than or equal to the specified value.
+	- ###### om.array.nonEmpty: IArrayType;
+		Array must not be empty.
 - ##### om.function: IType;
 	Matches a function type.
 - ##### om.func: IType;

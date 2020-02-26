@@ -5,6 +5,9 @@ import { IType, TValidator, typeProto } from './Type';
 
 export interface IArrayType extends IType {
 	of(validator: TValidator): IArrayType;
+	len(value: number): IArrayType;
+	minLen(value: number): IArrayType;
+	maxLen(value: number): IArrayType;
 	nonEmpty: IArrayType;
 }
 
@@ -29,6 +32,22 @@ export const arrayTypeProto: Object = {
 	of(validator: TValidator): IArrayType {
 		return addTypeValidators(this, true, {
 			validator: (arr: Array<any>) => arr.every(cb, validator)
+		});
+	},
+
+	len(value: number): IArrayType {
+		return addTypeValidators(this, true, { validator: (arr: Array<any>) => arr.length == value });
+	},
+
+	minLen(value: number): IArrayType {
+		return addTypeValidators(this, true, {
+			validator: (arr: Array<any>) => arr.length >= value
+		});
+	},
+
+	maxLen(value: number): IArrayType {
+		return addTypeValidators(this, true, {
+			validator: (arr: Array<any>) => arr.length <= value
 		});
 	},
 

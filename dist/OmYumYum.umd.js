@@ -125,6 +125,19 @@
 	            validator: (arr) => arr.every(cb, validator)
 	        });
 	    },
+	    len(value) {
+	        return addTypeValidators(this, true, { validator: (arr) => arr.length == value });
+	    },
+	    minLen(value) {
+	        return addTypeValidators(this, true, {
+	            validator: (arr) => arr.length >= value
+	        });
+	    },
+	    maxLen(value) {
+	        return addTypeValidators(this, true, {
+	            validator: (arr) => arr.length <= value
+	        });
+	    },
 	    get nonEmpty() {
 	        return addTypeValidators(this, true, { validator: isNonZeroLength });
 	    }
