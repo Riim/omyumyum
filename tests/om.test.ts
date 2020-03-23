@@ -276,23 +276,20 @@ describe('om', () => {
 		expect(isStringLen3('1234')).to.false;
 	});
 
-	it('.string.min()', () => {
-		let isStringMin3 = om.string.minLen(3);
+	it('.string.minLen()', () => {
+		let isStringMinLen3 = om.string.minLen(3);
 
-		expect(isStringMin3('')).to.false;
-		expect(isStringMin3('1')).to.false;
-		expect(isStringMin3('12')).to.false;
-		expect(isStringMin3('123')).to.true;
+		expect(isStringMinLen3('12')).to.false;
+		expect(isStringMinLen3('123')).to.true;
+		expect(isStringMinLen3('1234')).to.true;
 	});
 
-	it('.string.max()', () => {
-		let isStringMax3 = om.string.maxLen(3);
+	it('.string.maxLen()', () => {
+		let isStringMaxLen3 = om.string.maxLen(3);
 
-		expect(isStringMax3('')).to.true;
-		expect(isStringMax3('1')).to.true;
-		expect(isStringMax3('12')).to.true;
-		expect(isStringMax3('123')).to.true;
-		expect(isStringMax3('1234')).to.false;
+		expect(isStringMaxLen3('12')).to.true;
+		expect(isStringMaxLen3('123')).to.true;
+		expect(isStringMaxLen3('1234')).to.false;
 	});
 
 	it('.string.pattern()', () => {
@@ -421,6 +418,30 @@ describe('om', () => {
 		expect(isArrayOfNumberAndString([1, false])).to.false;
 	});
 
+	it('.array.len()', () => {
+		let isArrayLen3 = om.array.len(3);
+
+		expect(isArrayLen3([1, 2])).to.false;
+		expect(isArrayLen3([1, 2, 3])).to.true;
+		expect(isArrayLen3([1, 2, 3, 4])).to.false;
+	});
+
+	it('.array.minLen()', () => {
+		let isArrayMinLen3 = om.array.minLen(3);
+
+		expect(isArrayMinLen3([1, 2])).to.false;
+		expect(isArrayMinLen3([1, 2, 3])).to.true;
+		expect(isArrayMinLen3([1, 2, 3, 4])).to.true;
+	});
+
+	it('.array.maxLen()', () => {
+		let isArrayMaxLen3 = om.array.maxLen(3);
+
+		expect(isArrayMaxLen3([1, 2])).to.true;
+		expect(isArrayMaxLen3([1, 2, 3])).to.true;
+		expect(isArrayMaxLen3([1, 2, 3, 4])).to.false;
+	});
+
 	it('.array.nonEmpty', () => {
 		let isNonEmptyArray = om.array.nonEmpty;
 
@@ -452,22 +473,56 @@ describe('om', () => {
 	it('.map.keys()', () => {
 		let isMapWithNumericKeys = om.map.keys(om.number);
 
-		expect(isMapWithNumericKeys(new Map<any, number>([[1, 1], ['2', 2]]))).to.false;
-		expect(isMapWithNumericKeys(new Map<number, any>([[1, 1], [2, '2']]))).to.true;
+		expect(
+			isMapWithNumericKeys(
+				new Map<any, number>([
+					[1, 1],
+					['2', 2]
+				])
+			)
+		).to.false;
+		expect(
+			isMapWithNumericKeys(
+				new Map<number, any>([
+					[1, 1],
+					[2, '2']
+				])
+			)
+		).to.true;
 
 		expect(() => {
-			om(isMapWithNumericKeys, new Map<any, number>([['1', 1]]));
+			om(
+				isMapWithNumericKeys,
+				new Map<any, number>([['1', 1]])
+			);
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
 	it('.map.values()', () => {
 		let isNumericMap = om.map.values(om.number);
 
-		expect(isNumericMap(new Map<any, number>([[1, 1], ['2', 2]]))).to.true;
-		expect(isNumericMap(new Map<number, any>([[1, 1], [2, '2']]))).to.false;
+		expect(
+			isNumericMap(
+				new Map<any, number>([
+					[1, 1],
+					['2', 2]
+				])
+			)
+		).to.true;
+		expect(
+			isNumericMap(
+				new Map<number, any>([
+					[1, 1],
+					[2, '2']
+				])
+			)
+		).to.false;
 
 		expect(() => {
-			om(isNumericMap, new Map<number, any>([[1, '1']]));
+			om(
+				isNumericMap,
+				new Map<number, any>([[1, '1']])
+			);
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
@@ -488,11 +543,22 @@ describe('om', () => {
 	it('.set.of()', () => {
 		let isNumericSet = om.set.of(om.number);
 
-		expect(isNumericSet(new Set<number>([1, 1]))).to.true;
-		expect(isNumericSet(new Set<any>([1, '2']))).to.false;
+		expect(
+			isNumericSet(
+				new Set<number>([1, 1])
+			)
+		).to.true;
+		expect(
+			isNumericSet(
+				new Set<any>([1, '2'])
+			)
+		).to.false;
 
 		expect(() => {
-			om(isNumericSet, new Set<any>([1, '2']));
+			om(
+				isNumericSet,
+				new Set<any>([1, '2'])
+			);
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
