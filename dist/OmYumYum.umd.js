@@ -79,6 +79,7 @@
 	const typeProto = {
 	    __proto__: Function.prototype,
 	    [KEY_STATE]: null,
+	    isOmYumYum: true,
 	    get and() {
 	        let types = {
 	            __proto__: typesProto,

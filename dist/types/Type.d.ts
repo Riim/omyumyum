@@ -14,6 +14,7 @@ export interface IState {
 export interface IType {
     (value: any): boolean;
     [KEY_STATE]: IState;
+    isOmYumYum: true;
     and: ITypes;
     or: ITypes;
     allow(value: any): IType;
@@ -24,6 +25,7 @@ export interface IType {
 export declare const typeProto: {
     __proto__: Function;
     [KEY_STATE]: null;
+    isOmYumYum: boolean;
     readonly and: ITypes;
     readonly or: ITypes;
     allow(value: any): IType;
