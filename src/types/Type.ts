@@ -18,6 +18,7 @@ export interface IState {
 export interface IType {
 	(value: any): boolean;
 	[KEY_STATE]: IState;
+	isOmYumYum: true;
 	and: ITypes;
 	or: ITypes;
 	allow(value: any): IType;
@@ -30,6 +31,8 @@ export const typeProto = {
 	__proto__: Function.prototype,
 
 	[KEY_STATE]: null,
+
+	isOmYumYum: true,
 
 	get and(): ITypes {
 		let types: ITypes = {

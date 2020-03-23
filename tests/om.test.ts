@@ -2,6 +2,11 @@ import { expect } from 'chai';
 import om from '../src/OmYumYum';
 
 describe('om', () => {
+	it('.[type].isOmYumYum', () => {
+		let isNumber = om.number;
+		expect(isNumber.isOmYumYum).to.true;
+	});
+
 	it('простая проверка', () => {
 		let isNumber = om.number;
 
