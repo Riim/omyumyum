@@ -717,12 +717,11 @@ describe('om', () => {
 	});
 
 	it('.oneOf()', () => {
-		let isNumberOrString1OrNaN = om.number.oneOf(['1', NaN]);
+		let isNumberOrString1OrNaN = om.number.oneOf([1, '1']);
 
 		expect(isNumberOrString1OrNaN(1)).to.true;
-		expect(isNumberOrString1OrNaN('1')).to.true;
-		expect(isNumberOrString1OrNaN('2')).to.false;
-		expect(isNumberOrString1OrNaN(NaN)).to.true;
+		expect(isNumberOrString1OrNaN(2)).to.false;
+		expect(isNumberOrString1OrNaN('1')).to.false;
 	});
 
 	it('.notOneOf()', () => {

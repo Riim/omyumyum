@@ -74,7 +74,7 @@ export const typeProto = {
 	oneOf(values: Array<any>): IType {
 		return addTypeValidators(
 			this,
-			false,
+			true,
 			{ validator: (val: any) => values.includes(val) },
 			typeProto
 		);
