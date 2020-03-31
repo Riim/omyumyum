@@ -27,7 +27,7 @@ export const typeProto = {
         return addTypeValidators(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
     },
     oneOf(values) {
-        return addTypeValidators(this, false, { validator: (val) => values.includes(val) }, typeProto);
+        return addTypeValidators(this, true, { validator: (val) => values.includes(val) }, typeProto);
     },
     notOneOf(values) {
         return addTypeValidators(this, true, { validator: (val) => !values.includes(val) }, typeProto);

@@ -1,6 +1,6 @@
 {
   "name": "omyumyum",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "The small data validation library",
   "main": "dist/OmYumYum.umd.js",
   "typings": "dist/OmYumYum.d.ts",
@@ -28,10 +28,10 @@
     "esm": "^3.2.25",
     "mocha": "^7.1.1",
     "nyc": "^15.0.0",
-    "rollup": "^2.1.0",
+    "rollup": "^2.3.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-tslint": "^0.2.2",
-    "rollup-plugin-typescript2": "^0.26.0",
+    "rollup-plugin-typescript2": "^0.27.0",
     "sinon": "^9.0.1",
     "ts-mocha": "^7.0.0",
     "typescript": "^3.8.3"
