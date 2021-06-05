@@ -1,5 +1,6 @@
-import { addTypeValidators } from './addTypeValidators';
+import { addValidator } from './addValidator';
 import { KEY_STATE } from './constants';
+import { I$Validator, IState } from './State';
 import { arrayTypeProto, IArrayType } from './types/ArrayType';
 import { dateTypeProto, IDateType } from './types/DateType';
 import { IMapType, mapTypeProto } from './types/MapType';
@@ -7,19 +8,13 @@ import { INumberType, numberTypeProto } from './types/NumberType';
 import { IObjectType, objectTypeProto } from './types/ObjectType';
 import { ISetType, setTypeProto } from './types/SetType';
 import { IStringType, stringTypeProto } from './types/StringType';
-import {
-	I$Validator,
-	IState,
-	IType,
-	typeProto
-	} from './types/Type';
+import { IType, typeProto } from './types/Type';
 
 const isNull = (value: any): boolean => value === null;
 const isUndefined = (value: any): boolean => value === undefined;
 const isVacuum = (value: any): boolean => value == null;
 const isBoolean = (value: any): boolean => typeof value == 'boolean';
-const isNumber = (value: any): boolean =>
-	typeof value == 'number' && Number.isFinite(value) && !Number.isNaN(value);
+const isNumber = (value: any): boolean => typeof value == 'number' && Number.isFinite(value);
 const isString = (value: any): boolean => typeof value == 'string';
 const isSymbol = (value: any): boolean => typeof value == 'symbol';
 const isObject = (value: any): boolean => value === Object(value);
@@ -37,7 +32,10 @@ const isError = (value: any): boolean => value instanceof Error;
 export interface ITypes {
 	[KEY_STATE]: IState;
 	not: ITypes;
-	custom(validator: ((value: any) => boolean | string) | I$Validator): IType;
+	custom<T extends IType>(
+		validator: ((value: any) => boolean | string) | I$Validator,
+		_typeProto?: object
+	): T;
 	null: IType;
 	undefined: IType;
 	vacuum: IType;
@@ -62,24 +60,22 @@ export interface ITypes {
 	error: IType;
 }
 
-export const typesProto: Object = {
-	[KEY_STATE]: null,
+export const typesProto: ITypes = {
+	[KEY_STATE]: null as any,
 
-	get not(this: ITypes): ITypes {
-		let types: ITypes = {
+	get not() {
+		return {
 			__proto__: typesProto,
-			[KEY_STATE]: { ...this[KEY_STATE], notMode: true }
+			[KEY_STATE]: { ...(this as ITypes)[KEY_STATE], notMode: true }
 		} as any;
-
-		return types;
 	},
 
-	custom(
+	custom<T extends IType>(
 		this: ITypes,
-		validator: ((value: any) => boolean | string) | I$Validator,
+		validator: I$Validator | ((value: any) => boolean | string),
 		_typeProto = typeProto
-	): IType {
-		return addTypeValidators(
+	) {
+		return addValidator<T>(
 			this,
 			this[KEY_STATE].andMode,
 			typeof validator == 'function' ? ({ validator } as I$Validator) : validator,
@@ -87,70 +83,91 @@ export const typesProto: Object = {
 		);
 	},
 
-	get null(this: ITypes): IType {
-		return this.custom({ validator: isNull, type: 'null' });
+	get null() {
+		return (this as ITypes).custom({ validator: isNull, type: 'null' });
 	},
-	get undefined(this: ITypes): IType {
-		return this.custom({ validator: isUndefined, type: 'undefined' });
+	get undefined() {
+		return (this as ITypes).custom({ validator: isUndefined, type: 'undefined' });
 	},
-	get vacuum(this: ITypes): IType {
-		return this.custom({ validator: isVacuum, type: 'vacuum' });
+	get vacuum() {
+		return (this as ITypes).custom({ validator: isVacuum, type: 'vacuum' });
 	},
-	get boolean(this: ITypes): IType {
-		return this.custom({ validator: isBoolean, type: 'boolean' });
+	get boolean() {
+		return (this as ITypes).custom({ validator: isBoolean, type: 'boolean' });
 	},
-	get number(this: ITypes): INumberType {
-		return (this as any).custom({ validator: isNumber, type: 'number' }, numberTypeProto);
+	get number() {
+		return (this as ITypes).custom<INumberType>(
+			{ validator: isNumber, type: 'number' },
+			numberTypeProto
+		);
 	},
-	get string(this: ITypes): IStringType {
-		return (this as any).custom({ validator: isString, type: 'string' }, stringTypeProto);
+	get string() {
+		return (this as ITypes).custom<IStringType>(
+			{ validator: isString, type: 'string' },
+			stringTypeProto
+		);
 	},
-	get symbol(this: ITypes): IType {
-		return this.custom({ validator: isSymbol, type: 'symbol' });
+	get symbol() {
+		return (this as ITypes).custom({ validator: isSymbol, type: 'symbol' });
 	},
-	get object(this: ITypes): IObjectType {
-		return (this as any).custom({ validator: isObject, type: 'Object' }, objectTypeProto);
+	get object() {
+		return (this as ITypes).custom<IObjectType>(
+			{ validator: isObject, type: 'Object' },
+			objectTypeProto
+		);
 	},
-	get array(this: ITypes): IArrayType {
-		return (this as any).custom({ validator: isArray, type: 'Array' }, arrayTypeProto);
+	get array() {
+		return (this as ITypes).custom<IArrayType>(
+			{ validator: isArray, type: 'Array' },
+			arrayTypeProto
+		);
 	},
-	get function(this: ITypes): IType {
-		return this.custom({ validator: isFunction, type: 'Function' });
+	get function() {
+		return (this as ITypes).custom({ validator: isFunction, type: 'Function' });
 	},
-	get func(this: ITypes): IType {
-		return this.function;
+	get func() {
+		return (this as ITypes).function;
 	},
-	get map(this: ITypes): IMapType {
-		return (this as any).custom({ validator: isMap, type: 'Map' }, mapTypeProto);
+	get map() {
+		return (this as ITypes).custom<IMapType>({ validator: isMap, type: 'Map' }, mapTypeProto);
 	},
-	get set(this: ITypes): ISetType {
-		return (this as any).custom({ validator: isSet, type: 'Set' }, setTypeProto);
+	get set() {
+		return (this as ITypes).custom<ISetType>({ validator: isSet, type: 'Set' }, setTypeProto);
 	},
-	get weakMap(this: ITypes): IType {
-		return (this as any).custom({ validator: isWeakMap, type: 'WeakMap' }, mapTypeProto);
+	get weakMap() {
+		return (this as ITypes).custom<IMapType>(
+			{ validator: isWeakMap, type: 'WeakMap' },
+			mapTypeProto
+		);
 	},
-	get wmap(this: ITypes): IType {
-		return this.weakMap;
+	get wmap() {
+		return (this as ITypes).weakMap;
 	},
-	get weakSet(this: ITypes): IType {
-		return (this as any).custom({ validator: isWeakSet, type: 'WeakSet' }, setTypeProto);
+	get weakSet() {
+		return (this as ITypes).custom<ISetType>(
+			{ validator: isWeakSet, type: 'WeakSet' },
+			setTypeProto
+		);
 	},
-	get wset(this: ITypes): IType {
-		return this.weakSet;
+	get wset() {
+		return (this as ITypes).weakSet;
 	},
-	get date(this: ITypes): IDateType {
-		return (this as any).custom({ validator: isDate, type: 'Date' }, dateTypeProto);
+	get date() {
+		return (this as ITypes).custom<IDateType>(
+			{ validator: isDate, type: 'Date' },
+			dateTypeProto
+		);
 	},
-	get regExp(this: ITypes): IType {
-		return this.custom({ validator: isRegExp, type: 'RegExp' });
+	get regExp() {
+		return (this as ITypes).custom({ validator: isRegExp, type: 'RegExp' });
 	},
-	get regex(this: ITypes): IType {
-		return this.regExp;
+	get regex() {
+		return (this as ITypes).regExp;
 	},
-	get promise(this: ITypes): IType {
-		return this.custom({ validator: isPromise, type: 'Promise' });
+	get promise() {
+		return (this as ITypes).custom({ validator: isPromise, type: 'Promise' });
 	},
-	get error(this: ITypes): IType {
-		return this.custom({ validator: isError, type: 'Error' });
+	get error() {
+		return (this as ITypes).custom({ validator: isError, type: 'Error' });
 	}
 };

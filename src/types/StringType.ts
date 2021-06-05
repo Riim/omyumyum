@@ -1,8 +1,12 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroLength } from '../lib/utils';
-import { IType, typeProto } from './Type';
+import { ITypeProto, typeProto } from './Type';
 
-export interface IStringType extends IType {
+export interface IStringType extends IStringTypeProto {
+	(value: any): boolean;
+}
+
+export interface IStringTypeProto extends ITypeProto {
 	len(value: number): IStringType;
 	minLen(value: number): IStringType;
 	maxLen(value: number): IStringType;
@@ -16,50 +20,50 @@ export interface IStringType extends IType {
 
 const isNonEmpty = (str: string): boolean => /\S/.test(str);
 
-export const stringTypeProto: Object = {
-	__proto__: typeProto,
+export const stringTypeProto = {
+	__proto__: typeProto as any,
 
-	len(value: number): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => str.length == value });
+	len(value) {
+		return addValidator(this, true, { validator: (str: string) => str.length == value });
 	},
 
-	minLen(value: number): IStringType {
-		return addTypeValidators(this, true, {
+	minLen(value) {
+		return addValidator(this, true, {
 			validator: (str: string) => str.length >= value
 		});
 	},
 
-	maxLen(value: number): IStringType {
-		return addTypeValidators(this, true, {
+	maxLen(value) {
+		return addValidator(this, true, {
 			validator: (str: string) => str.length <= value
 		});
 	},
 
-	pattern(re: RegExp): IStringType {
-		return addTypeValidators(this, true, { validator: (str: string) => re.test(str) });
+	pattern(re) {
+		return addValidator(this, true, { validator: (str: string) => re.test(str) });
 	},
 
-	matches(re: RegExp): IStringType {
+	matches(re) {
 		return this.pattern(re);
 	},
 
-	startsWith(searchString: string, position?: number): IStringType {
-		return addTypeValidators(this, true, {
+	startsWith(searchString, position) {
+		return addValidator(this, true, {
 			validator: (str: string) => str.startsWith(searchString, position)
 		});
 	},
 
-	endsWith(searchString: string, position?: number): IStringType {
-		return addTypeValidators(this, true, {
+	endsWith(searchString, position) {
+		return addValidator(this, true, {
 			validator: (str: string) => str.endsWith(searchString, position)
 		});
 	},
 
-	get nonZero(): IStringType {
-		return addTypeValidators(this, true, { validator: isNonZeroLength });
+	get nonZero() {
+		return addValidator(this, true, { validator: isNonZeroLength });
 	},
 
-	get nonEmpty(): IStringType {
-		return addTypeValidators(this, true, { validator: isNonEmpty });
+	get nonEmpty() {
+		return addValidator(this, true, { validator: isNonEmpty });
 	}
-};
+} as IStringTypeProto;

@@ -8,7 +8,9 @@ export default {
 	output: {
 		file: './dist/OmYumYum.umd.js',
 		format: 'umd',
-		name: 'omyumyum'
+		name: 'omyumyum',
+		// Consumers of your bundle will have to use chunk['default'] to access their default export, which may not be what you want. Use `output.exports: 'named'` to disable this warning
+		exports: 'named'
 	},
 
 	plugins: [

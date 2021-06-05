@@ -1,60 +1,73 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = global || self, factory(global.omyumyum = {}));
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.omyumyum = {}));
 }(this, (function (exports) { 'use strict';
 
 	const KEY_STATE = Symbol('state');
 
+	const isNonZeroLength = (obj) => obj.length != 0;
+	const isNonZeroSize = (obj) => obj.size != 0;
+	// istanbul ignore next
+	const findLast = (arr, cb) => {
+	    let index = arr.length - 1;
+	    if (index >= 0) {
+	        for (;; index--) {
+	            if (cb(arr[index], index)) {
+	                return arr[index];
+	            }
+	            if (index == 0) {
+	                break;
+	            }
+	        }
+	    }
+	    return;
+	};
+
 	const validationState = {
 	    errorMessage: null,
-	    errorTypes: [],
+	    errorTypes: null,
 	    errorKeypatch: null,
 	    currentKeypath: ''
 	};
 
-	const hasOwn = Object.prototype.hasOwnProperty;
-	const check = (type, value) => type[KEY_STATE].validators.some(cb1, value);
-	function cb1(validators) {
-	    return validators.every(cb2, this);
-	}
-	function cb2(validator) {
-	    let result = validator.validator(this);
-	    if (result === true) {
-	        validationState.errorTypes.length = 0;
-	        return true;
+	const check = (state, value) => state.validators.some((validators) => checkCallback(state, validators, value));
+	const checkCallback = (state, validators, value) => validators.every((validator) => checkCallbackCallback(state, validator, value));
+	const checkCallbackCallback = (state, validator, value) => {
+	    let result = validator.validator(value);
+	    if (validationState.errorMessage || validationState.errorTypes) {
+	        return result;
 	    }
 	    if (typeof result == 'string') {
 	        validationState.errorMessage = result;
 	        return false;
 	    }
-	    if (result) {
-	        validationState.errorTypes.length = 0;
-	    }
-	    else if (!validationState.errorMessage) {
-	        if (validator.message && hasOwn.call(validator, 'message')) {
+	    if (!result) {
+	        if (validator.message) {
 	            validationState.errorMessage = validator.message;
 	        }
-	        if (validator.type && hasOwn.call(validator, 'type')) {
-	            validationState.errorTypes.push(validator.type);
+	        let errorTypes = state.validators.map((validators) => { var _a; return (_a = findLast(validators, (validator) => validator.type)) === null || _a === void 0 ? void 0 : _a.type; });
+	        if (errorTypes.every(Boolean)) {
+	            validationState.errorTypes = errorTypes;
 	        }
 	    }
 	    return result;
-	}
+	};
 
-	function addTypeValidators(type, andMode, validator, typeProto) {
+	function addValidator(type, andMode, validator, typeProto = type.__proto__) {
 	    if (type[KEY_STATE].notMode) {
 	        validator = {
-	            validator: (validator => (value) => !validator(value))(validator.validator),
+	            validator: ((validator) => (value) => !validator(value))(validator.validator),
 	            message: validator.message,
 	            type: validator.type
 	        };
 	    }
-	    let newType = ((value) => check(newType, value));
-	    newType.__proto__ = typeProto || type.__proto__;
+	    let newType = ((value) => check(newType[KEY_STATE], value));
+	    newType.__proto__ = typeProto;
 	    let validators = type[KEY_STATE].validators.slice();
 	    if (andMode) {
-	        let validators_ = (validators[validators.length - 1] = validators[validators.length - 1].slice());
+	        let validators_ = (validators[validators.length - 1] =
+	            validators[validators.length - 1].slice());
 	        if (Array.isArray(validator)) {
 	            validators_.push(...validator);
 	        }
@@ -73,15 +86,12 @@
 	    return newType;
 	}
 
-	const isNonZeroLength = (obj) => obj.length != 0;
-	const isNonZeroSize = (obj) => obj.size != 0;
-
 	const typeProto = {
 	    __proto__: Function.prototype,
 	    [KEY_STATE]: null,
 	    isOmYumYum: true,
 	    get and() {
-	        let types = {
+	        return {
 	            __proto__: typesProto,
 	            [KEY_STATE]: {
 	                validators: this[KEY_STATE].validators,
@@ -89,27 +99,25 @@
 	                andMode: true
 	            }
 	        };
-	        return types;
 	    },
 	    get or() {
-	        let types = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
-	        return types;
+	        return { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
 	    },
 	    allow(value) {
-	        return addTypeValidators(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
+	        return addValidator(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
 	    },
 	    notAllow(value) {
-	        return addTypeValidators(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
+	        return addValidator(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
 	    },
 	    oneOf(values) {
-	        return addTypeValidators(this, true, { validator: (val) => values.includes(val) }, typeProto);
+	        return addValidator(this, true, { validator: (val) => values.includes(val) }, typeProto);
 	    },
 	    notOneOf(values) {
-	        return addTypeValidators(this, true, { validator: (val) => !values.includes(val) }, typeProto);
+	        return addValidator(this, true, { validator: (val) => !values.includes(val) }, typeProto);
 	    }
 	};
 
-	function cb(item, index) {
+	function arrayOfCallback(item, index) {
 	    let prevKeypath = validationState.currentKeypath;
 	    validationState.currentKeypath = validationState.currentKeypath + `[${index}]`;
 	    let result = this(item);
@@ -122,37 +130,39 @@
 	const arrayTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, true, {
-	            validator: (arr) => arr.every(cb, validator)
+	        return addValidator(this, true, {
+	            validator: (arr) => arr.every(arrayOfCallback, validator)
 	        });
 	    },
 	    len(value) {
-	        return addTypeValidators(this, true, { validator: (arr) => arr.length == value });
+	        return addValidator(this, true, {
+	            validator: (arr) => arr.length == value
+	        });
 	    },
 	    minLen(value) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (arr) => arr.length >= value
 	        });
 	    },
 	    maxLen(value) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (arr) => arr.length <= value
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: isNonZeroLength });
+	        return addValidator(this, true, { validator: isNonZeroLength });
 	    }
 	};
 
 	const dateTypeProto = {
 	    __proto__: typeProto,
 	    earlier(earlierThanDate) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (date) => date < new Date(earlierThanDate)
 	        });
 	    },
 	    later(laterThanDate) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (date) => date > new Date(laterThanDate)
 	        });
 	    },
@@ -167,7 +177,7 @@
 	const mapTypeProto = {
 	    __proto__: typeProto,
 	    keys(validator) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (map) => {
 	                for (let [key] of map) {
 	                    let prevKeypath = validationState.currentKeypath;
@@ -186,7 +196,7 @@
 	        });
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (map) => {
 	                for (let [key, value] of map) {
 	                    let prevKeypath = validationState.currentKeypath;
@@ -205,7 +215,7 @@
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: isNonZeroSize });
+	        return addValidator(this, true, { validator: isNonZeroSize });
 	    }
 	};
 
@@ -213,25 +223,25 @@
 	const numberTypeProto = {
 	    __proto__: typeProto,
 	    lt(value) {
-	        return addTypeValidators(this, true, { validator: (num) => num < value });
+	        return addValidator(this, true, { validator: (num) => num < value });
 	    },
 	    less(value) {
 	        return this.lt(value);
 	    },
 	    lte(value) {
-	        return addTypeValidators(this, true, { validator: (num) => num <= value });
+	        return addValidator(this, true, { validator: (num) => num <= value });
 	    },
 	    max(value) {
 	        return this.lte(value);
 	    },
 	    gt(value) {
-	        return addTypeValidators(this, true, { validator: (num) => num > value });
+	        return addValidator(this, true, { validator: (num) => num > value });
 	    },
 	    greater(value) {
 	        return this.gt(value);
 	    },
 	    gte(value) {
-	        return addTypeValidators(this, true, { validator: (num) => num >= value });
+	        return addValidator(this, true, { validator: (num) => num >= value });
 	    },
 	    min(value) {
 	        return this.gte(value);
@@ -249,12 +259,12 @@
 	        return this.lt(0);
 	    },
 	    get integer() {
-	        return addTypeValidators(this, true, { validator: isInteger });
+	        return addValidator(this, true, { validator: isInteger });
 	    }
 	};
 
-	const hasOwn$1 = Object.prototype.hasOwnProperty;
-	function cb1$1(entry) {
+	const hasOwn = Object.prototype.hasOwnProperty;
+	function objectShapeCallback(entry) {
 	    let [key, validator] = entry;
 	    let prevKeypath = validationState.currentKeypath;
 	    validationState.currentKeypath =
@@ -266,7 +276,10 @@
 	    validationState.currentKeypath = prevKeypath;
 	    return result;
 	}
-	function cb2$1(entry) {
+	function objectKeysCallback(key) {
+	    return this.test(key);
+	}
+	function objectValuesCallback(entry) {
 	    let [key, value] = entry;
 	    let prevKeypath = validationState.currentKeypath;
 	    validationState.currentKeypath =
@@ -278,9 +291,6 @@
 	    validationState.currentKeypath = prevKeypath;
 	    return result;
 	}
-	function cb3(key) {
-	    return this.test(key);
-	}
 	const objectTypeProto = {
 	    __proto__: typeProto,
 	    shape(shape, exact) {
@@ -288,30 +298,35 @@
 	        if (exact) {
 	            let shapeKeys = Object.keys(shape);
 	            let hasKey = (key) => shapeKeys.includes(key);
-	            validators.push({ validator: (obj) => Object.keys(obj).every(hasKey) });
+	            validators.push({
+	                validator: (obj) => Object.keys(obj).every(hasKey),
+	                message: 'Invalid object shape'
+	            });
 	        }
 	        let shapeEntries = Object.entries(shape);
-	        validators.push({ validator: (obj) => shapeEntries.every(cb1$1, obj) });
-	        return addTypeValidators(this, true, validators);
+	        validators.push({
+	            validator: (obj) => shapeEntries.every(objectShapeCallback, obj)
+	        });
+	        return addValidator(this, true, validators);
 	    },
 	    exactShape(shape) {
 	        return this.shape(shape, true);
 	    },
 	    keys(re) {
-	        return addTypeValidators(this, true, {
-	            validator: (obj) => Object.keys(obj).every(cb3, re)
+	        return addValidator(this, true, {
+	            validator: (obj) => Object.keys(obj).every(objectKeysCallback, re)
 	        });
 	    },
 	    values(validator) {
-	        return addTypeValidators(this, true, {
-	            validator: (obj) => Object.entries(obj).every(cb2$1, validator)
+	        return addValidator(this, true, {
+	            validator: (obj) => Object.entries(obj).every(objectValuesCallback, validator)
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (obj) => {
 	                for (let key in obj) {
-	                    if (hasOwn$1.call(obj, key)) {
+	                    if (hasOwn.call(obj, key)) {
 	                        return true;
 	                    }
 	                }
@@ -324,7 +339,7 @@
 	const setTypeProto = {
 	    __proto__: typeProto,
 	    of(validator) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (set) => {
 	                let index = 0;
 	                for (let item of set) {
@@ -345,7 +360,7 @@
 	        });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: isNonZeroSize });
+	        return addValidator(this, true, { validator: isNonZeroSize });
 	    }
 	};
 
@@ -353,39 +368,39 @@
 	const stringTypeProto = {
 	    __proto__: typeProto,
 	    len(value) {
-	        return addTypeValidators(this, true, { validator: (str) => str.length == value });
+	        return addValidator(this, true, { validator: (str) => str.length == value });
 	    },
 	    minLen(value) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (str) => str.length >= value
 	        });
 	    },
 	    maxLen(value) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (str) => str.length <= value
 	        });
 	    },
 	    pattern(re) {
-	        return addTypeValidators(this, true, { validator: (str) => re.test(str) });
+	        return addValidator(this, true, { validator: (str) => re.test(str) });
 	    },
 	    matches(re) {
 	        return this.pattern(re);
 	    },
 	    startsWith(searchString, position) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (str) => str.startsWith(searchString, position)
 	        });
 	    },
 	    endsWith(searchString, position) {
-	        return addTypeValidators(this, true, {
+	        return addValidator(this, true, {
 	            validator: (str) => str.endsWith(searchString, position)
 	        });
 	    },
 	    get nonZero() {
-	        return addTypeValidators(this, true, { validator: isNonZeroLength });
+	        return addValidator(this, true, { validator: isNonZeroLength });
 	    },
 	    get nonEmpty() {
-	        return addTypeValidators(this, true, { validator: isNonEmpty });
+	        return addValidator(this, true, { validator: isNonEmpty });
 	    }
 	};
 
@@ -393,7 +408,7 @@
 	const isUndefined = (value) => value === undefined;
 	const isVacuum = (value) => value == null;
 	const isBoolean = (value) => typeof value == 'boolean';
-	const isNumber = (value) => typeof value == 'number' && Number.isFinite(value) && !Number.isNaN(value);
+	const isNumber = (value) => typeof value == 'number' && Number.isFinite(value);
 	const isString = (value) => typeof value == 'string';
 	const isSymbol = (value) => typeof value == 'symbol';
 	const isObject = (value) => value === Object(value);
@@ -410,14 +425,13 @@
 	const typesProto = {
 	    [KEY_STATE]: null,
 	    get not() {
-	        let types = {
+	        return {
 	            __proto__: typesProto,
 	            [KEY_STATE]: Object.assign(Object.assign({}, this[KEY_STATE]), { notMode: true })
 	        };
-	        return types;
 	    },
 	    custom(validator, _typeProto = typeProto) {
-	        return addTypeValidators(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
+	        return addValidator(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
 	    },
 	    get null() {
 	        return this.custom({ validator: isNull, type: 'null' });
@@ -488,19 +502,19 @@
 	};
 
 	function OmYumYum(validator, value) {
+	    var _a;
 	    if (arguments.length == 1) {
 	        return (value) => {
-	            return om(validator, value);
+	            return OmYumYum(validator, value);
 	        };
 	    }
 	    validationState.errorMessage = null;
-	    validationState.errorTypes.length = 0;
+	    validationState.errorTypes = null;
 	    validationState.errorKeypatch = null;
 	    if (!validator(value)) {
-	        throw TypeError((validationState.errorMessage ||
-	            (validationState.errorTypes.length
-	                ? `Expected type "${validationState.errorTypes.join('" or "')}"`
-	                : 'Type mismatch')) +
+	        throw TypeError(((_a = validationState.errorMessage) !== null && _a !== void 0 ? _a : (validationState.errorTypes
+	            ? `Expected type "${validationState.errorTypes.join('" or "')}"`
+	            : 'Type mismatch')) +
 	            (validationState.errorKeypatch
 	                ? validationState.errorMessage
 	                    ? ` (at "${validationState.errorKeypatch}")`
@@ -520,6 +534,7 @@
 	exports.OmYumYum = OmYumYum;
 	exports.default = om;
 	exports.om = om;
+	exports.typesProto = typesProto;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

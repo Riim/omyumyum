@@ -1,11 +1,11 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroSize } from '../lib/utils';
 import { validationState } from '../validationState';
 import { typeProto } from './Type';
 export const mapTypeProto = {
     __proto__: typeProto,
     keys(validator) {
-        return addTypeValidators(this, true, {
+        return addValidator(this, true, {
             validator: (map) => {
                 for (let [key] of map) {
                     let prevKeypath = validationState.currentKeypath;
@@ -24,7 +24,7 @@ export const mapTypeProto = {
         });
     },
     values(validator) {
-        return addTypeValidators(this, true, {
+        return addValidator(this, true, {
             validator: (map) => {
                 for (let [key, value] of map) {
                     let prevKeypath = validationState.currentKeypath;
@@ -43,6 +43,6 @@ export const mapTypeProto = {
         });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, { validator: isNonZeroSize });
+        return addValidator(this, true, { validator: isNonZeroSize });
     }
 };

@@ -1,5 +1,8 @@
-import { IType } from './Type';
-export interface INumberType extends IType {
+import { ITypeProto } from './Type';
+export interface INumberType extends INumberTypeProto {
+    (value: any): boolean;
+}
+export interface INumberTypeProto extends ITypeProto {
     lt(value: number): INumberType;
     less(value: number): INumberType;
     lte(value: number): INumberType;
@@ -14,4 +17,4 @@ export interface INumberType extends IType {
     negative: INumberType;
     integer: INumberType;
 }
-export declare const numberTypeProto: Object;
+export declare const numberTypeProto: INumberTypeProto;

@@ -1,11 +1,11 @@
 export const validationState: {
 	errorMessage: string | null;
-	errorTypes: Array<string>;
+	errorTypes: Array<string> | null;
 	errorKeypatch: string | null;
 	currentKeypath: string;
 } = {
 	errorMessage: null,
-	errorTypes: [],
+	errorTypes: null,
 	errorKeypatch: null,
 	currentKeypath: ''
 };

@@ -1,11 +1,11 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroSize } from '../lib/utils';
 import { validationState } from '../validationState';
 import { typeProto } from './Type';
 export const setTypeProto = {
     __proto__: typeProto,
     of(validator) {
-        return addTypeValidators(this, true, {
+        return addValidator(this, true, {
             validator: (set) => {
                 let index = 0;
                 for (let item of set) {
@@ -26,6 +26,6 @@ export const setTypeProto = {
         });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, { validator: isNonZeroSize });
+        return addValidator(this, true, { validator: isNonZeroSize });
     }
 };

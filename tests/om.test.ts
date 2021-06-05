@@ -71,7 +71,7 @@ describe('om', () => {
 	});
 
 	it('.custom()', () => {
-		let isOne = om.custom(value => value === 1);
+		let isOne = om.custom((value) => value === 1);
 
 		expect(isOne(1)).to.true;
 		expect(isOne(2)).to.false;
@@ -79,7 +79,7 @@ describe('om', () => {
 	});
 
 	it('.custom() (2)', () => {
-		let isZero = om.number.and.custom(num => num);
+		let isZero = om.number.and.custom((num) => num);
 
 		expect(() => {
 			om(isZero)(1);
@@ -94,7 +94,7 @@ describe('om', () => {
 	});
 
 	it('.[type].and (2)', () => {
-		let isNonZeroString = om.string.and.custom(str => str.length > 0);
+		let isNonZeroString = om.string.and.custom((str) => str.length != 0);
 
 		expect(isNonZeroString('')).to.false;
 		expect(isNonZeroString('1')).to.true;
@@ -358,6 +358,39 @@ describe('om', () => {
 			let isNumericObject = om.object.values(om.number);
 			om(isNumericObject, { prop1: 1, prop2: '2' });
 		}).to.throws(TypeError, 'Expected type "number" at "prop2"');
+
+		let isMailingsData = om.object.exactShape({
+			mailings: om.array.of(
+				om.object.exactShape({
+					title: om.string,
+					sender: om.object.exactShape({
+						name: om.string,
+						sender: om.string // <== sender
+					})
+				})
+			).or.null
+		}).or.null;
+
+		expect(() => {
+			om(isMailingsData, {
+				mailings: [
+					{
+						title: 'Рассылка 1',
+						sender: {
+							name: 'Тест',
+							email: 'test@test.ru'
+						}
+					},
+					{
+						title: 'Рассылка 2',
+						sender: {
+							name: 'Тест',
+							email: 'test@test.ru'
+						}
+					}
+				]
+			});
+		}).to.throws(TypeError, 'Invalid object shape (at "mailings[0].sender")');
 	});
 
 	it('.object.exactShape()', () => {
@@ -496,10 +529,7 @@ describe('om', () => {
 		).to.true;
 
 		expect(() => {
-			om(
-				isMapWithNumericKeys,
-				new Map<any, number>([['1', 1]])
-			);
+			om(isMapWithNumericKeys, new Map<any, number>([['1', 1]]));
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
@@ -524,10 +554,7 @@ describe('om', () => {
 		).to.false;
 
 		expect(() => {
-			om(
-				isNumericMap,
-				new Map<number, any>([[1, '1']])
-			);
+			om(isNumericMap, new Map<number, any>([[1, '1']]));
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 
@@ -548,22 +575,11 @@ describe('om', () => {
 	it('.set.of()', () => {
 		let isNumericSet = om.set.of(om.number);
 
-		expect(
-			isNumericSet(
-				new Set<number>([1, 1])
-			)
-		).to.true;
-		expect(
-			isNumericSet(
-				new Set<any>([1, '2'])
-			)
-		).to.false;
+		expect(isNumericSet(new Set<number>([1, 1]))).to.true;
+		expect(isNumericSet(new Set<any>([1, '2']))).to.false;
 
 		expect(() => {
-			om(
-				isNumericSet,
-				new Set<any>([1, '2'])
-			);
+			om(isNumericSet, new Set<any>([1, '2']));
 		}).to.throws(TypeError, 'Expected type "number" at "[1]"');
 	});
 

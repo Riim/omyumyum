@@ -1,4 +1,4 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { KEY_STATE } from '../constants';
 import { typesProto } from '../Types';
 export const typeProto = {
@@ -6,7 +6,7 @@ export const typeProto = {
     [KEY_STATE]: null,
     isOmYumYum: true,
     get and() {
-        let types = {
+        return {
             __proto__: typesProto,
             [KEY_STATE]: {
                 validators: this[KEY_STATE].validators,
@@ -14,22 +14,20 @@ export const typeProto = {
                 andMode: true
             }
         };
-        return types;
     },
     get or() {
-        let types = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
-        return types;
+        return { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] };
     },
     allow(value) {
-        return addTypeValidators(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
+        return addValidator(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
     },
     notAllow(value) {
-        return addTypeValidators(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
+        return addValidator(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
     },
     oneOf(values) {
-        return addTypeValidators(this, true, { validator: (val) => values.includes(val) }, typeProto);
+        return addValidator(this, true, { validator: (val) => values.includes(val) }, typeProto);
     },
     notOneOf(values) {
-        return addTypeValidators(this, true, { validator: (val) => !values.includes(val) }, typeProto);
+        return addValidator(this, true, { validator: (val) => !values.includes(val) }, typeProto);
     }
 };

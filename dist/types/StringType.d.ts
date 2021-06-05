@@ -1,5 +1,8 @@
-import { IType } from './Type';
-export interface IStringType extends IType {
+import { ITypeProto } from './Type';
+export interface IStringType extends IStringTypeProto {
+    (value: any): boolean;
+}
+export interface IStringTypeProto extends ITypeProto {
     len(value: number): IStringType;
     minLen(value: number): IStringType;
     maxLen(value: number): IStringType;
@@ -10,4 +13,4 @@ export interface IStringType extends IType {
     nonZero: IStringType;
     nonEmpty: IStringType;
 }
-export declare const stringTypeProto: Object;
+export declare const stringTypeProto: IStringTypeProto;

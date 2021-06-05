@@ -1,15 +1,15 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
+import { I$Validator, TValidator } from '../State';
 import { validationState } from '../validationState';
-import {
-	I$Validator,
-	IType,
-	TValidator,
-	typeProto
-	} from './Type';
+import { ITypeProto, typeProto } from './Type';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 
-export interface IObjectType extends IType {
+export interface IObjectType extends IObjectTypeProto {
+	(value: any): boolean;
+}
+
+export interface IObjectTypeProto extends ITypeProto {
 	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType;
 	exactShape(shape: Record<string, TValidator>): IObjectType;
 	keys(re: RegExp): IObjectType;
@@ -17,7 +17,7 @@ export interface IObjectType extends IType {
 	nonEmpty: IObjectType;
 }
 
-function cb1(this: Record<string, any>, entry: [string, TValidator]): boolean {
+function objectShapeCallback(this: Record<string, any>, entry: [string, TValidator]): boolean {
 	let [key, validator] = entry;
 
 	let prevKeypath = validationState.currentKeypath;
@@ -35,7 +35,11 @@ function cb1(this: Record<string, any>, entry: [string, TValidator]): boolean {
 	return result;
 }
 
-function cb2(this: TValidator, entry: any): boolean {
+function objectKeysCallback(this: RegExp, key: string) {
+	return this.test(key);
+}
+
+function objectValuesCallback(this: TValidator, entry: any): boolean {
 	let [key, value] = entry;
 
 	let prevKeypath = validationState.currentKeypath;
@@ -53,46 +57,48 @@ function cb2(this: TValidator, entry: any): boolean {
 	return result;
 }
 
-function cb3(this: RegExp, key: string) {
-	return this.test(key);
-}
+export const objectTypeProto = {
+	__proto__: typeProto as any,
 
-export const objectTypeProto: Object = {
-	__proto__: typeProto,
-
-	shape(shape: Record<string, TValidator>, exact?: boolean): IObjectType {
+	shape(shape, exact) {
 		let validators: Array<I$Validator> = [];
 
 		if (exact) {
 			let shapeKeys = Object.keys(shape);
 			let hasKey = (key: string) => shapeKeys.includes(key);
-			validators.push({ validator: (obj: object) => Object.keys(obj).every(hasKey) });
+
+			validators.push({
+				validator: (obj: object) => Object.keys(obj).every(hasKey),
+				message: 'Invalid object shape'
+			});
 		}
 
 		let shapeEntries = Object.entries(shape);
-		validators.push({ validator: (obj: object) => shapeEntries.every(cb1, obj) });
+		validators.push({
+			validator: (obj: object) => shapeEntries.every(objectShapeCallback, obj)
+		});
 
-		return addTypeValidators(this, true, validators);
+		return addValidator(this, true, validators);
 	},
 
-	exactShape(shape: Record<string, TValidator>): IObjectType {
+	exactShape(shape) {
 		return this.shape(shape, true) as IObjectType;
 	},
 
-	keys(re: RegExp): IObjectType {
-		return addTypeValidators(this, true, {
-			validator: (obj: object) => Object.keys(obj).every(cb3, re)
+	keys(re) {
+		return addValidator(this, true, {
+			validator: (obj: object) => Object.keys(obj).every(objectKeysCallback, re)
 		});
 	},
 
-	values(validator: TValidator): IObjectType {
-		return addTypeValidators(this, true, {
-			validator: (obj: object) => Object.entries(obj).every(cb2, validator)
+	values(validator) {
+		return addValidator(this, true, {
+			validator: (obj: object) => Object.entries(obj).every(objectValuesCallback, validator)
 		});
 	},
 
-	get nonEmpty(): IObjectType {
-		return addTypeValidators(this, true, {
+	get nonEmpty() {
+		return addValidator(this, true, {
 			validator: (obj: object) => {
 				for (let key in obj) {
 					if (hasOwn.call(obj, key)) {
@@ -104,4 +110,4 @@ export const objectTypeProto: Object = {
 			}
 		});
 	}
-};
+} as IObjectTypeProto;

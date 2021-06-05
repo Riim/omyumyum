@@ -1,7 +1,11 @@
-import { addTypeValidators } from '../addTypeValidators';
-import { IType, typeProto } from './Type';
+import { addValidator } from '../addValidator';
+import { ITypeProto, typeProto } from './Type';
 
-export interface INumberType extends IType {
+export interface INumberType extends INumberTypeProto {
+	(value: any): boolean;
+}
+
+export interface INumberTypeProto extends ITypeProto {
 	lt(value: number): INumberType;
 	less(value: number): INumberType;
 	lte(value: number): INumberType;
@@ -19,58 +23,58 @@ export interface INumberType extends IType {
 
 const isInteger = (num: number): boolean => Number.isInteger(num);
 
-export const numberTypeProto: Object = {
-	__proto__: typeProto,
+export const numberTypeProto = {
+	__proto__: typeProto as any,
 
-	lt(value: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num < value });
+	lt(value: number) {
+		return addValidator(this, true, { validator: (num: number) => num < value });
 	},
 
-	less(value: number): INumberType {
+	less(value) {
 		return this.lt(value);
 	},
 
-	lte(value: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num <= value });
+	lte(value) {
+		return addValidator(this, true, { validator: (num: number) => num <= value });
 	},
 
-	max(value: number): INumberType {
+	max(value) {
 		return this.lte(value);
 	},
 
-	gt(value: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num > value });
+	gt(value) {
+		return addValidator(this, true, { validator: (num: number) => num > value });
 	},
 
-	greater(value: number): INumberType {
+	greater(value) {
 		return this.gt(value);
 	},
 
-	gte(value: number): INumberType {
-		return addTypeValidators(this, true, { validator: (num: number) => num >= value });
+	gte(value) {
+		return addValidator(this, true, { validator: (num: number) => num >= value });
 	},
 
-	min(value: number): INumberType {
+	min(value) {
 		return this.gte(value);
 	},
 
-	inRange(minValue: number, maxValue: number): INumberType {
+	inRange(minValue, maxValue) {
 		return this.gte(minValue).lte(maxValue);
 	},
 
-	between(minValue: number, maxValue: number): INumberType {
+	between(minValue, maxValue) {
 		return this.inRange(minValue, maxValue);
 	},
 
-	get positive(): INumberType {
+	get positive() {
 		return this.gte(0);
 	},
 
-	get negative(): INumberType {
+	get negative() {
 		return this.lt(0);
 	},
 
-	get integer(): INumberType {
-		return addTypeValidators(this, true, { validator: isInteger });
+	get integer() {
+		return addValidator(this, true, { validator: isInteger });
 	}
-};
+} as INumberTypeProto;

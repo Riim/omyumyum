@@ -1,8 +1,8 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { validationState } from '../validationState';
 import { typeProto } from './Type';
 const hasOwn = Object.prototype.hasOwnProperty;
-function cb1(entry) {
+function objectShapeCallback(entry) {
     let [key, validator] = entry;
     let prevKeypath = validationState.currentKeypath;
     validationState.currentKeypath =
@@ -14,7 +14,10 @@ function cb1(entry) {
     validationState.currentKeypath = prevKeypath;
     return result;
 }
-function cb2(entry) {
+function objectKeysCallback(key) {
+    return this.test(key);
+}
+function objectValuesCallback(entry) {
     let [key, value] = entry;
     let prevKeypath = validationState.currentKeypath;
     validationState.currentKeypath =
@@ -26,9 +29,6 @@ function cb2(entry) {
     validationState.currentKeypath = prevKeypath;
     return result;
 }
-function cb3(key) {
-    return this.test(key);
-}
 export const objectTypeProto = {
     __proto__: typeProto,
     shape(shape, exact) {
@@ -36,27 +36,32 @@ export const objectTypeProto = {
         if (exact) {
             let shapeKeys = Object.keys(shape);
             let hasKey = (key) => shapeKeys.includes(key);
-            validators.push({ validator: (obj) => Object.keys(obj).every(hasKey) });
+            validators.push({
+                validator: (obj) => Object.keys(obj).every(hasKey),
+                message: 'Invalid object shape'
+            });
         }
         let shapeEntries = Object.entries(shape);
-        validators.push({ validator: (obj) => shapeEntries.every(cb1, obj) });
-        return addTypeValidators(this, true, validators);
+        validators.push({
+            validator: (obj) => shapeEntries.every(objectShapeCallback, obj)
+        });
+        return addValidator(this, true, validators);
     },
     exactShape(shape) {
         return this.shape(shape, true);
     },
     keys(re) {
-        return addTypeValidators(this, true, {
-            validator: (obj) => Object.keys(obj).every(cb3, re)
+        return addValidator(this, true, {
+            validator: (obj) => Object.keys(obj).every(objectKeysCallback, re)
         });
     },
     values(validator) {
-        return addTypeValidators(this, true, {
-            validator: (obj) => Object.entries(obj).every(cb2, validator)
+        return addValidator(this, true, {
+            validator: (obj) => Object.entries(obj).every(objectValuesCallback, validator)
         });
     },
     get nonEmpty() {
-        return addTypeValidators(this, true, {
+        return addValidator(this, true, {
             validator: (obj) => {
                 for (let key in obj) {
                     if (hasOwn.call(obj, key)) {

@@ -1,7 +1,8 @@
+import { TValidator } from './State';
 import { ITypes } from './Types';
-import { TValidator } from './types/Type';
-export { TValidator, I$Validator, IType } from './types/Type';
-export { ITypes } from './Types';
+export { TValidator, I$Validator } from './State';
+export { IType } from './types/Type';
+export { ITypes, typesProto } from './Types';
 export interface IOmYumYum extends ITypes {
     (validator: TValidator): <T = any>(value: T) => T;
     <T = any>(validator: TValidator, value: T): T;

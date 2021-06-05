@@ -1,22 +1,14 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { KEY_STATE } from '../constants';
+import { IState } from '../State';
 import { ITypes, typesProto } from '../Types';
 
-export type TValidator = (value: any) => boolean;
-export interface I$Validator {
-	validator: TValidator;
-	message?: string;
-	type?: string;
-}
-
-export interface IState {
-	validators: Array<Array<I$Validator>>;
-	notMode: boolean;
-	andMode: boolean;
-}
-
-export interface IType {
+export interface IType extends ITypeProto {
 	(value: any): boolean;
+}
+
+export interface ITypeProto {
+	__proto__: Function;
 	[KEY_STATE]: IState;
 	isOmYumYum: true;
 	and: ITypes;
@@ -27,15 +19,15 @@ export interface IType {
 	notOneOf(values: Array<any>): IType;
 }
 
-export const typeProto = {
+export const typeProto: ITypeProto = {
 	__proto__: Function.prototype,
 
-	[KEY_STATE]: null,
+	[KEY_STATE]: null as any,
 
 	isOmYumYum: true,
 
-	get and(): ITypes {
-		let types: ITypes = {
+	get and() {
+		return {
 			__proto__: typesProto,
 
 			[KEY_STATE]: {
@@ -44,48 +36,25 @@ export const typeProto = {
 				andMode: true
 			}
 		} as any;
-
-		return types;
 	},
 
-	get or(): ITypes {
-		let types: ITypes = { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] } as any;
-		return types;
+	get or() {
+		return { __proto__: typesProto, [KEY_STATE]: this[KEY_STATE] } as any;
 	},
 
-	allow(value: any): IType {
-		return addTypeValidators(
-			this,
-			false,
-			{ validator: (val: any) => Object.is(val, value) },
-			typeProto
-		);
+	allow(value) {
+		return addValidator(this, false, { validator: (val) => Object.is(val, value) }, typeProto);
 	},
 
-	notAllow(value: any): IType {
-		return addTypeValidators(
-			this,
-			true,
-			{ validator: (val: any) => !Object.is(val, value) },
-			typeProto
-		);
+	notAllow(value) {
+		return addValidator(this, true, { validator: (val) => !Object.is(val, value) }, typeProto);
 	},
 
-	oneOf(values: Array<any>): IType {
-		return addTypeValidators(
-			this,
-			true,
-			{ validator: (val: any) => values.includes(val) },
-			typeProto
-		);
+	oneOf(values) {
+		return addValidator(this, true, { validator: (val) => values.includes(val) }, typeProto);
 	},
 
-	notOneOf(values: Array<any>): IType {
-		return addTypeValidators(
-			this,
-			true,
-			{ validator: (val: any) => !values.includes(val) },
-			typeProto
-		);
+	notOneOf(values) {
+		return addValidator(this, true, { validator: (val) => !values.includes(val) }, typeProto);
 	}
 };

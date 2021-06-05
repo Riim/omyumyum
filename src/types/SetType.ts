@@ -1,18 +1,23 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroSize } from '../lib/utils';
+import { TValidator } from '../State';
 import { validationState } from '../validationState';
-import { IType, TValidator, typeProto } from './Type';
+import { ITypeProto, typeProto } from './Type';
 
-export interface ISetType extends IType {
+export interface ISetType extends ISetTypeProto {
+	(value: any): boolean;
+}
+
+export interface ISetTypeProto extends ITypeProto {
 	of(validator: TValidator): ISetType;
 	nonEmpty: ISetType;
 }
 
-export const setTypeProto: Object = {
-	__proto__: typeProto,
+export const setTypeProto = {
+	__proto__: typeProto as any,
 
-	of(validator: TValidator): ISetType {
-		return addTypeValidators(this, true, {
+	of(validator) {
+		return addValidator(this, true, {
 			validator: (set: Set<any>) => {
 				let index = 0;
 
@@ -39,7 +44,7 @@ export const setTypeProto: Object = {
 		});
 	},
 
-	get nonEmpty(): ISetType {
-		return addTypeValidators(this, true, { validator: isNonZeroSize });
+	get nonEmpty() {
+		return addValidator(this, true, { validator: isNonZeroSize });
 	}
-};
+} as ISetTypeProto;

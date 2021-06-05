@@ -1,19 +1,24 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroSize } from '../lib/utils';
+import { TValidator } from '../State';
 import { validationState } from '../validationState';
-import { IType, TValidator, typeProto } from './Type';
+import { ITypeProto, typeProto } from './Type';
 
-export interface IMapType extends IType {
+export interface IMapType extends IMapTypeProto {
+	(value: any): boolean;
+}
+
+export interface IMapTypeProto extends ITypeProto {
 	keys(validator: TValidator): IMapType;
 	values(validator: TValidator): IMapType;
 	nonEmpty: IMapType;
 }
 
-export const mapTypeProto: Object = {
-	__proto__: typeProto,
+export const mapTypeProto = {
+	__proto__: typeProto as any,
 
-	keys(validator: TValidator): IMapType {
-		return addTypeValidators(this, true, {
+	keys(validator) {
+		return addValidator(this, true, {
 			validator: (map: Map<any, any>) => {
 				for (let [key] of map) {
 					let prevKeypath = validationState.currentKeypath;
@@ -37,8 +42,8 @@ export const mapTypeProto: Object = {
 		});
 	},
 
-	values(validator: TValidator): IMapType {
-		return addTypeValidators(this, true, {
+	values(validator) {
+		return addValidator(this, true, {
 			validator: (map: Map<any, any>) => {
 				for (let [key, value] of map) {
 					let prevKeypath = validationState.currentKeypath;
@@ -62,7 +67,7 @@ export const mapTypeProto: Object = {
 		});
 	},
 
-	get nonEmpty(): IMapType {
-		return addTypeValidators(this, true, { validator: isNonZeroSize });
+	get nonEmpty() {
+		return addValidator(this, true, { validator: isNonZeroSize });
 	}
-};
+} as IMapTypeProto;

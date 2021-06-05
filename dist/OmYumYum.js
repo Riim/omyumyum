@@ -1,20 +1,21 @@
 import { KEY_STATE } from './constants';
 import { typesProto } from './Types';
 import { validationState } from './validationState';
+export { typesProto } from './Types';
 export function OmYumYum(validator, value) {
+    var _a;
     if (arguments.length == 1) {
         return (value) => {
-            return om(validator, value);
+            return OmYumYum(validator, value);
         };
     }
     validationState.errorMessage = null;
-    validationState.errorTypes.length = 0;
+    validationState.errorTypes = null;
     validationState.errorKeypatch = null;
     if (!validator(value)) {
-        throw TypeError((validationState.errorMessage ||
-            (validationState.errorTypes.length
-                ? `Expected type "${validationState.errorTypes.join('" or "')}"`
-                : 'Type mismatch')) +
+        throw TypeError(((_a = validationState.errorMessage) !== null && _a !== void 0 ? _a : (validationState.errorTypes
+            ? `Expected type "${validationState.errorTypes.join('" or "')}"`
+            : 'Type mismatch')) +
             (validationState.errorKeypatch
                 ? validationState.errorMessage
                     ? ` (at "${validationState.errorKeypatch}")`

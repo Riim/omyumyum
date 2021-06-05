@@ -1,2 +1,4 @@
-import { IType } from './types/Type';
-export declare const check: (type: IType, value: any) => boolean;
+import { I$Validator, IState } from './State';
+export declare const check: (state: IState, value: any) => boolean;
+export declare const checkCallback: (state: IState, validators: Array<I$Validator>, value: any) => boolean;
+export declare const checkCallbackCallback: (state: IState, validator: I$Validator, value: any) => boolean;

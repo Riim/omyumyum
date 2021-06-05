@@ -1,9 +1,14 @@
-import { addTypeValidators } from '../addTypeValidators';
+import { addValidator } from '../addValidator';
 import { isNonZeroLength } from '../lib/utils';
+import { TValidator } from '../State';
 import { validationState } from '../validationState';
-import { IType, TValidator, typeProto } from './Type';
+import { ITypeProto, typeProto } from './Type';
 
-export interface IArrayType extends IType {
+export interface IArrayType extends IArrayTypeProto {
+	(value: any): boolean;
+}
+
+export interface IArrayTypeProto extends ITypeProto {
 	of(validator: TValidator): IArrayType;
 	len(value: number): IArrayType;
 	minLen(value: number): IArrayType;
@@ -11,7 +16,7 @@ export interface IArrayType extends IType {
 	nonEmpty: IArrayType;
 }
 
-function cb(this: TValidator, item: any, index: number): boolean {
+function arrayOfCallback(this: TValidator, item: any, index: number): boolean {
 	let prevKeypath = validationState.currentKeypath;
 	validationState.currentKeypath = validationState.currentKeypath + `[${index}]`;
 
@@ -26,32 +31,34 @@ function cb(this: TValidator, item: any, index: number): boolean {
 	return result;
 }
 
-export const arrayTypeProto: Object = {
-	__proto__: typeProto,
+export const arrayTypeProto = {
+	__proto__: typeProto as any,
 
-	of(validator: TValidator): IArrayType {
-		return addTypeValidators(this, true, {
-			validator: (arr: Array<any>) => arr.every(cb, validator)
+	of(validator) {
+		return addValidator(this, true, {
+			validator: (arr: Array<any>) => arr.every(arrayOfCallback, validator)
 		});
 	},
 
-	len(value: number): IArrayType {
-		return addTypeValidators(this, true, { validator: (arr: Array<any>) => arr.length == value });
+	len(value) {
+		return addValidator(this, true, {
+			validator: (arr: Array<any>) => arr.length == value
+		});
 	},
 
-	minLen(value: number): IArrayType {
-		return addTypeValidators(this, true, {
+	minLen(value) {
+		return addValidator(this, true, {
 			validator: (arr: Array<any>) => arr.length >= value
 		});
 	},
 
-	maxLen(value: number): IArrayType {
-		return addTypeValidators(this, true, {
+	maxLen(value) {
+		return addValidator(this, true, {
 			validator: (arr: Array<any>) => arr.length <= value
 		});
 	},
 
-	get nonEmpty(): IArrayType {
-		return addTypeValidators(this, true, { validator: isNonZeroLength });
+	get nonEmpty() {
+		return addValidator(this, true, { validator: isNonZeroLength });
 	}
-};
+} as IArrayTypeProto;

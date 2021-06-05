@@ -1,4 +1,4 @@
-import { addTypeValidators } from './addTypeValidators';
+import { addValidator } from './addValidator';
 import { KEY_STATE } from './constants';
 import { arrayTypeProto } from './types/ArrayType';
 import { dateTypeProto } from './types/DateType';
@@ -12,7 +12,7 @@ const isNull = (value) => value === null;
 const isUndefined = (value) => value === undefined;
 const isVacuum = (value) => value == null;
 const isBoolean = (value) => typeof value == 'boolean';
-const isNumber = (value) => typeof value == 'number' && Number.isFinite(value) && !Number.isNaN(value);
+const isNumber = (value) => typeof value == 'number' && Number.isFinite(value);
 const isString = (value) => typeof value == 'string';
 const isSymbol = (value) => typeof value == 'symbol';
 const isObject = (value) => value === Object(value);
@@ -29,14 +29,13 @@ const isError = (value) => value instanceof Error;
 export const typesProto = {
     [KEY_STATE]: null,
     get not() {
-        let types = {
+        return {
             __proto__: typesProto,
             [KEY_STATE]: Object.assign(Object.assign({}, this[KEY_STATE]), { notMode: true })
         };
-        return types;
     },
     custom(validator, _typeProto = typeProto) {
-        return addTypeValidators(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
+        return addValidator(this, this[KEY_STATE].andMode, typeof validator == 'function' ? { validator } : validator, _typeProto);
     },
     get null() {
         return this.custom({ validator: isNull, type: 'null' });

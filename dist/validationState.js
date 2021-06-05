@@ -1,6 +1,6 @@
 export const validationState = {
     errorMessage: null,
-    errorTypes: [],
+    errorTypes: null,
     errorKeypatch: null,
     currentKeypath: ''
 };
