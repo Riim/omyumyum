@@ -1,6 +1,6 @@
 {
   "name": "omyumyum",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "The small data validation library",
   "main": "dist/OmYumYum.umd.js",
   "typings": "dist/OmYumYum.d.ts",
